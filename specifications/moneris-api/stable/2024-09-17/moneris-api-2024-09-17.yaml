@@ -9,7 +9,6 @@ info:
     [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height:32px;">](https://god.gw.postman.com/run-collection/25575461-f04750a0-88e9-4c83-8b58-a3aff15eeea8?action=collection%2Ffork&collection-url=entityId%3D25575461-f04750a0-88e9-4c83-8b58-a3aff15eeea8%26entityType%3Dcollection%26workspaceId%3D5d2a9a0f-57a7-441c-b2af-fe6315e80a08)
   termsOfService: https://www.moneris.com/en/legal/terms-of-use
   contact:
-    name: Moneris Developer Support (MonDev)
     url: https://api-developer.moneris.com
     email: UnifiedAPI@moneris.com
   license:
@@ -63,206 +62,7 @@ paths:
         - $ref: '#/components/parameters/createdTo'
       responses:
         '200':
-          description: List of all payments
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/paymentResponseList'
-              example:
-                data:
-                  - paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    merchantId: '0123456789101'
-                    orderId: 1q2w3e4r5t6t78
-                    invoiceNumber: 1a2s3d45v6
-                    transactionDateTime: '2019-07-30T06:43:40.252Z'
-                    createdAt: '2019-07-30T06:43:40.252Z'
-                    modifiedAt: '2019-07-30T06:43:40.252Z'
-                    amount:
-                      amount: 16000
-                      currency: CAD
-                    authorizedAmount:
-                      amount: 16000
-                      currency: CAD
-                    capturableAmount:
-                      amount: 0
-                      currency: CAD
-                    amountDetails: null
-                    customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    paymentMethod:
-                      paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                      merchantId: '0123456789101'
-                      cardholderInformation: null
-                      contactDetails: null
-                      billingAddress: null
-                      paymentMethodInformation:
-                        paymentMethodType: CARD
-                        paymentMethodSource: CARD
-                        cardInformation:
-                          bankIdentificationNumber: '123456'
-                          lastFour: '1234'
-                          expiryMonth: 1
-                          expiryYear: 2028
-                          cardBrand: MASTERCARD
-                          cardType: CREDIT
-                          cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                          issuer: RBC
-                        paymentAccountReference: '11112222333344445555666677778'
-                        storePaymentMethod: DO_NOT_STORE
-                      createdAt: '2019-07-30T06:43:40.252Z'
-                      modifiedAt: null
-                      customData:
-                        property1: string
-                        property2: string
-                    paymentStatus: SUCCEEDED
-                    transactionDetails:
-                      transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
-                      isoResponseCode: '00'
-                      responseCode: '000'
-                      message: approved
-                      ecommerceIndicator: AUTHENTICATED_ECOMMERCE
-                    verificationDetails:
-                      addressVerificationServiceResultCode: FULL_MATCH
-                      cardSecurityCodeResultCode: MATCH
-                      threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
-                    credentialOnFileResponse: null
-                    refundDetails: null
-                    customData:
-                      property1: string
-                      property2: string
-                  - paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAZ
-                    merchantId: '0123456789101'
-                    orderId: 1q2w3e4r5t6t78
-                    invoiceNumber: 1a2s3d45v6
-                    transactionDateTime: '2019-07-30T06:43:40.252Z'
-                    createdAt: '2019-07-30T06:43:40.252Z'
-                    modifiedAt: '2019-07-30T06:43:40.252Z'
-                    amount:
-                      amount: 16000
-                      currency: CAD
-                    authorizedAmount:
-                      amount: 16000
-                      currency: CAD
-                    capturableAmount:
-                      amount: 0
-                      currency: CAD
-                    amountDetails: null
-                    customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    paymentMethod:
-                      paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                      merchantId: '0123456789101'
-                      cardholderInformation: null
-                      contactDetails: null
-                      billingAddress: null
-                      paymentMethodInformation:
-                        paymentMethodType: CARD
-                        paymentMethodSource: CARD
-                        cardInformation:
-                          bankIdentificationNumber: '123456'
-                          lastFour: '1234'
-                          expiryMonth: 1
-                          expiryYear: 2028
-                          cardBrand: MASTERCARD
-                          cardType: CREDIT
-                          cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                          issuer: RBC
-                        paymentAccountReference: '11112222333344445555666677778'
-                        storePaymentMethod: DO_NOT_STORE
-                      createdAt: '2019-07-30T06:43:40.252Z'
-                      modifiedAt: null
-                      customData:
-                        property1: string
-                        property2: string
-                    paymentStatus: CANCELED
-                    transactionDetails:
-                      transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
-                      isoResponseCode: '00'
-                      responseCode: '000'
-                      message: approved
-                      ecommerceIndicator: AUTHENTICATED_ECOMMERCE
-                    verificationDetails:
-                      addressVerificationServiceResultCode: FULL_MATCH
-                      cardSecurityCodeResultCode: MATCH
-                      threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
-                    credentialOnFileResponse: null
-                    refundDetails: null
-                    customData:
-                      property1: string
-                      property2: string
-                  - paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAX
-                    merchantId: '0123456789101'
-                    orderId: 1q2w3e4r5t6t78
-                    invoiceNumber: 1a2s3d45v6
-                    transactionDateTime: '2019-07-30T06:43:40.252Z'
-                    createdAt: '2019-07-30T06:43:40.252Z'
-                    modifiedAt: '2019-07-30T06:43:40.252Z'
-                    amount:
-                      amount: 16000
-                      currency: CAD
-                    authorizedAmount:
-                      amount: 0
-                      currency: CAD
-                    capturableAmount:
-                      amount: 0
-                      currency: CAD
-                    amountDetails: null
-                    customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    paymentMethod:
-                      paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                      merchantId: '0123456789101'
-                      cardholderInformation: null
-                      contactDetails: null
-                      billingAddress: null
-                      paymentMethodInformation:
-                        paymentMethodType: CARD
-                        paymentMethodSource: CARD
-                        cardInformation:
-                          bankIdentificationNumber: '123456'
-                          lastFour: '1234'
-                          expiryMonth: 1
-                          expiryYear: 2028
-                          cardBrand: MASTERCARD
-                          cardType: CREDIT
-                          cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                          issuer: RBC
-                        paymentAccountReference: '11112222333344445555666677778'
-                        storePaymentMethod: DO_NOT_STORE
-                      createdAt: '2019-07-30T06:43:40.252Z'
-                      modifiedAt: null
-                      customData:
-                        property1: string
-                        property2: string
-                    paymentStatus: DECLINED
-                    transactionDetails:
-                      transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
-                      isoResponseCode: '43'
-                      responseCode: '421'
-                      message: Stolen card, pick up.
-                      ecommerceIndicator: AUTHENTICATED_ECOMMERCE
-                    verificationDetails:
-                      addressVerificationServiceResultCode: FULL_MATCH
-                      cardSecurityCodeResultCode: MATCH
-                      threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
-                    credentialOnFileResponse: null
-                    refundDetails: null
-                    customData:
-                      property1: string
-                      property2: string
-                self: /payments?cursor=d41d8cd98f00b&limit=50
-                first: /payments?cursor=d41d8cd98f00b&limit=50
-                last: /payments?cursor=d41d8cd98f00b&limit=50
-                next: null
-                previous: null
+          $ref: '#/components/responses/listPaymentsResponse'
         '400':
           $ref: '#/components/responses/invalidListbadRequest'
         '401':
@@ -318,47 +118,9 @@ paths:
                 $ref: '#/components/examples/preAuthorizationWithPermanentToken'
       responses:
         '201':
-          description: Payment operation created successfully.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/paymentResponse'
-              examples:
-                PurchaseCompleted:
-                  $ref: '#/components/examples/PurchaseCompletedResponse'
-                PreauthorizationCompletedResponse:
-                  $ref: '#/components/examples/PreauthorizationCompletedResponse'
+          $ref: '#/components/responses/createPaymentSuccessResponse'
         '400':
-          description: Failed Payment operation result response
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/error'
-              examples:
-                invalid_request:
-                  $ref: '#/components/examples/InvalidRequestErrorResponse'
+          $ref: '#/components/responses/createPaymentBadRequestResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
@@ -366,25 +128,7 @@ paths:
         '409':
           $ref: '#/components/responses/conflict'
         '422':
-          description: Failed Payment operation result response
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/error'
-              examples:
-                declined:
-                  $ref: '#/components/examples/DeclineErrorResponse'
+          $ref: '#/components/responses/createPaymentUnprocessableContentResponse'
         '429':
           $ref: '#/components/responses/tooManyRequests'
         '500':
@@ -411,33 +155,7 @@ paths:
         - Payments
       responses:
         '200':
-          description: The payment corresponding to the provided `payment-id`
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/paymentResponse'
-              examples:
-                succeeded:
-                  $ref: '#/components/examples/PurchaseCompletedResponse'
-                authorized:
-                  $ref: '#/components/examples/PreauthorizationCompletedResponse'
-                declined:
-                  $ref: '#/components/examples/PurchaseDeclinedResponse'
-                declined_retry:
-                  $ref: '#/components/examples/PurchaseDeclinedRetryResponse'
-                canceled:
-                  $ref: '#/components/examples/PurchaseCanceledResponse'
+          $ref: '#/components/responses/retrievePaymentSuccessResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
@@ -474,82 +192,7 @@ paths:
               $ref: '#/components/schemas/cancelPaymentRequest'
       responses:
         '200':
-          description: Payment canceled successfully.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/paymentResponse'
-              example:
-                paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                merchantId: '0123456789101'
-                orderId: 1q2w3e4r5t6t78
-                invoiceNumber: 1a2s3d45v6
-                transactionDateTime: '2019-07-30T06:43:40.252Z'
-                createdAt: '2019-07-30T06:43:40.252Z'
-                modifiedAt: '2019-07-30T06:43:40.252Z'
-                amount:
-                  amount: 16000
-                  currency: CAD
-                authorizedAmount:
-                  amount: 16000
-                  currency: CAD
-                capturableAmount:
-                  amount: 0
-                  currency: CAD
-                amountDetails: null
-                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                paymentMethod:
-                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                  merchantId: '0123456789101'
-                  cardholderInformation: null
-                  contactDetails: null
-                  billingAddress: null
-                  paymentMethodInformation:
-                    paymentMethodType: CARD
-                    paymentMethodSource: CARD
-                    cardInformation:
-                      bankIdentificationNumber: '123456'
-                      lastFour: '1234'
-                      expiryMonth: 1
-                      expiryYear: 2028
-                      cardBrand: MASTERCARD
-                      cardType: CREDIT
-                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                      issuer: RBC
-                    paymentAccountReference: '11112222333344445555666677778'
-                    storePaymentMethod: DO_NOT_STORE
-                  createdAt: '2019-07-30T06:43:40.252Z'
-                  modifiedAt: null
-                  customData:
-                    property1: string
-                    property2: string
-                paymentStatus: CANCELED
-                transactionDetails:
-                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
-                  isoResponseCode: '00'
-                  responseCode: '000'
-                  message: approved
-                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
-                verificationDetails:
-                  addressVerificationServiceResultCode: FULL_MATCH
-                  cardSecurityCodeResultCode: MATCH
-                  threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
-                credentialOnFileResponse: null
-                refundDetails: null
-                customData:
-                  property1: string
-                  property2: string
+          $ref: '#/components/responses/cancelPaymentSuccessResponse'
         '400':
           $ref: '#/components/responses/badRequest'
         '401':
@@ -561,27 +204,7 @@ paths:
         '409':
           $ref: '#/components/responses/conflict'
         '422':
-          description: Failed to cancel Payment operation result response
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/error'
-              examples:
-                declined:
-                  $ref: '#/components/examples/DeclineErrorResponse'
-                invalid_request:
-                  $ref: '#/components/examples/InvalidPurchaseErrorResponse'
+          $ref: '#/components/responses/cancelPaymentUnprocessableContentResponse'
         '429':
           $ref: '#/components/responses/tooManyRequests'
         '500':
@@ -621,102 +244,9 @@ paths:
                 currency: CAD
       responses:
         '200':
-          description: Payment completed successfully.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/paymentResponse'
-              example:
-                paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                merchantId: '0123456789101'
-                orderId: 1q2w3e4r5t6t78
-                invoiceNumber: 1a2s3d45v6
-                transactionDateTime: '2019-07-30T06:43:40.252Z'
-                createdAt: '2019-07-30T06:43:40.252Z'
-                modifiedAt: '2019-07-30T06:43:40.252Z'
-                amount:
-                  amount: 16000
-                  currency: CAD
-                authorizedAmount:
-                  amount: 16000
-                  currency: CAD
-                capturableAmount:
-                  amount: 0
-                  currency: CAD
-                amountDetails: null
-                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                paymentMethod:
-                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                  merchantId: '0123456789101'
-                  cardholderInformation: null
-                  contactDetails: null
-                  billingAddress: null
-                  paymentMethodInformation:
-                    paymentMethodType: CARD
-                    paymentMethodSource: CARD
-                    cardInformation:
-                      bankIdentificationNumber: '123456'
-                      lastFour: '1234'
-                      expiryMonth: 1
-                      expiryYear: 2028
-                      cardBrand: MASTERCARD
-                      cardType: CREDIT
-                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                      issuer: RBC
-                    paymentAccountReference: '11112222333344445555666677778'
-                    storePaymentMethod: DO_NOT_STORE
-                  createdAt: '2019-07-30T06:43:40.252Z'
-                  modifiedAt: null
-                  customData:
-                    property1: string
-                    property2: string
-                paymentStatus: SUCCEEDED
-                transactionDetails:
-                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
-                  isoResponseCode: '00'
-                  responseCode: '000'
-                  message: approved
-                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
-                verificationDetails:
-                  addressVerificationServiceResultCode: FULL_MATCH
-                  cardSecurityCodeResultCode: MATCH
-                  threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
-                credentialOnFileResponse: null
-                refundDetails: null
-                customData: null
+          $ref: '#/components/responses/completePaymentSuccessResponse'
         '400':
-          description: Failed to complete purchase
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/error'
-              examples:
-                declined:
-                  $ref: '#/components/examples/DeclineErrorResponse'
-                invalid_request:
-                  $ref: '#/components/examples/InvalidPurchaseErrorResponse'
+          $ref: '#/components/responses/completePaymentBadRequestResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
@@ -726,25 +256,7 @@ paths:
         '409':
           $ref: '#/components/responses/conflict'
         '422':
-          description: Failed Payment operation result response
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/error'
-              examples:
-                declined:
-                  $ref: '#/components/examples/DeclineErrorResponse'
+          $ref: '#/components/responses/completePaymentUnprocessableContentResponse'
         '429':
           $ref: '#/components/responses/tooManyRequests'
         '500':
@@ -775,88 +287,7 @@ paths:
         - $ref: '#/components/parameters/createdTo'
       responses:
         '200':
-          description: Paginated list of payment methods
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/paymentMethodResponseList'
-              example:
-                data:
-                  - paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    merchantId: '0123456789101'
-                    cardholderInformation: null
-                    contactDetails: null
-                    billingAddress: null
-                    paymentMethodInformation:
-                      paymentMethodType: CARD
-                      paymentMethodSource: CARD
-                      cardInformation:
-                        bankIdentificationNumber: '123456'
-                        lastFour: '1234'
-                        expiryMonth: 1
-                        expiryYear: 2028
-                        cardBrand: MASTERCARD
-                        cardType: CREDIT
-                        cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                        issuer: RBC
-                      paymentAccountReference: '11112222333344445555666677778'
-                      storePaymentMethod: DO_NOT_STORE
-                    createdAt: '2019-07-30T06:43:40.252Z'
-                    modifiedAt: '2019-07-30T06:43:40.252Z'
-                    customData:
-                      property1: string
-                      property2: string
-                  - paymentMethodId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    merchantId: '0123456789101'
-                    cardholderInformation:
-                      cardholderName: John Doe
-                      companyName: SP Ltd
-                    contactDetails:
-                      phoneNumber: '+18663197450'
-                      email: moneris@moneris.com
-                    billingAddress:
-                      unitNumber: 123A
-                      streetNumber: '3300'
-                      streetName: Bloor Street West
-                      city: Toronto
-                      province: 'ON'
-                      postalCode: M8X 2X2
-                      country: CA
-                    paymentMethodInformation:
-                      paymentMethodType: CARD
-                      paymentMethodSource: TEMPORARY_TOKEN
-                      cardInformation:
-                        bankIdentificationNumber: '123456'
-                        lastFour: '1234'
-                        expiryMonth: 1
-                        expiryYear: 2028
-                        cardBrand: MASTERCARD
-                        cardType: CREDIT
-                        cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                        issuer: RBC
-                      paymentAccountReference: '11112222333344445555666677778'
-                      storePaymentMethod: DO_NOT_STORE
-                    createdAt: '2019-07-30T06:43:40.252Z'
-                    modifiedAt: '2019-07-30T06:43:40.252Z'
-                    customData:
-                      property1: string
-                      property2: string
-                self: /payment-methods?cursor=d41d8cd98f00b&limit=50
-                first: /payment-methods?cursor=d41d8cd98f00b&limit=50
-                last: /payment-methods?cursor=d41d8cd98f00b&limit=50
-                next: null
-                previous: null
+          $ref: '#/components/responses/listPaymentMethodsResponse'
         '400':
           $ref: '#/components/responses/invalidListbadRequest'
         '401':
@@ -902,59 +333,7 @@ paths:
                 $ref: '#/components/examples/googlePayDecryptedPaymentMethodRequest'
       responses:
         '201':
-          description: |
-            Payment method created successfully.  Response content contains the created payment method.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/paymentMethodResponse'
-              example:
-                paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                merchantId: '0123456789101'
-                cardholderInformation:
-                  cardholderName: John Doe
-                  companyName: SP Ltd
-                contactDetails:
-                  phoneNumber: '+18663197450'
-                  email: moneris@moneris.com
-                billingAddress:
-                  unitNumber: 123A
-                  streetNumber: '3300'
-                  streetName: Bloor Street West
-                  city: Toronto
-                  province: 'ON'
-                  postalCode: M8X 2X2
-                  country: CA
-                paymentMethodInformation:
-                  paymentMethodType: CARD
-                  paymentMethodSource: CARD
-                  cardInformation:
-                    bankIdentificationNumber: '123456'
-                    lastFour: '1234'
-                    expiryMonth: 1
-                    expiryYear: 2028
-                    cardBrand: MASTERCARD
-                    cardType: CREDIT
-                    cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                    issuer: RBC
-                  paymentAccountReference: '11112222333344445555666677778'
-                  storePaymentMethod: DO_NOT_STORE
-                createdAt: '2019-07-30T06:43:40.252Z'
-                modifiedAt: '2019-07-30T06:43:40.252Z'
-                customData:
-                  property1: string
-                  property2: string
+          $ref: '#/components/responses/createPaymentMethodSuccessResponse'
         '400':
           $ref: '#/components/responses/badRequest'
         '401':
@@ -991,87 +370,13 @@ paths:
         - Payment Methods
       responses:
         '200':
-          description: Payment method found and returned in the response.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/paymentMethodResponse'
-              example:
-                paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                merchantId: '0123456789101'
-                cardholderInformation:
-                  cardholderName: John Doe
-                  companyName: SP Ltd
-                contactDetails:
-                  phoneNumber: '+18663197450'
-                  email: moneris@moneris.com
-                billingAddress:
-                  unitNumber: 123A
-                  streetNumber: '3300'
-                  streetName: Bloor Street West
-                  city: Toronto
-                  province: 'ON'
-                  postalCode: M8X 2X2
-                  country: CA
-                paymentMethodInformation:
-                  paymentMethodType: CARD
-                  paymentMethodSource: CARD
-                  cardInformation:
-                    bankIdentificationNumber: '123456'
-                    lastFour: '1234'
-                    expiryMonth: 1
-                    expiryYear: 2028
-                    cardBrand: MASTERCARD
-                    cardType: CREDIT
-                    cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                    issuer: RBC
-                  paymentAccountReference: '11112222333344445555666677778'
-                  storePaymentMethod: DO_NOT_STORE
-                createdAt: '2019-07-30T06:43:40.252Z'
-                modifiedAt: '2019-07-30T06:43:40.252Z'
-                customData:
-                  property1: string
-                  property2: string
+          $ref: '#/components/responses/retrievePaymentMethodSuccessResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
           $ref: '#/components/responses/forbidden'
         '404':
-          description: Payment method not found.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-              example:
-                type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-                title: NOT_FOUND
-                status: 404
-                detail: null
-                instance: /payment-methods/pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                category: INVALID_REQUEST_ERROR
-                errors: []
+          $ref: '#/components/responses/paymentMethodNotFoundResponse'
         '429':
           $ref: '#/components/responses/tooManyRequests'
         '500':
@@ -1113,58 +418,7 @@ paths:
                 $ref: '#/components/examples/googlePayDecryptedPaymentMethodRequest'
       responses:
         '200':
-          description: Update payment method
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/paymentMethodResponse'
-              example:
-                paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                merchantId: '0123456789101'
-                cardholderInformation:
-                  cardholderName: John Doe
-                  companyName: SP Ltd
-                contactDetails:
-                  phoneNumber: '+18663197450'
-                  email: moneris@moneris.com
-                billingAddress:
-                  unitNumber: 123A
-                  streetNumber: '3300'
-                  streetName: Bloor Street West
-                  city: Toronto
-                  province: 'ON'
-                  postalCode: M8X 2X2
-                  country: CA
-                paymentMethodInformation:
-                  paymentMethodType: CARD
-                  paymentMethodSource: CARD
-                  cardInformation:
-                    bankIdentificationNumber: '123456'
-                    lastFour: '1234'
-                    expiryMonth: 1
-                    expiryYear: 2028
-                    cardBrand: MASTERCARD
-                    cardType: CREDIT
-                    cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                    issuer: RBC
-                  paymentAccountReference: '11112222333344445555666677778'
-                  storePaymentMethod: DO_NOT_STORE
-                createdAt: '2019-07-30T06:43:40.252Z'
-                modifiedAt: '2019-07-30T06:43:40.252Z'
-                customData:
-                  property1: string
-                  property2: string
+          $ref: '#/components/responses/paymentMethodUpdateSuccessResponse'
         '400':
           $ref: '#/components/responses/badRequest'
         '401':
@@ -1172,30 +426,7 @@ paths:
         '403':
           $ref: '#/components/responses/forbidden'
         '404':
-          description: Payment method not found.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-              example:
-                type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-                title: NOT_FOUND
-                status: 404
-                detail: null
-                instance: /payment-methods/pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                category: INVALID_REQUEST_ERROR
-                errors: []
+          $ref: '#/components/responses/paymentMethodNotFoundResponse'
         '409':
           $ref: '#/components/responses/concurrencyConflict'
         '422':
@@ -1218,49 +449,13 @@ paths:
         - Payment Methods
       responses:
         '204':
-          description: |
-            Payment method deleted successfully. 
-            Response content contains the payment method details.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
+          $ref: '#/components/responses/paymentMethodDeleteSuccessResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
           $ref: '#/components/responses/forbidden'
         '404':
-          description: Payment method not found.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-              example:
-                type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-                title: NOT_FOUND
-                status: 404
-                detail: null
-                instance: /payment-methods/pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                category: INVALID_REQUEST_ERROR
-                errors: []
+          $ref: '#/components/responses/paymentMethodNotFoundResponse'
         '429':
           $ref: '#/components/responses/tooManyRequests'
         '500':
@@ -1291,123 +486,7 @@ paths:
         - $ref: '#/components/parameters/createdTo'
       responses:
         '200':
-          description: Refund list successfully returned.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/refundResponseList'
-              example:
-                data:
-                  - refundId: ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    payment:
-                      paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    merchantId: '0123456789101'
-                    paymentMethod:
-                      paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                      merchantId: '0123456789101'
-                      cardholderInformation: null
-                      contactDetails: null
-                      billingAddress: null
-                      paymentMethodInformation:
-                        paymentMethodType: CARD
-                        paymentMethodSource: CARD
-                        cardInformation:
-                          bankIdentificationNumber: '123456'
-                          lastFour: '1234'
-                          expiryMonth: 1
-                          expiryYear: 2028
-                          cardBrand: MASTERCARD
-                          cardType: CREDIT
-                          cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                          issuer: RBC
-                        paymentAccountReference: '11112222333344445555666677778'
-                        storePaymentMethod: DO_NOT_STORE
-                      createdAt: '2019-07-30T06:43:40.252Z'
-                      modifiedAt: null
-                      customData:
-                        property1: string
-                        property2: string
-                    createdAt: '2019-07-30T06:43:40.252Z'
-                    modifiedAt: '2019-07-30T06:43:40.252Z'
-                    refundAmount:
-                      amount: 1600
-                      currency: CAD
-                    customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    refundStatus: SUCCEEDED
-                    transactionDetails:
-                      transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
-                      isoResponseCode: '00'
-                      responseCode: '000'
-                      message: SUCCESS
-                      ecommerceIndicator: AUTHENTICATED_ECOMMERCE
-                    reason: Defective product
-                    credentialOnFileResponse: null
-                    customData:
-                      property1: string
-                      property2: string
-                  - refundId: ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    payment:
-                      paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    merchantId: '0123456789101'
-                    paymentMethod:
-                      paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                      merchantId: '0123456789101'
-                      cardholderInformation: null
-                      contactDetails: null
-                      billingAddress: null
-                      paymentMethodInformation:
-                        paymentMethodType: CARD
-                        paymentMethodSource: CARD
-                        cardInformation:
-                          bankIdentificationNumber: '123456'
-                          lastFour: '1234'
-                          expiryMonth: 1
-                          expiryYear: 2028
-                          cardBrand: MASTERCARD
-                          cardType: CREDIT
-                          cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                          issuer: RBC
-                        paymentAccountReference: '11112222333344445555666677778'
-                        storePaymentMethod: DO_NOT_STORE
-                      createdAt: '2019-07-30T06:43:40.252Z'
-                      modifiedAt: null
-                      customData:
-                        property1: string
-                        property2: string
-                    createdAt: '2019-07-30T06:43:40.252Z'
-                    modifiedAt: '2019-07-30T06:43:40.252Z'
-                    refundAmount:
-                      amount: 1600
-                      currency: CAD
-                    customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    refundStatus: DECLINED
-                    transactionDetails:
-                      transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
-                      isoResponseCode: '51'
-                      responseCode: '054'
-                      message: Expired Card
-                      ecommerceIndicator: AUTHENTICATED_ECOMMERCE
-                    reason: Defective product
-                    credentialOnFileResponse: null
-                    customData:
-                      property1: string
-                      property2: string
-                self: /refunds?cursor=d41d8cd98f00b&limit=50
-                first: /refunds?cursor=d41d8cd98f00b&limit=50
-                last: /refunds?cursor=d41d8cd98f00b&limit=50
-                next: null
-                previous: null
+          $ref: '#/components/responses/listRefundsSuccessResponse'
         '400':
           $ref: '#/components/responses/invalidListbadRequest'
         '401':
@@ -1444,90 +523,9 @@ paths:
                 $ref: '#/components/examples/matchingRefundRequest'
       responses:
         '201':
-          description: Refund operation result response
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/refundResponse'
-              example:
-                refundId: ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                payment:
-                  paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                merchantId: '0123456789101'
-                paymentMethod:
-                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                  merchantId: '0123456789101'
-                  cardholderInformation: null
-                  contactDetails: null
-                  billingAddress: null
-                  paymentMethodInformation:
-                    paymentMethodType: CARD
-                    paymentMethodSource: CARD
-                    cardInformation:
-                      bankIdentificationNumber: '123456'
-                      lastFour: '1234'
-                      expiryMonth: 1
-                      expiryYear: 2028
-                      cardBrand: MASTERCARD
-                      cardType: CREDIT
-                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                      issuer: RBC
-                    paymentAccountReference: '11112222333344445555666677778'
-                    storePaymentMethod: DO_NOT_STORE
-                  createdAt: '2019-07-30T06:43:40.252Z'
-                  modifiedAt: null
-                  customData:
-                    property1: string
-                    property2: string
-                createdAt: '2019-07-30T06:43:40.252Z'
-                modifiedAt: '2019-07-30T06:43:40.252Z'
-                refundAmount:
-                  amount: 1600
-                  currency: CAD
-                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                refundStatus: SUCCEEDED
-                transactionDetails:
-                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
-                  isoResponseCode: '00'
-                  responseCode: '000'
-                  message: SUCCESS
-                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
-                reason: Defective product
-                credentialOnFileResponse: null
-                customData:
-                  property1: string
-                  property2: string
+          $ref: '#/components/responses/createRefundSuccessResponse'
         '400':
-          description: Refund operation declined
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-              examples:
-                invalid_request:
-                  $ref: '#/components/examples/InvalidRefundErrorResponse'
+          $ref: '#/components/responses/createRefundBadRequestResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
@@ -1537,25 +535,7 @@ paths:
         '409':
           $ref: '#/components/responses/conflict'
         '422':
-          description: Refund operation declined
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-              examples:
-                declined:
-                  $ref: '#/components/examples/exp-refundResponse_DeclineErrorResponse'
+          $ref: '#/components/responses/createRefundDeclinedResponse'
         '429':
           $ref: '#/components/responses/tooManyRequests'
         '500':
@@ -1582,56 +562,13 @@ paths:
         - Refunds
       responses:
         '200':
-          description: Successfully retrieved the refund corresponding to the provided `refund-id`
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/refundResponse'
-              examples:
-                succeeded:
-                  $ref: '#/components/examples/SucceededRefundResponse'
-                declined:
-                  $ref: '#/components/examples/DeclinedRefundResponse'
+          $ref: '#/components/responses/retrieveRefundSuccessResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
           $ref: '#/components/responses/forbidden'
         '404':
-          description: Refund not found.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-              example:
-                type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-                title: NOT_FOUND
-                status: 404
-                detail: null
-                instance: /refunds/ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                category: INVALID_REQUEST_ERROR
-                errors: []
+          $ref: '#/components/responses/refundNotFoundResponse'
         '429':
           $ref: '#/components/responses/tooManyRequests'
         '500':
@@ -1666,141 +603,7 @@ paths:
         - $ref: '#/components/parameters/createdTo'
       responses:
         '200':
-          description: List of Card Validations
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/validationsResponseList'
-              example:
-                data:
-                  - validationId: vi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    merchantId: '0123456789101'
-                    orderId: 1q2w3e4r5t6t78
-                    createdAt: '2019-07-30T06:43:40.252Z'
-                    modifiedAt: null
-                    customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    paymentMethod:
-                      paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                      merchantId: '0123456789101'
-                      cardholderInformation:
-                        cardholderName: John Doe
-                        companyName: SP Ltd
-                      contactDetails:
-                        phoneNumber: '+18663197450'
-                        email: moneris@moneris.com
-                      billingAddress:
-                        unitNumber: 123A
-                        streetNumber: '3300'
-                        streetName: Bloor Street West
-                        city: Toronto
-                        province: 'ON'
-                        postalCode: M8X 2X2
-                        country: CA
-                      paymentMethodInformation:
-                        paymentMethodType: CARD
-                        paymentMethodSource: CARD
-                        cardInformation:
-                          bankIdentificationNumber: '123456'
-                          lastFour: '1234'
-                          expiryMonth: 1
-                          expiryYear: 2028
-                          cardBrand: MASTERCARD
-                          cardType: CREDIT
-                          cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                          issuer: RBC
-                        paymentAccountReference: '11112222333344445555666677778'
-                        storePaymentMethod: DO_NOT_STORE
-                      createdAt: '2019-07-30T06:43:40.252Z'
-                      modifiedAt: '2019-07-30T06:43:40.252Z'
-                      customData:
-                        property1: string
-                        property2: string
-                    validationStatus: SUCCEEDED
-                    transactionDetails:
-                      transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
-                      isoResponseCode: '00'
-                      responseCode: '000'
-                      message: approved
-                      ecommerceIndicator: AUTHENTICATED_ECOMMERCE
-                    verificationDetails:
-                      addressVerificationServiceResultCode: FULL_MATCH
-                      cardSecurityCodeResultCode: MATCH
-                    credentialOnFileResponse: null
-                    customData:
-                      property1: string
-                      property2: string
-                  - validationId: vi0105ARZ3NDEKTSV4RRFFQ69G5FAX
-                    merchantId: '0123456789101'
-                    orderId: 1q2w3e4r5t6t78
-                    createdAt: '2019-07-30T06:43:40.252Z'
-                    modifiedAt: null
-                    customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                    paymentMethod:
-                      paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                      merchantId: '0123456789101'
-                      cardholderInformation:
-                        cardholderName: John Doe
-                        companyName: SP Ltd
-                      contactDetails:
-                        phoneNumber: '+18663197450'
-                        email: moneris@moneris.com
-                      billingAddress:
-                        unitNumber: 123A
-                        streetNumber: '3300'
-                        streetName: Bloor Street West
-                        city: Toronto
-                        province: 'ON'
-                        postalCode: M8X 2X2
-                        country: CA
-                      paymentMethodInformation:
-                        paymentMethodType: CARD
-                        paymentMethodSource: CARD
-                        cardInformation:
-                          bankIdentificationNumber: '123456'
-                          lastFour: '1234'
-                          expiryMonth: 1
-                          expiryYear: 2028
-                          cardBrand: MASTERCARD
-                          cardType: CREDIT
-                          cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                          issuer: RBC
-                        paymentAccountReference: '11112222333344445555666677778'
-                        storePaymentMethod: DO_NOT_STORE
-                      createdAt: '2019-07-30T06:43:40.252Z'
-                      modifiedAt: '2019-07-30T06:43:40.252Z'
-                      customData:
-                        property1: string
-                        property2: string
-                    validationStatus: DECLINED
-                    transactionDetails:
-                      transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
-                      isoResponseCode: '43'
-                      responseCode: '421'
-                      message: Stolen card, pick up.
-                      ecommerceIndicator: AUTHENTICATED_ECOMMERCE
-                    verificationDetails:
-                      addressVerificationServiceResultCode: FULL_MATCH
-                      cardSecurityCodeResultCode: MATCH
-                    credentialOnFileResponse: null
-                    customData:
-                      property1: string
-                      property2: string
-                self: /validations?cursor=d41d8cd98f00b&limit=50
-                first: /validations?cursor=d41d8cd98f00b&limit=50
-                last: /validations?cursor=d41d8cd98f00b&limit=50
-                next: null
-                previous: null
+          $ref: '#/components/responses/listValidationsSuccessResponse'
         '400':
           $ref: '#/components/responses/invalidListbadRequest'
         '401':
@@ -1936,58 +739,13 @@ paths:
         - Validations
       responses:
         '200':
-          description: Retrieve a Card Validation by Id
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/validationResponse'
-              examples:
-                succeeded:
-                  $ref: '#/components/examples/ValidationSucceededResponse'
-                declined:
-                  $ref: '#/components/examples/ValidationDeclinedRetryResponse'
-                declined_retry:
-                  $ref: '#/components/examples/ValidationDeclinedResponse'
+          $ref: '#/components/responses/retrieveValidationSuccessResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
           $ref: '#/components/responses/forbidden'
         '404':
-          description: Card validation not found
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-              example:
-                type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-                title: NOT_FOUND
-                status: 404
-                detail: null
-                instance: /validations/vi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                category: INVALID_REQUEST_ERROR
-                errors: []
+          $ref: '#/components/responses/validationNotFoundResponse'
         '429':
           $ref: '#/components/responses/tooManyRequests'
         '500':
@@ -2021,22 +779,7 @@ paths:
         - $ref: '#/components/parameters/createdTo'
       responses:
         '200':
-          description: List of all customers
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/customerResponseList'
+          $ref: '#/components/responses/listCustomersSuccessResponse'
         '400':
           $ref: '#/components/responses/invalidListbadRequest'
         '401':
@@ -2067,22 +810,7 @@ paths:
               $ref: '#/components/schemas/createCustomerRequest'
       responses:
         '201':
-          description: Customer operation result response
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/customerResponse'
+          $ref: '#/components/responses/createCustomerSuccessResponse'
         '400':
           $ref: '#/components/responses/badRequest'
         '401':
@@ -2119,51 +847,13 @@ paths:
         - Customers
       responses:
         '200':
-          description: The customer corresponding to the provided `customerId`
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/customerResponse'
+          $ref: '#/components/responses/retrieveCustomerSuccessResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
           $ref: '#/components/responses/forbidden'
         '404':
-          description: Customer not found
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-              example:
-                type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-                title: NOT_FOUND
-                status: 404
-                detail: null
-                instance: /customers/ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                category: INVALID_REQUEST_ERROR
-                errors: []
+          $ref: '#/components/responses/customerNotFoundResponse'
         '429':
           $ref: '#/components/responses/tooManyRequests'
         '500':
@@ -2188,22 +878,7 @@ paths:
               $ref: '#/components/schemas/customerRequest'
       responses:
         '200':
-          description: Customer updated successfully.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/customerResponse'
+          $ref: '#/components/responses/customerUpdateSuccessResponse'
         '400':
           $ref: '#/components/responses/badRequest'
         '401':
@@ -2211,30 +886,7 @@ paths:
         '403':
           $ref: '#/components/responses/forbidden'
         '404':
-          description: Customer not found
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-              example:
-                type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-                title: NOT_FOUND
-                status: 404
-                detail: null
-                instance: /customers/ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                category: INVALID_REQUEST_ERROR
-                errors: []
+          $ref: '#/components/responses/customerNotFoundResponse'
         '409':
           $ref: '#/components/responses/concurrencyConflict'
         '422':
@@ -2257,47 +909,13 @@ paths:
         - Customers
       responses:
         '204':
-          description: Customer deleted successfully.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
+          $ref: '#/components/responses/customerDeleteSuccessResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
           $ref: '#/components/responses/forbidden'
         '404':
-          description: Customer not found
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-              example:
-                type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-                title: NOT_FOUND
-                status: 404
-                detail: null
-                instance: /customers/ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                category: INVALID_REQUEST_ERROR
-                errors: []
+          $ref: '#/components/responses/customerNotFoundResponse'
         '429':
           $ref: '#/components/responses/tooManyRequests'
         '500':
@@ -2339,39 +957,9 @@ paths:
                 $ref: '#/components/examples/threeDSecureBrowserChannelWithPermanentToken'
       responses:
         '201':
-          description: 3DS Secure authentication was successfully created & executed.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/authenticationResponse'
+          $ref: '#/components/responses/createThreeDSecureAuthenticationSuccessResponse'
         '202':
-          description: MPI Authentication operation resulted in a challenge.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/authenticationResponse'
+          $ref: '#/components/responses/createThreeDSecureAuthenticationChallengeResponse'
         '400':
           $ref: '#/components/responses/badRequest'
         '401':
@@ -2408,22 +996,7 @@ paths:
         - 3D Secure
       responses:
         '200':
-          description: The authentication corresponding to the provided `authentication-id`
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/authenticationResponse'
+          $ref: '#/components/responses/retrieveThreeDSecureAuthenticationSuccessResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
@@ -2460,22 +1033,7 @@ paths:
               $ref: '#/components/schemas/lookupRequest'
       responses:
         '200':
-          description: MPI Authentication operation was successfully authenticated.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/authenticationResponse'
+          $ref: '#/components/responses/threeDSecureAuthenticationLookupSuccessResponse'
         '400':
           $ref: '#/components/responses/badRequest'
         '401':
@@ -2515,22 +1073,7 @@ paths:
               $ref: '#/components/schemas/cardLookupRequest'
       responses:
         '201':
-          description: CAVV Lookup operation to read the challenge result.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/cardLookupResponse'
+          $ref: '#/components/responses/createThreeDSecureCardLookupSuccessResponse'
         '400':
           $ref: '#/components/responses/badRequest'
         '401':
@@ -2568,39 +1111,9 @@ paths:
               $ref: '#/components/schemas/kountInquiryRequest'
       responses:
         '201':
-          description: Kount Inquiry was successfully approved.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/kountResponse'
+          $ref: '#/components/responses/createKountInquirySuccessResponse'
         '202':
-          description: Kount Inquiry accepted and is under review.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/kountResponse'
+          $ref: '#/components/responses/createKountInquiryAcceptedResponse'
         '400':
           $ref: '#/components/responses/badRequest'
         '401':
@@ -2633,22 +1146,7 @@ paths:
         - $ref: '#/components/parameters/createdTo'
       responses:
         '200':
-          description: Kount Inquiry operation result response
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/kountInquiryList'
+          $ref: '#/components/responses/listKountInquiriesSuccessResponse'
         '400':
           $ref: '#/components/responses/badRequest'
         '401':
@@ -2678,22 +1176,7 @@ paths:
         - Kount
       responses:
         '200':
-          description: Kount Update operation result response
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/kountResponse'
+          $ref: '#/components/responses/retrieveKountInquiryResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
@@ -2728,39 +1211,9 @@ paths:
               $ref: '#/components/schemas/kountAssertRequest'
       responses:
         '200':
-          description: Kount Update operation result response
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/kountResponse'
+          $ref: '#/components/responses/assertKountInquirySuccessResponse'
         '202':
-          description: Kount Inquiry updated and is under review.
-          headers:
-            Api-Version:
-              $ref: '#/components/headers/apiVersion'
-            X-Correlation-Id:
-              $ref: '#/components/headers/correlationId'
-            Sunset:
-              $ref: '#/components/headers/sunset'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/rateLimitCount'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/rateLimitRemaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/kountResponse'
+          $ref: '#/components/responses/assertKountInquiryAcceptedResponse'
         '400':
           $ref: '#/components/responses/badRequest'
         '401':
@@ -3267,6 +1720,15 @@ components:
       minLength: 3
       maxLength: 3
       example: '001'
+    authorizationCode:
+      type: string
+      maxLength: 8
+      nullable: true
+      pattern: ^[a-zA-Z0-9]*$
+      description: |
+        Contains a value generated by the authorizer for an approved financial transactions. 
+        This operates as the authorizing host's transaction identification.
+      example: '11223344'
     message:
       type: string
       description: |
@@ -3307,6 +1769,8 @@ components:
           $ref: '#/components/schemas/iso'
         responseCode:
           $ref: '#/components/schemas/responseCode'
+        authorizationCode:
+          $ref: '#/components/schemas/authorizationCode'
         message:
           $ref: '#/components/schemas/message'
         ecommerceIndicator:
@@ -7520,6 +5984,1784 @@ components:
         type: integer
         format: int32
       example: 60
+  responses:
+    listPaymentsResponse:
+      description: List of all payments
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/paymentResponseList'
+          example:
+            data:
+              - paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                merchantId: '0123456789101'
+                orderId: 1q2w3e4r5t6t78
+                invoiceNumber: 1a2s3d45v6
+                transactionDateTime: '2019-07-30T06:43:40.252Z'
+                createdAt: '2019-07-30T06:43:40.252Z'
+                modifiedAt: '2019-07-30T06:43:40.252Z'
+                amount:
+                  amount: 16000
+                  currency: CAD
+                authorizedAmount:
+                  amount: 16000
+                  currency: CAD
+                capturableAmount:
+                  amount: 0
+                  currency: CAD
+                amountDetails: null
+                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                paymentMethod:
+                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                  merchantId: '0123456789101'
+                  cardholderInformation: null
+                  contactDetails: null
+                  billingAddress: null
+                  paymentMethodInformation:
+                    paymentMethodType: CARD
+                    paymentMethodSource: CARD
+                    cardInformation:
+                      bankIdentificationNumber: '123456'
+                      lastFour: '1234'
+                      expiryMonth: 1
+                      expiryYear: 2028
+                      cardBrand: MASTERCARD
+                      cardType: CREDIT
+                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                      issuer: RBC
+                    paymentAccountReference: '11112222333344445555666677778'
+                    storePaymentMethod: DO_NOT_STORE
+                  createdAt: '2019-07-30T06:43:40.252Z'
+                  modifiedAt: null
+                  customData:
+                    property1: string
+                    property2: string
+                paymentStatus: SUCCEEDED
+                transactionDetails:
+                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+                  isoResponseCode: '00'
+                  responseCode: '000'
+                  message: approved
+                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                verificationDetails:
+                  addressVerificationServiceResultCode: FULL_MATCH
+                  cardSecurityCodeResultCode: MATCH
+                  threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
+                credentialOnFileResponse: null
+                refundDetails: null
+                customData:
+                  property1: string
+                  property2: string
+              - paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAZ
+                merchantId: '0123456789101'
+                orderId: 1q2w3e4r5t6t78
+                invoiceNumber: 1a2s3d45v6
+                transactionDateTime: '2019-07-30T06:43:40.252Z'
+                createdAt: '2019-07-30T06:43:40.252Z'
+                modifiedAt: '2019-07-30T06:43:40.252Z'
+                amount:
+                  amount: 16000
+                  currency: CAD
+                authorizedAmount:
+                  amount: 16000
+                  currency: CAD
+                capturableAmount:
+                  amount: 0
+                  currency: CAD
+                amountDetails: null
+                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                paymentMethod:
+                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                  merchantId: '0123456789101'
+                  cardholderInformation: null
+                  contactDetails: null
+                  billingAddress: null
+                  paymentMethodInformation:
+                    paymentMethodType: CARD
+                    paymentMethodSource: CARD
+                    cardInformation:
+                      bankIdentificationNumber: '123456'
+                      lastFour: '1234'
+                      expiryMonth: 1
+                      expiryYear: 2028
+                      cardBrand: MASTERCARD
+                      cardType: CREDIT
+                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                      issuer: RBC
+                    paymentAccountReference: '11112222333344445555666677778'
+                    storePaymentMethod: DO_NOT_STORE
+                  createdAt: '2019-07-30T06:43:40.252Z'
+                  modifiedAt: null
+                  customData:
+                    property1: string
+                    property2: string
+                paymentStatus: CANCELED
+                transactionDetails:
+                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+                  isoResponseCode: '00'
+                  responseCode: '000'
+                  message: approved
+                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                verificationDetails:
+                  addressVerificationServiceResultCode: FULL_MATCH
+                  cardSecurityCodeResultCode: MATCH
+                  threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
+                credentialOnFileResponse: null
+                refundDetails: null
+                customData:
+                  property1: string
+                  property2: string
+              - paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAX
+                merchantId: '0123456789101'
+                orderId: 1q2w3e4r5t6t78
+                invoiceNumber: 1a2s3d45v6
+                transactionDateTime: '2019-07-30T06:43:40.252Z'
+                createdAt: '2019-07-30T06:43:40.252Z'
+                modifiedAt: '2019-07-30T06:43:40.252Z'
+                amount:
+                  amount: 16000
+                  currency: CAD
+                authorizedAmount:
+                  amount: 0
+                  currency: CAD
+                capturableAmount:
+                  amount: 0
+                  currency: CAD
+                amountDetails: null
+                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                paymentMethod:
+                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                  merchantId: '0123456789101'
+                  cardholderInformation: null
+                  contactDetails: null
+                  billingAddress: null
+                  paymentMethodInformation:
+                    paymentMethodType: CARD
+                    paymentMethodSource: CARD
+                    cardInformation:
+                      bankIdentificationNumber: '123456'
+                      lastFour: '1234'
+                      expiryMonth: 1
+                      expiryYear: 2028
+                      cardBrand: MASTERCARD
+                      cardType: CREDIT
+                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                      issuer: RBC
+                    paymentAccountReference: '11112222333344445555666677778'
+                    storePaymentMethod: DO_NOT_STORE
+                  createdAt: '2019-07-30T06:43:40.252Z'
+                  modifiedAt: null
+                  customData:
+                    property1: string
+                    property2: string
+                paymentStatus: DECLINED
+                transactionDetails:
+                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+                  isoResponseCode: '43'
+                  responseCode: '421'
+                  message: Stolen card, pick up.
+                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                verificationDetails:
+                  addressVerificationServiceResultCode: FULL_MATCH
+                  cardSecurityCodeResultCode: MATCH
+                  threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
+                credentialOnFileResponse: null
+                refundDetails: null
+                customData:
+                  property1: string
+                  property2: string
+            self: /payments?cursor=d41d8cd98f00b&limit=50
+            first: /payments?cursor=d41d8cd98f00b&limit=50
+            last: /payments?cursor=d41d8cd98f00b&limit=50
+            next: null
+            previous: null
+    invalidListbadRequest:
+      description: Bad Request.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          examples:
+            idempotency_error:
+              $ref: '#/components/examples/InvalidListRequestErrorResponse'
+    unauthorized:
+      description: Not authorized. The user does not have a valid API Key or Access Token.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+        WWW-Authenticate:
+          schema:
+            type: string
+            example: Bearer, error="invalid_token"
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
+            title: UNAUTHORIZED_REQUEST
+            status: 401
+            detail: null
+            instance: null
+            category: UNAUTHORIZED_ERROR
+            errors: []
+    forbidden:
+      description: Forbidden. The user does not have permission to access the requested resource.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+        WWW-Authenticate:
+          schema:
+            type: string
+            example: Bearer, error="insufficient_scope"
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
+            title: FORBIDDEN_REQUEST
+            status: 403
+            detail: null
+            instance: null
+            category: UNAUTHORIZED_ERROR
+            errors: []
+    tooManyRequests:
+      description: Too Many Requests
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/rateLimitReset'
+        Retry-After:
+          $ref: '#/components/headers/rateLimitReset'
+    internalServer:
+      description: Unexpected error.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
+            title: INTERNAL_SERVER_ERROR
+            status: 500
+            detail: null
+            instance: null
+            category: INTERNAL_SERVER_ERROR
+            errors: []
+    serviceUnavailable:
+      description: Service Temporarily Unavailable
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        Retry-After:
+          $ref: '#/components/headers/retryAfter'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            type: https://api-developer.moneris.com/responsehandling/
+            title: SERVICE_UNAVAILABLE
+            status: 503
+            detail: null
+            instance: null
+            category: INTERNAL_SERVER_ERROR
+            errors: []
+    createPaymentSuccessResponse:
+      description: Payment operation created successfully.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/paymentResponse'
+          examples:
+            PurchaseCompleted:
+              $ref: '#/components/examples/PurchaseCompletedResponse'
+            PreauthorizationCompletedResponse:
+              $ref: '#/components/examples/PreauthorizationCompletedResponse'
+    createPaymentBadRequestResponse:
+      description: Failed Payment operation result response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          examples:
+            invalid_request:
+              $ref: '#/components/examples/InvalidRequestErrorResponse'
+    conflict:
+      description: Request could not be completed due to a conflict with resource state or existing idempotency key.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          examples:
+            idempotency_error:
+              $ref: '#/components/examples/IdempotencyRequestErrorResponse'
+    createPaymentUnprocessableContentResponse:
+      description: Failed Payment operation result response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          examples:
+            declined:
+              $ref: '#/components/examples/DeclineErrorResponse'
+    retrievePaymentSuccessResponse:
+      description: The payment corresponding to the provided `payment-id`
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/paymentResponse'
+          examples:
+            succeeded:
+              $ref: '#/components/examples/PurchaseCompletedResponse'
+            authorized:
+              $ref: '#/components/examples/PreauthorizationCompletedResponse'
+            declined:
+              $ref: '#/components/examples/PurchaseDeclinedResponse'
+            declined_retry:
+              $ref: '#/components/examples/PurchaseDeclinedRetryResponse'
+            canceled:
+              $ref: '#/components/examples/PurchaseCanceledResponse'
+    notFound:
+      description: Not Found.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
+            title: NOT_FOUND
+            status: 404
+            detail: null
+            instance: /payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            category: INVALID_REQUEST_ERROR
+            errors: []
+    cancelPaymentSuccessResponse:
+      description: Payment canceled successfully.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/paymentResponse'
+          example:
+            paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            merchantId: '0123456789101'
+            orderId: 1q2w3e4r5t6t78
+            invoiceNumber: 1a2s3d45v6
+            transactionDateTime: '2019-07-30T06:43:40.252Z'
+            createdAt: '2019-07-30T06:43:40.252Z'
+            modifiedAt: '2019-07-30T06:43:40.252Z'
+            amount:
+              amount: 16000
+              currency: CAD
+            authorizedAmount:
+              amount: 16000
+              currency: CAD
+            capturableAmount:
+              amount: 0
+              currency: CAD
+            amountDetails: null
+            customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            paymentMethod:
+              paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+              merchantId: '0123456789101'
+              cardholderInformation: null
+              contactDetails: null
+              billingAddress: null
+              paymentMethodInformation:
+                paymentMethodType: CARD
+                paymentMethodSource: CARD
+                cardInformation:
+                  bankIdentificationNumber: '123456'
+                  lastFour: '1234'
+                  expiryMonth: 1
+                  expiryYear: 2028
+                  cardBrand: MASTERCARD
+                  cardType: CREDIT
+                  cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                  issuer: RBC
+                paymentAccountReference: '11112222333344445555666677778'
+                storePaymentMethod: DO_NOT_STORE
+              createdAt: '2019-07-30T06:43:40.252Z'
+              modifiedAt: null
+              customData:
+                property1: string
+                property2: string
+            paymentStatus: CANCELED
+            transactionDetails:
+              transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+              isoResponseCode: '00'
+              responseCode: '000'
+              message: approved
+              ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+            verificationDetails:
+              addressVerificationServiceResultCode: FULL_MATCH
+              cardSecurityCodeResultCode: MATCH
+              threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
+            credentialOnFileResponse: null
+            refundDetails: null
+            customData:
+              property1: string
+              property2: string
+    badRequest:
+      description: Bad Request.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+    cancelPaymentUnprocessableContentResponse:
+      description: Failed to cancel Payment operation result response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          examples:
+            declined:
+              $ref: '#/components/examples/DeclineErrorResponse'
+            invalid_request:
+              $ref: '#/components/examples/InvalidPurchaseErrorResponse'
+    completePaymentSuccessResponse:
+      description: Payment completed successfully.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/paymentResponse'
+          example:
+            paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            merchantId: '0123456789101'
+            orderId: 1q2w3e4r5t6t78
+            invoiceNumber: 1a2s3d45v6
+            transactionDateTime: '2019-07-30T06:43:40.252Z'
+            createdAt: '2019-07-30T06:43:40.252Z'
+            modifiedAt: '2019-07-30T06:43:40.252Z'
+            amount:
+              amount: 16000
+              currency: CAD
+            authorizedAmount:
+              amount: 16000
+              currency: CAD
+            capturableAmount:
+              amount: 0
+              currency: CAD
+            amountDetails: null
+            customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            paymentMethod:
+              paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+              merchantId: '0123456789101'
+              cardholderInformation: null
+              contactDetails: null
+              billingAddress: null
+              paymentMethodInformation:
+                paymentMethodType: CARD
+                paymentMethodSource: CARD
+                cardInformation:
+                  bankIdentificationNumber: '123456'
+                  lastFour: '1234'
+                  expiryMonth: 1
+                  expiryYear: 2028
+                  cardBrand: MASTERCARD
+                  cardType: CREDIT
+                  cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                  issuer: RBC
+                paymentAccountReference: '11112222333344445555666677778'
+                storePaymentMethod: DO_NOT_STORE
+              createdAt: '2019-07-30T06:43:40.252Z'
+              modifiedAt: null
+              customData:
+                property1: string
+                property2: string
+            paymentStatus: SUCCEEDED
+            transactionDetails:
+              transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+              isoResponseCode: '00'
+              responseCode: '000'
+              message: approved
+              ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+            verificationDetails:
+              addressVerificationServiceResultCode: FULL_MATCH
+              cardSecurityCodeResultCode: MATCH
+              threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
+            credentialOnFileResponse: null
+            refundDetails: null
+            customData: null
+    completePaymentBadRequestResponse:
+      description: Failed to complete purchase
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          examples:
+            declined:
+              $ref: '#/components/examples/DeclineErrorResponse'
+            invalid_request:
+              $ref: '#/components/examples/InvalidPurchaseErrorResponse'
+    completePaymentUnprocessableContentResponse:
+      description: Failed Payment operation result response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          examples:
+            declined:
+              $ref: '#/components/examples/DeclineErrorResponse'
+    listPaymentMethodsResponse:
+      description: Paginated list of payment methods
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/paymentMethodResponseList'
+          example:
+            data:
+              - paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                merchantId: '0123456789101'
+                cardholderInformation: null
+                contactDetails: null
+                billingAddress: null
+                paymentMethodInformation:
+                  paymentMethodType: CARD
+                  paymentMethodSource: CARD
+                  cardInformation:
+                    bankIdentificationNumber: '123456'
+                    lastFour: '1234'
+                    expiryMonth: 1
+                    expiryYear: 2028
+                    cardBrand: MASTERCARD
+                    cardType: CREDIT
+                    cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                    issuer: RBC
+                  paymentAccountReference: '11112222333344445555666677778'
+                  storePaymentMethod: DO_NOT_STORE
+                createdAt: '2019-07-30T06:43:40.252Z'
+                modifiedAt: '2019-07-30T06:43:40.252Z'
+                customData:
+                  property1: string
+                  property2: string
+              - paymentMethodId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                merchantId: '0123456789101'
+                cardholderInformation:
+                  cardholderName: John Doe
+                  companyName: SP Ltd
+                contactDetails:
+                  phoneNumber: '+18663197450'
+                  email: moneris@moneris.com
+                billingAddress:
+                  unitNumber: 123A
+                  streetNumber: '3300'
+                  streetName: Bloor Street West
+                  city: Toronto
+                  province: 'ON'
+                  postalCode: M8X 2X2
+                  country: CA
+                paymentMethodInformation:
+                  paymentMethodType: CARD
+                  paymentMethodSource: TEMPORARY_TOKEN
+                  cardInformation:
+                    bankIdentificationNumber: '123456'
+                    lastFour: '1234'
+                    expiryMonth: 1
+                    expiryYear: 2028
+                    cardBrand: MASTERCARD
+                    cardType: CREDIT
+                    cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                    issuer: RBC
+                  paymentAccountReference: '11112222333344445555666677778'
+                  storePaymentMethod: DO_NOT_STORE
+                createdAt: '2019-07-30T06:43:40.252Z'
+                modifiedAt: '2019-07-30T06:43:40.252Z'
+                customData:
+                  property1: string
+                  property2: string
+            self: /payment-methods?cursor=d41d8cd98f00b&limit=50
+            first: /payment-methods?cursor=d41d8cd98f00b&limit=50
+            last: /payment-methods?cursor=d41d8cd98f00b&limit=50
+            next: null
+            previous: null
+    createPaymentMethodSuccessResponse:
+      description: |
+        Payment method created successfully.  Response content contains the created payment method.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/paymentMethodResponse'
+          example:
+            paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            merchantId: '0123456789101'
+            cardholderInformation:
+              cardholderName: John Doe
+              companyName: SP Ltd
+            contactDetails:
+              phoneNumber: '+18663197450'
+              email: moneris@moneris.com
+            billingAddress:
+              unitNumber: 123A
+              streetNumber: '3300'
+              streetName: Bloor Street West
+              city: Toronto
+              province: 'ON'
+              postalCode: M8X 2X2
+              country: CA
+            paymentMethodInformation:
+              paymentMethodType: CARD
+              paymentMethodSource: CARD
+              cardInformation:
+                bankIdentificationNumber: '123456'
+                lastFour: '1234'
+                expiryMonth: 1
+                expiryYear: 2028
+                cardBrand: MASTERCARD
+                cardType: CREDIT
+                cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                issuer: RBC
+              paymentAccountReference: '11112222333344445555666677778'
+              storePaymentMethod: DO_NOT_STORE
+            createdAt: '2019-07-30T06:43:40.252Z'
+            modifiedAt: '2019-07-30T06:43:40.252Z'
+            customData:
+              property1: string
+              property2: string
+    unprocessableContent:
+      description: |
+        The API cannot complete the requested action due to semantic or business validation errors. 
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+    retrievePaymentMethodSuccessResponse:
+      description: Payment method found and returned in the response.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/paymentMethodResponse'
+          example:
+            paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            merchantId: '0123456789101'
+            cardholderInformation:
+              cardholderName: John Doe
+              companyName: SP Ltd
+            contactDetails:
+              phoneNumber: '+18663197450'
+              email: moneris@moneris.com
+            billingAddress:
+              unitNumber: 123A
+              streetNumber: '3300'
+              streetName: Bloor Street West
+              city: Toronto
+              province: 'ON'
+              postalCode: M8X 2X2
+              country: CA
+            paymentMethodInformation:
+              paymentMethodType: CARD
+              paymentMethodSource: CARD
+              cardInformation:
+                bankIdentificationNumber: '123456'
+                lastFour: '1234'
+                expiryMonth: 1
+                expiryYear: 2028
+                cardBrand: MASTERCARD
+                cardType: CREDIT
+                cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                issuer: RBC
+              paymentAccountReference: '11112222333344445555666677778'
+              storePaymentMethod: DO_NOT_STORE
+            createdAt: '2019-07-30T06:43:40.252Z'
+            modifiedAt: '2019-07-30T06:43:40.252Z'
+            customData:
+              property1: string
+              property2: string
+    paymentMethodNotFoundResponse:
+      description: Payment method not found.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
+            title: NOT_FOUND
+            status: 404
+            detail: null
+            instance: /payment-methods/pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            category: INVALID_REQUEST_ERROR
+            errors: []
+    paymentMethodUpdateSuccessResponse:
+      description: Payment Method Updated Successfully.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/paymentMethodResponse'
+          example:
+            paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            merchantId: '0123456789101'
+            cardholderInformation:
+              cardholderName: John Doe
+              companyName: SP Ltd
+            contactDetails:
+              phoneNumber: '+18663197450'
+              email: moneris@moneris.com
+            billingAddress:
+              unitNumber: 123A
+              streetNumber: '3300'
+              streetName: Bloor Street West
+              city: Toronto
+              province: 'ON'
+              postalCode: M8X 2X2
+              country: CA
+            paymentMethodInformation:
+              paymentMethodType: CARD
+              paymentMethodSource: CARD
+              cardInformation:
+                bankIdentificationNumber: '123456'
+                lastFour: '1234'
+                expiryMonth: 1
+                expiryYear: 2028
+                cardBrand: MASTERCARD
+                cardType: CREDIT
+                cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                issuer: RBC
+              paymentAccountReference: '11112222333344445555666677778'
+              storePaymentMethod: DO_NOT_STORE
+            createdAt: '2019-07-30T06:43:40.252Z'
+            modifiedAt: '2019-07-30T06:43:40.252Z'
+            customData:
+              property1: string
+              property2: string
+    concurrencyConflict:
+      description: Request could not be completed due to a concurrent access issue.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          examples:
+            concurrency_error:
+              $ref: '#/components/examples/concurrentRequestErrorResponse'
+    paymentMethodDeleteSuccessResponse:
+      description: |
+        Payment method deleted successfully. 
+        Response content contains the payment method details.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+    listRefundsSuccessResponse:
+      description: Refund list successfully returned.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/refundResponseList'
+          example:
+            data:
+              - refundId: ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                payment:
+                  paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                merchantId: '0123456789101'
+                paymentMethod:
+                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                  merchantId: '0123456789101'
+                  cardholderInformation: null
+                  contactDetails: null
+                  billingAddress: null
+                  paymentMethodInformation:
+                    paymentMethodType: CARD
+                    paymentMethodSource: CARD
+                    cardInformation:
+                      bankIdentificationNumber: '123456'
+                      lastFour: '1234'
+                      expiryMonth: 1
+                      expiryYear: 2028
+                      cardBrand: MASTERCARD
+                      cardType: CREDIT
+                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                      issuer: RBC
+                    paymentAccountReference: '11112222333344445555666677778'
+                    storePaymentMethod: DO_NOT_STORE
+                  createdAt: '2019-07-30T06:43:40.252Z'
+                  modifiedAt: null
+                  customData:
+                    property1: string
+                    property2: string
+                createdAt: '2019-07-30T06:43:40.252Z'
+                modifiedAt: '2019-07-30T06:43:40.252Z'
+                refundAmount:
+                  amount: 1600
+                  currency: CAD
+                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                refundStatus: SUCCEEDED
+                transactionDetails:
+                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+                  isoResponseCode: '00'
+                  responseCode: '000'
+                  message: SUCCESS
+                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                reason: Defective product
+                credentialOnFileResponse: null
+                customData:
+                  property1: string
+                  property2: string
+              - refundId: ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                payment:
+                  paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                merchantId: '0123456789101'
+                paymentMethod:
+                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                  merchantId: '0123456789101'
+                  cardholderInformation: null
+                  contactDetails: null
+                  billingAddress: null
+                  paymentMethodInformation:
+                    paymentMethodType: CARD
+                    paymentMethodSource: CARD
+                    cardInformation:
+                      bankIdentificationNumber: '123456'
+                      lastFour: '1234'
+                      expiryMonth: 1
+                      expiryYear: 2028
+                      cardBrand: MASTERCARD
+                      cardType: CREDIT
+                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                      issuer: RBC
+                    paymentAccountReference: '11112222333344445555666677778'
+                    storePaymentMethod: DO_NOT_STORE
+                  createdAt: '2019-07-30T06:43:40.252Z'
+                  modifiedAt: null
+                  customData:
+                    property1: string
+                    property2: string
+                createdAt: '2019-07-30T06:43:40.252Z'
+                modifiedAt: '2019-07-30T06:43:40.252Z'
+                refundAmount:
+                  amount: 1600
+                  currency: CAD
+                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                refundStatus: DECLINED
+                transactionDetails:
+                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+                  isoResponseCode: '51'
+                  responseCode: '054'
+                  message: Expired Card
+                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                reason: Defective product
+                credentialOnFileResponse: null
+                customData:
+                  property1: string
+                  property2: string
+            self: /refunds?cursor=d41d8cd98f00b&limit=50
+            first: /refunds?cursor=d41d8cd98f00b&limit=50
+            last: /refunds?cursor=d41d8cd98f00b&limit=50
+            next: null
+            previous: null
+    createRefundSuccessResponse:
+      description: Refund operation result response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/refundResponse'
+          example:
+            refundId: ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            payment:
+              paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            merchantId: '0123456789101'
+            paymentMethod:
+              paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+              merchantId: '0123456789101'
+              cardholderInformation: null
+              contactDetails: null
+              billingAddress: null
+              paymentMethodInformation:
+                paymentMethodType: CARD
+                paymentMethodSource: CARD
+                cardInformation:
+                  bankIdentificationNumber: '123456'
+                  lastFour: '1234'
+                  expiryMonth: 1
+                  expiryYear: 2028
+                  cardBrand: MASTERCARD
+                  cardType: CREDIT
+                  cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                  issuer: RBC
+                paymentAccountReference: '11112222333344445555666677778'
+                storePaymentMethod: DO_NOT_STORE
+              createdAt: '2019-07-30T06:43:40.252Z'
+              modifiedAt: null
+              customData:
+                property1: string
+                property2: string
+            createdAt: '2019-07-30T06:43:40.252Z'
+            modifiedAt: '2019-07-30T06:43:40.252Z'
+            refundAmount:
+              amount: 1600
+              currency: CAD
+            customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            refundStatus: SUCCEEDED
+            transactionDetails:
+              transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+              isoResponseCode: '00'
+              responseCode: '000'
+              message: SUCCESS
+              ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+            reason: Defective product
+            credentialOnFileResponse: null
+            customData:
+              property1: string
+              property2: string
+    createRefundBadRequestResponse:
+      description: Invalid Refund request
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          examples:
+            invalid_request:
+              $ref: '#/components/examples/InvalidRefundErrorResponse'
+    createRefundDeclinedResponse:
+      description: Refund operation declined
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          examples:
+            declined:
+              $ref: '#/components/examples/exp-refundResponse_DeclineErrorResponse'
+    retrieveRefundSuccessResponse:
+      description: Successfully retrieved the refund corresponding to the provided `refund-id`
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/refundResponse'
+          examples:
+            succeeded:
+              $ref: '#/components/examples/SucceededRefundResponse'
+            declined:
+              $ref: '#/components/examples/DeclinedRefundResponse'
+    refundNotFoundResponse:
+      description: Refund not found.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
+            title: NOT_FOUND
+            status: 404
+            detail: null
+            instance: /refunds/ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            category: INVALID_REQUEST_ERROR
+            errors: []
+    listValidationsSuccessResponse:
+      description: List of Card Validations
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/validationsResponseList'
+          example:
+            data:
+              - validationId: vi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                merchantId: '0123456789101'
+                orderId: 1q2w3e4r5t6t78
+                createdAt: '2019-07-30T06:43:40.252Z'
+                modifiedAt: null
+                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                paymentMethod:
+                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                  merchantId: '0123456789101'
+                  cardholderInformation:
+                    cardholderName: John Doe
+                    companyName: SP Ltd
+                  contactDetails:
+                    phoneNumber: '+18663197450'
+                    email: moneris@moneris.com
+                  billingAddress:
+                    unitNumber: 123A
+                    streetNumber: '3300'
+                    streetName: Bloor Street West
+                    city: Toronto
+                    province: 'ON'
+                    postalCode: M8X 2X2
+                    country: CA
+                  paymentMethodInformation:
+                    paymentMethodType: CARD
+                    paymentMethodSource: CARD
+                    cardInformation:
+                      bankIdentificationNumber: '123456'
+                      lastFour: '1234'
+                      expiryMonth: 1
+                      expiryYear: 2028
+                      cardBrand: MASTERCARD
+                      cardType: CREDIT
+                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                      issuer: RBC
+                    paymentAccountReference: '11112222333344445555666677778'
+                    storePaymentMethod: DO_NOT_STORE
+                  createdAt: '2019-07-30T06:43:40.252Z'
+                  modifiedAt: '2019-07-30T06:43:40.252Z'
+                  customData:
+                    property1: string
+                    property2: string
+                validationStatus: SUCCEEDED
+                transactionDetails:
+                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+                  isoResponseCode: '00'
+                  responseCode: '000'
+                  message: approved
+                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                verificationDetails:
+                  addressVerificationServiceResultCode: FULL_MATCH
+                  cardSecurityCodeResultCode: MATCH
+                credentialOnFileResponse: null
+                customData:
+                  property1: string
+                  property2: string
+              - validationId: vi0105ARZ3NDEKTSV4RRFFQ69G5FAX
+                merchantId: '0123456789101'
+                orderId: 1q2w3e4r5t6t78
+                createdAt: '2019-07-30T06:43:40.252Z'
+                modifiedAt: null
+                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                paymentMethod:
+                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                  merchantId: '0123456789101'
+                  cardholderInformation:
+                    cardholderName: John Doe
+                    companyName: SP Ltd
+                  contactDetails:
+                    phoneNumber: '+18663197450'
+                    email: moneris@moneris.com
+                  billingAddress:
+                    unitNumber: 123A
+                    streetNumber: '3300'
+                    streetName: Bloor Street West
+                    city: Toronto
+                    province: 'ON'
+                    postalCode: M8X 2X2
+                    country: CA
+                  paymentMethodInformation:
+                    paymentMethodType: CARD
+                    paymentMethodSource: CARD
+                    cardInformation:
+                      bankIdentificationNumber: '123456'
+                      lastFour: '1234'
+                      expiryMonth: 1
+                      expiryYear: 2028
+                      cardBrand: MASTERCARD
+                      cardType: CREDIT
+                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                      issuer: RBC
+                    paymentAccountReference: '11112222333344445555666677778'
+                    storePaymentMethod: DO_NOT_STORE
+                  createdAt: '2019-07-30T06:43:40.252Z'
+                  modifiedAt: '2019-07-30T06:43:40.252Z'
+                  customData:
+                    property1: string
+                    property2: string
+                validationStatus: DECLINED
+                transactionDetails:
+                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+                  isoResponseCode: '43'
+                  responseCode: '421'
+                  message: Stolen card, pick up.
+                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                verificationDetails:
+                  addressVerificationServiceResultCode: FULL_MATCH
+                  cardSecurityCodeResultCode: MATCH
+                credentialOnFileResponse: null
+                customData:
+                  property1: string
+                  property2: string
+            self: /validations?cursor=d41d8cd98f00b&limit=50
+            first: /validations?cursor=d41d8cd98f00b&limit=50
+            last: /validations?cursor=d41d8cd98f00b&limit=50
+            next: null
+            previous: null
+    retrieveValidationSuccessResponse:
+      description: Card Validation retrieved successfully
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/validationResponse'
+          examples:
+            succeeded:
+              $ref: '#/components/examples/ValidationSucceededResponse'
+            declined:
+              $ref: '#/components/examples/ValidationDeclinedRetryResponse'
+            declined_retry:
+              $ref: '#/components/examples/ValidationDeclinedResponse'
+    validationNotFoundResponse:
+      description: Card validation not found
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
+            title: NOT_FOUND
+            status: 404
+            detail: null
+            instance: /validations/vi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            category: INVALID_REQUEST_ERROR
+            errors: []
+    listCustomersSuccessResponse:
+      description: List of all customers
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/customerResponseList'
+    createCustomerSuccessResponse:
+      description: Customer operation result response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/customerResponse'
+    retrieveCustomerSuccessResponse:
+      description: The customer corresponding to the provided `customerId`
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/customerResponse'
+    customerNotFoundResponse:
+      description: Customer not found
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
+            title: NOT_FOUND
+            status: 404
+            detail: null
+            instance: /customers/ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            category: INVALID_REQUEST_ERROR
+            errors: []
+    customerUpdateSuccessResponse:
+      description: Customer updated successfully.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/customerResponse'
+    customerDeleteSuccessResponse:
+      description: Customer deleted successfully.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+    createThreeDSecureAuthenticationSuccessResponse:
+      description: 3DS Secure authentication was successfully created & executed.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/authenticationResponse'
+    createThreeDSecureAuthenticationChallengeResponse:
+      description: MPI Authentication operation resulted in a challenge.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/authenticationResponse'
+    retrieveThreeDSecureAuthenticationSuccessResponse:
+      description: The authentication corresponding to the provided `authentication-id`
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/authenticationResponse'
+    threeDSecureAuthenticationLookupSuccessResponse:
+      description: MPI Authentication operation was successfully authenticated.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/authenticationResponse'
+    createThreeDSecureCardLookupSuccessResponse:
+      description: 3D-Secure Card Lookup created successfully
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/cardLookupResponse'
+    listKountInquiriesSuccessResponse:
+      description: Kount Inquiry operation result response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/kountInquiryList'
+    createKountInquirySuccessResponse:
+      description: Kount Inquiry was successfully approved.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/kountResponse'
+    createKountInquiryAcceptedResponse:
+      description: Kount Inquiry accepted and is under review.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/kountResponse'
+    retrieveKountInquiryResponse:
+      description: Retrieve Kount Inquiry response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/kountResponse'
+    assertKountInquirySuccessResponse:
+      description: Kount Assert operation result response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/kountResponse'
+    assertKountInquiryAcceptedResponse:
+      description: Kount Inquiry updated and is under review.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/kountResponse'
   examples:
     InvalidListRequestErrorResponse:
       summary: Invalid query parameter
@@ -8947,243 +9189,3 @@ components:
         browserJavaEnabled: true
         browserJavascriptEnabled: true
         browserLanguage: en
-  responses:
-    invalidListbadRequest:
-      description: Bad Request.
-      headers:
-        Api-Version:
-          $ref: '#/components/headers/apiVersion'
-        X-Correlation-Id:
-          $ref: '#/components/headers/correlationId'
-        Sunset:
-          $ref: '#/components/headers/sunset'
-        X-RateLimit-Limit:
-          $ref: '#/components/headers/rateLimitCount'
-        X-RateLimit-Remaining:
-          $ref: '#/components/headers/rateLimitRemaining'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/error'
-          examples:
-            idempotency_error:
-              $ref: '#/components/examples/InvalidListRequestErrorResponse'
-    unauthorized:
-      description: Not authorized. The user does not have a valid API Key or Access Token.
-      headers:
-        Api-Version:
-          $ref: '#/components/headers/apiVersion'
-        X-Correlation-Id:
-          $ref: '#/components/headers/correlationId'
-        Sunset:
-          $ref: '#/components/headers/sunset'
-        X-RateLimit-Limit:
-          $ref: '#/components/headers/rateLimitCount'
-        X-RateLimit-Remaining:
-          $ref: '#/components/headers/rateLimitRemaining'
-        WWW-Authenticate:
-          schema:
-            type: string
-            example: Bearer, error="invalid_token"
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-            title: UNAUTHORIZED_REQUEST
-            status: 401
-            detail: null
-            instance: null
-            category: UNAUTHORIZED_ERROR
-            errors: []
-    forbidden:
-      description: Forbidden. The user does not have permission to access the requested resource.
-      headers:
-        Api-Version:
-          $ref: '#/components/headers/apiVersion'
-        X-Correlation-Id:
-          $ref: '#/components/headers/correlationId'
-        Sunset:
-          $ref: '#/components/headers/sunset'
-        X-RateLimit-Limit:
-          $ref: '#/components/headers/rateLimitCount'
-        X-RateLimit-Remaining:
-          $ref: '#/components/headers/rateLimitRemaining'
-        WWW-Authenticate:
-          schema:
-            type: string
-            example: Bearer, error="insufficient_scope"
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-            title: FORBIDDEN_REQUEST
-            status: 403
-            detail: null
-            instance: null
-            category: UNAUTHORIZED_ERROR
-            errors: []
-    tooManyRequests:
-      description: Too Many Requests
-      headers:
-        Api-Version:
-          $ref: '#/components/headers/apiVersion'
-        X-Correlation-Id:
-          $ref: '#/components/headers/correlationId'
-        Sunset:
-          $ref: '#/components/headers/sunset'
-        X-RateLimit-Limit:
-          $ref: '#/components/headers/rateLimitCount'
-        X-RateLimit-Remaining:
-          $ref: '#/components/headers/rateLimitRemaining'
-        X-RateLimit-Reset:
-          $ref: '#/components/headers/rateLimitReset'
-        Retry-After:
-          $ref: '#/components/headers/rateLimitReset'
-    internalServer:
-      description: Unexpected error.
-      headers:
-        Api-Version:
-          $ref: '#/components/headers/apiVersion'
-        X-Correlation-Id:
-          $ref: '#/components/headers/correlationId'
-        Sunset:
-          $ref: '#/components/headers/sunset'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-            title: INTERNAL_SERVER_ERROR
-            status: 500
-            detail: null
-            instance: null
-            category: INTERNAL_SERVER_ERROR
-            errors: []
-    serviceUnavailable:
-      description: Service Temporarily Unavailable
-      headers:
-        Api-Version:
-          $ref: '#/components/headers/apiVersion'
-        X-Correlation-Id:
-          $ref: '#/components/headers/correlationId'
-        Sunset:
-          $ref: '#/components/headers/sunset'
-        Retry-After:
-          $ref: '#/components/headers/retryAfter'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            type: https://api-developer.moneris.com/responsehandling/
-            title: SERVICE_UNAVAILABLE
-            status: 503
-            detail: null
-            instance: null
-            category: INTERNAL_SERVER_ERROR
-            errors: []
-    conflict:
-      description: Request could not be completed due to a conflict with resource state or existing idempotency key.
-      headers:
-        Api-Version:
-          $ref: '#/components/headers/apiVersion'
-        X-Correlation-Id:
-          $ref: '#/components/headers/correlationId'
-        Sunset:
-          $ref: '#/components/headers/sunset'
-        X-RateLimit-Limit:
-          $ref: '#/components/headers/rateLimitCount'
-        X-RateLimit-Remaining:
-          $ref: '#/components/headers/rateLimitRemaining'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/error'
-          examples:
-            idempotency_error:
-              $ref: '#/components/examples/IdempotencyRequestErrorResponse'
-    notFound:
-      description: Not Found.
-      headers:
-        Api-Version:
-          $ref: '#/components/headers/apiVersion'
-        X-Correlation-Id:
-          $ref: '#/components/headers/correlationId'
-        Sunset:
-          $ref: '#/components/headers/sunset'
-        X-RateLimit-Limit:
-          $ref: '#/components/headers/rateLimitCount'
-        X-RateLimit-Remaining:
-          $ref: '#/components/headers/rateLimitRemaining'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-            title: NOT_FOUND
-            status: 404
-            detail: null
-            instance: /payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-            category: INVALID_REQUEST_ERROR
-            errors: []
-    badRequest:
-      description: Bad Request.
-      headers:
-        Api-Version:
-          $ref: '#/components/headers/apiVersion'
-        X-Correlation-Id:
-          $ref: '#/components/headers/correlationId'
-        Sunset:
-          $ref: '#/components/headers/sunset'
-        X-RateLimit-Limit:
-          $ref: '#/components/headers/rateLimitCount'
-        X-RateLimit-Remaining:
-          $ref: '#/components/headers/rateLimitRemaining'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/error'
-    unprocessableContent:
-      description: |
-        The API cannot complete the requested action due to semantic or business validation errors. 
-      headers:
-        Api-Version:
-          $ref: '#/components/headers/apiVersion'
-        X-Correlation-Id:
-          $ref: '#/components/headers/correlationId'
-        Sunset:
-          $ref: '#/components/headers/sunset'
-        X-RateLimit-Limit:
-          $ref: '#/components/headers/rateLimitCount'
-        X-RateLimit-Remaining:
-          $ref: '#/components/headers/rateLimitRemaining'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/error'
-    concurrencyConflict:
-      description: Request could not be completed due to a concurrent access issue.
-      headers:
-        Api-Version:
-          $ref: '#/components/headers/apiVersion'
-        X-Correlation-Id:
-          $ref: '#/components/headers/correlationId'
-        Sunset:
-          $ref: '#/components/headers/sunset'
-        X-RateLimit-Limit:
-          $ref: '#/components/headers/rateLimitCount'
-        X-RateLimit-Remaining:
-          $ref: '#/components/headers/rateLimitRemaining'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/error'
-          examples:
-            concurrency_error:
-              $ref: '#/components/examples/concurrentRequestErrorResponse'
