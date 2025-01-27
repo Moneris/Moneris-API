@@ -3973,6 +3973,14 @@
         "maxLength": 3,
         "example": 1
       },
+      "authorizationCode": {
+        "type": "string",
+        "maxLength": 8,
+        "nullable": true,
+        "pattern": "^[a-zA-Z0-9]*$",
+        "description": "Contient une valeur générée par l’autorisateur pour les transactions financières. \nIl s’agit de l’identification de transaction de l’hôte d’autorisation.\n",
+        "example": "11223344"
+      },
       "message": {
         "type": "string",
         "description": "Description de la réponse renvoyée par l’institution émettrice. Ce message ne doit pas être affiché sur les supports de carte.  Pour obtenir des reçus, veuillez consulter les Exigences en matière de reçus.",
@@ -4008,6 +4016,9 @@
           },
           "responseCode": {
             "$ref": "#/components/schemas/responseCode"
+          },
+          "authorizationCode": {
+            "$ref": "#/components/schemas/authorizationCode"
           },
           "message": {
             "$ref": "#/components/schemas/message"
