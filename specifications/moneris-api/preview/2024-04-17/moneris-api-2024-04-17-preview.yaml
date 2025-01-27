@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 2.1.0
+  version: 2.0.0
   title: Moneris API
   description: Moneris API Platform
   termsOfService: https://www.moneris.com/en/legal/terms-of-use
@@ -299,6 +299,12 @@ paths:
                 $ref: '#/components/examples/regularPurchaseWithGooglePayDecryptedPaymentMethod'
               preAuthorizationWithPaymentMethodId:
                 $ref: '#/components/examples/preAuthorizationWithPaymentMethodId'
+              preAuthorizationWithCardPaymentMethod:
+                $ref: '#/components/examples/preAuthorizationWithCardPaymentMethod'
+              preAuthorizationWithTemporaryToken:
+                $ref: '#/components/examples/preAuthorizationWithTemporaryToken'
+              preAuthorizationWithPermanentToken:
+                $ref: '#/components/examples/preAuthorizationWithPermanentToken'
       responses:
         '201':
           description: Payment operation created successfully.
@@ -649,9 +655,7 @@ paths:
                   threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
                 credentialOnFileResponse: null
                 refundDetails: null
-                customData:
-                  property1: string
-                  property2: string
+                customData: null
         '400':
           description: Failed to complete purchase
           headers:
@@ -2165,6 +2169,15 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/authenticationRequest'
+            examples:
+              threeDSecureBrowserChannelWithPaymentMethodId:
+                $ref: '#/components/examples/threeDSecureBrowserChannelWithPaymentMethodId'
+              threeDSecureBrowserChannelWithCardPaymentMethod:
+                $ref: '#/components/examples/threeDSecureBrowserChannelWithCardPaymentMethod'
+              threeDSecureBrowserChannelWithTemporaryToken:
+                $ref: '#/components/examples/threeDSecureBrowserChannelWithTemporaryToken'
+              threeDSecureBrowserChannelWithPermanentToken:
+                $ref: '#/components/examples/threeDSecureBrowserChannelWithPermanentToken'
       responses:
         '201':
           description: 3DS Secure authentication was successfully created & executed.
@@ -2567,8 +2580,18 @@ components:
       type: apiKey
       in: header
       name: X-Api-Key
+      description: |
+        An API key is a token that a client provides when making API calls.
+
+        API keys are supposed to be a secret that only the client and server know about.
     OAuth2:
       type: oauth2
+      description: |
+        OAuth 2.0 is an authorization protocol that gives an API client limited access to user data on a web server.
+
+        OAuth relies on authentication scenarios, that allows the resource owner (user) to share the protected content from the server, hosting the resource, without sharing their credentials. For that purpose, an OAuth 2.0 server issues access tokens that the client applications can use to access protected resources on behalf of the resource owner.
+
+        Moneris recommends the use of OAuth 2.0 as it provides fine grained authorization levels.
       flows:
         clientCredentials:
           tokenUrl: https://api.moneris.io/oauth2/token
@@ -2595,11 +2618,12 @@ components:
         Thirteen character long identification provided to merchants by Moneris. 
       minLength: 13
       maxLength: 13
-      example: 123456789101
+      example: '0123456789101'
     dateTime:
       type: string
       format: date-time
       example: '2019-07-30T06:43:40.252Z'
+      description: Date & Time
     orderId:
       type: string
       description: |
@@ -2641,6 +2665,7 @@ components:
       minimum: 0
       maximum: 999999999
       example: 10000
+      description: Amount
     currency:
       type: string
       description: |
@@ -2730,7 +2755,7 @@ components:
           pattern: ^\+[1-9]\d{1,14}$
           minLength: 3
           maxLength: 16
-          example: 18663197450
+          example: '+18663197450'
         email:
           nullable: true
           type: string
@@ -2743,7 +2768,7 @@ components:
           maxLength: 320
           example: moneris@moneris.com
       example:
-        phoneNumber: 1-866-319-7450
+        phoneNumber: '+18663197450'
         email: moneris@moneris.com
     expiryMonth:
       type: integer
@@ -2788,14 +2813,14 @@ components:
             Consists of the first six to eight digits of the Primary Account Number (PAN) and identifies the relevant payment network and the specific payment issuing institution.
           minLength: 6
           maxLength: 8
-          example: 123456
+          example: '123456'
         lastFour:
           nullable: true
           type: string
           description: Last 4 digits of the card.
           minLength: 4
           maxLength: 4
-          example: 1234
+          example: '1234'
         expiryMonth:
           $ref: '#/components/schemas/expiryMonth'
         expiryYear:
@@ -2843,7 +2868,7 @@ components:
         Used to link Primary Account Number (PAN) based transactions and transactions on associated payment tokens without using the PAN as the linking mechanism.
       minLength: 1
       maxLength: 29
-      example: 1.1112222333344446e+28
+      example: '11112222333344445555666677778'
     storePaymentMethod:
       description: |
         Store this payment method created through this payment for future use. 
@@ -2944,7 +2969,7 @@ components:
               description: Street number
               minLength: 1
               maxLength: 19
-              example: 3300
+              example: '3300'
             streetName:
               nullable: true
               type: string
@@ -2986,10 +3011,10 @@ components:
               format: iso-3166
           example:
             unitNumber: 123A
-            streetNumber: 3300
+            streetNumber: '3300'
             streetName: Bloor Street West
             city: Toronto
-            province: Ontario
+            province: 'ON'
             postalCode: M8X 2X2
             country: CA
         paymentMethodInformation:
@@ -3021,7 +3046,7 @@ components:
       description: Represents the Moneris response code for the equivalent International Organization for Standardization (ISO) response code.
       minLength: 2
       maxLength: 2
-      example: 0
+      example: '00'
     responseCode:
       type: string
       description: |
@@ -3032,7 +3057,16 @@ components:
         For a complete list of definitions, refer to the Response Codes Table"
       minLength: 3
       maxLength: 3
-      example: 1
+      example: '001'
+    authorizationCode:
+      type: string
+      maxLength: 8
+      nullable: true
+      pattern: ^[a-zA-Z0-9]*$
+      description: |
+        Contains a value generated by the authorizer for an approved financial transactions. 
+        This operates as the authorizing host's transaction identification.
+      example: '11223344'
     message:
       type: string
       description: |
@@ -3073,6 +3107,8 @@ components:
           $ref: '#/components/schemas/iso'
         responseCode:
           $ref: '#/components/schemas/responseCode'
+        authorizationCode:
+          $ref: '#/components/schemas/authorizationCode'
         message:
           $ref: '#/components/schemas/message'
         ecommerceIndicator:
@@ -3481,9 +3517,10 @@ components:
             type: object
             $ref: '#/components/schemas/parameterError'
           example:
-            - parameter: address.postalCode
-              value: MAP3J8
-              reasonCode: invalid_format
+            - parameterName: address.postalCode
+              parameterValue: MAP3J8
+              errorMessage: address.Postal code does not match regular expression
+              reasonCode: INVALID_FORMAT
       title: API Error
       type: object
       required:
@@ -3582,7 +3619,7 @@ components:
       description: Identifies the customer's credit or debit card number (Primary Account Number).
       minLength: 13
       maxLength: 19
-      example: 4444111122223333
+      example: '4444111122223333'
     cardSecurityCode:
       maxLength: 4
       minLength: 1
@@ -3638,7 +3675,7 @@ components:
               description: Street number
               minLength: 1
               maxLength: 19
-              example: 3300
+              example: '3300'
             streetName:
               nullable: true
               type: string
@@ -3680,10 +3717,10 @@ components:
               format: iso-3166
           example:
             unitNumber: 123A
-            streetNumber: 3300
+            streetNumber: '3300'
             streetName: Bloor Street West
             city: Toronto
-            province: Ontario
+            province: 'ON'
             postalCode: M8X 2X2
             country: CA
         paymentMethodSource:
@@ -3739,7 +3776,7 @@ components:
       description: Created when a temporary token is created and returned. This acts as a unique profile identifier, and is a required value for temporary token transactions.
       minLength: 25
       maxLength: 28
-      example: ot-HCUeCFtXJfEZSSUqvUJk0
+      example: ot-HCUeCFtXJfEZSSUqvUJkS0
     paymentMethodTemporaryToken:
       title: paymentMethodTemporaryToken
       description: |
@@ -3885,6 +3922,7 @@ components:
               description: |
                 Encrypted payment data. Base64 encoded as a string.
               format: byte
+              example: MTIzNDU2Njc4OQ==
             signature:
               type: string
               description: |
@@ -3977,7 +4015,7 @@ components:
               type: string
               minLength: 13
               maxLength: 19
-              example: 4444111122223333
+              example: '4444111122223333'
             expiryMonth:
               $ref: '#/components/schemas/expiryMonth'
             expiryYear:
@@ -4118,7 +4156,7 @@ components:
           type: string
           minLength: 13
           maxLength: 19
-          example: 4444111122223333
+          example: '4444111122223333'
         expiryMonth:
           $ref: '#/components/schemas/expiryMonth'
         expiryYear:
@@ -4159,6 +4197,7 @@ components:
               format: date-time
               description: |
                 Date and time at which the message expires. Integrators should reject any message that's expired.
+              example: '2024-09-19T00:00:00Z'
             messageId:
               type: string
               nullable: true
@@ -4266,13 +4305,13 @@ components:
         **CAVV**: Cardholder Authentication Verification Value
         Provided during a payment request to authenticate the card user.
       maxLength: 50
-      example: 109260000719349
+      example: '00000109260000719349'
       nullable: true
     threeDSecureVersion:
       type: string
       description: Required when sending a 3-D Secure version 2.0+ transaction. If no value is provided, default to V1.
       maxLength: 10
-      example: 2.2
+      example: '2.2'
     threeDSecureServerTransactionId:
       type: string
       description: "Indicates information required when sending a version 3-D Secure 2.0+ transaction. \n\nThis data is obtained from a CAVV Lookup Request or MPI\_3DS\_Authentication Request transaction.\n"
@@ -4684,6 +4723,7 @@ components:
       type: object
       properties:
         data:
+          description: List of refunds.
           type: array
           items:
             type: object
@@ -4841,6 +4881,7 @@ components:
       type: object
       properties:
         data:
+          description: List of validations.
           type: array
           items:
             type: object
@@ -4954,7 +4995,7 @@ components:
               description: Street number
               minLength: 1
               maxLength: 19
-              example: 3300
+              example: '3300'
             streetName:
               nullable: true
               type: string
@@ -4996,10 +5037,10 @@ components:
               format: iso-3166
           example:
             unitNumber: 123A
-            streetNumber: 3300
+            streetNumber: '3300'
             streetName: Bloor Street West
             city: Toronto
-            province: Ontario
+            province: 'ON'
             postalCode: M8X 2X2
             country: CA
         shippingAddress:
@@ -5022,7 +5063,7 @@ components:
               description: Street number
               minLength: 1
               maxLength: 19
-              example: 3300
+              example: '3300'
             streetName:
               nullable: true
               type: string
@@ -5064,10 +5105,10 @@ components:
               format: iso-3166
           example:
             unitNumber: 123A
-            streetNumber: 3300
+            streetNumber: '3300'
             streetName: Bloor Street West
             city: Toronto
-            province: Ontario
+            province: 'ON'
             postalCode: M8X 2X2
             country: CA
         phoneNumber:
@@ -5077,7 +5118,7 @@ components:
           pattern: ^\+[1-9]\d{1,14}$
           minLength: 3
           maxLength: 16
-          example: 18663197450
+          example: '+18663197450'
         email:
           nullable: true
           type: string
@@ -5099,6 +5140,7 @@ components:
       title: customerResponseList
       properties:
         data:
+          description: List of customers.
           type: array
           items:
             type: object
@@ -5148,7 +5190,7 @@ components:
               description: Street number
               minLength: 1
               maxLength: 19
-              example: 3300
+              example: '3300'
             streetName:
               nullable: true
               type: string
@@ -5190,10 +5232,10 @@ components:
               format: iso-3166
           example:
             unitNumber: 123A
-            streetNumber: 3300
+            streetNumber: '3300'
             streetName: Bloor Street West
             city: Toronto
-            province: Ontario
+            province: 'ON'
             postalCode: M8X 2X2
             country: CA
         shippingAddress:
@@ -5216,7 +5258,7 @@ components:
               description: Street number
               minLength: 1
               maxLength: 19
-              example: 3300
+              example: '3300'
             streetName:
               nullable: true
               type: string
@@ -5258,10 +5300,10 @@ components:
               format: iso-3166
           example:
             unitNumber: 123A
-            streetNumber: 3300
+            streetNumber: '3300'
             streetName: Bloor Street West
             city: Toronto
-            province: Ontario
+            province: 'ON'
             postalCode: M8X 2X2
             country: CA
         phoneNumber:
@@ -5271,7 +5313,7 @@ components:
           pattern: ^\+[1-9]\d{1,14}$
           minLength: 3
           maxLength: 16
-          example: 18663197450
+          example: '+18663197450'
         email:
           nullable: true
           type: string
@@ -5320,7 +5362,7 @@ components:
               description: Street number
               minLength: 1
               maxLength: 19
-              example: 3300
+              example: '3300'
             streetName:
               nullable: true
               type: string
@@ -5362,10 +5404,10 @@ components:
               format: iso-3166
           example:
             unitNumber: 123A
-            streetNumber: 3300
+            streetNumber: '3300'
             streetName: Bloor Street West
             city: Toronto
-            province: Ontario
+            province: 'ON'
             postalCode: M8X 2X2
             country: CA
         shippingAddress:
@@ -5388,7 +5430,7 @@ components:
               description: Street number
               minLength: 1
               maxLength: 19
-              example: 3300
+              example: '3300'
             streetName:
               nullable: true
               type: string
@@ -5430,10 +5472,10 @@ components:
               format: iso-3166
           example:
             unitNumber: 123A
-            streetNumber: 3300
+            streetNumber: '3300'
             streetName: Bloor Street West
             city: Toronto
-            province: Ontario
+            province: 'ON'
             postalCode: M8X 2X2
             country: CA
         phoneNumber:
@@ -5443,7 +5485,7 @@ components:
           pattern: ^\+[1-9]\d{1,14}$
           minLength: 3
           maxLength: 16
-          example: 18663197450
+          example: '+18663197450'
         email:
           nullable: true
           type: string
@@ -5473,13 +5515,13 @@ components:
       pattern: ^\+[1-9]\d{1,14}$
       minLength: 3
       maxLength: 16
-      example: 18663197450
+      example: '+18663197450'
     streetNumber:
       type: string
       description: Street number
       minLength: 1
       maxLength: 19
-      example: 3300
+      example: '3300'
     streetName:
       type: string
       description: Street name
@@ -5601,7 +5643,7 @@ components:
       type: string
       description: Data that documents and supports a specific authentication process. In the current version of the specification this data element is not defined in detail, however the intention is that for each 3DS Requestor Authentication Method, this field carry data that the ACS can use to verify the authentication process. In future versions of the specification, these details are expected to be included.
       maxLength: 2048
-      example: 12345678
+      example: '12345678'
       nullable: true
     threeDSecurePriorAuthenticationMethod:
       type: string
@@ -5624,7 +5666,7 @@ components:
       type: string
       description: This data element provides additional information to the ACS to determine the best approach for handing a request.
       maxLength: 36
-      example: 12345678
+      example: '12345678'
       nullable: true
     threeDSecurePriorAuthenticationInformation:
       type: object
@@ -5757,7 +5799,7 @@ components:
               description: Street number
               minLength: 1
               maxLength: 19
-              example: 3300
+              example: '3300'
             streetName:
               nullable: true
               type: string
@@ -5799,10 +5841,10 @@ components:
               format: iso-3166
           example:
             unitNumber: 123A
-            streetNumber: 3300
+            streetNumber: '3300'
             streetName: Bloor Street West
             city: Toronto
-            province: Ontario
+            province: 'ON'
             postalCode: M8X 2X2
             country: CA
         billingAddress:
@@ -5831,10 +5873,10 @@ components:
               $ref: '#/components/schemas/country'
           example:
             unitNumber: 123A
-            streetNumber: 3300
+            streetNumber: '3300'
             streetName: Bloor Street West
             city: Toronto
-            province: Ontario
+            province: 'ON'
             postalCode: M8X 2X2
             country: CA
           required:
@@ -6165,7 +6207,7 @@ components:
       description: Kount Transaction ID
       type: string
       maxLength: 12
-      example: 123456789012
+      example: '123456789012'
     kountTriggeredCounter:
       type: object
       description: Kount Counter that was triggered
@@ -6332,7 +6374,7 @@ components:
           description: Error Code displayed in Risk Inquiry Service response
           type: string
           maxLength: 4
-          example: 1080
+          example: '1080'
           nullable: true
         kountFingerprint:
           description: The unique fingerprint of the device placing the order
@@ -6475,7 +6517,7 @@ components:
           description: Reason code associated with rule action
           type: string
           maxLength: 16
-          example: reasonCode
+          example: Invalid Data
           nullable: true
         region:
           description: Region associated to device location
@@ -6509,10 +6551,10 @@ components:
           maxLength: 8
           example: DEFAULT
         timezone:
-          description: The time zone of the device; In the ISO format of +|– hh:mm
+          description: The time zone of the device; In the ISO format of +|–hh:mm
           type: string
           maxLength: 6
-          example: '- 04:00'
+          example: '-04:00'
           nullable: true
         deviceUserAgent:
           nullable: true
@@ -6538,7 +6580,7 @@ components:
           description: Specifies version of Kount system being used
           type: string
           maxLength: 4
-          example: 1
+          example: '1.0'
           nullable: true
         deviceVoiceActivated:
           description: If it is a mobile device, flag indicating whether the device is voice activated
@@ -6555,7 +6597,7 @@ components:
           description: Warning code displayed in the Risk Inquiry Service response
           type: string
           maxLength: 4
-          example: 180
+          example: '180'
           nullable: true
         warningDetail:
           description: Warning details
@@ -6612,7 +6654,7 @@ components:
       type: string
       minLength: 6
       maxLength: 6
-      example: 760000
+      example: '760000'
     kountApiKey:
       description: The API key for the associated with the Kount Merchant ID
       type: string
@@ -6666,7 +6708,7 @@ components:
         If the credit card information is not available and Moneris Tokenization is used to process payment set paymentType = CARD and send the token in the paymentToken field.
       type: string
       maxLength: 32
-      example: 4242424242424242
+      example: '4242424242424242'
     paymentType:
       description: |
         Payment Type submitted by merchant. 
@@ -6714,7 +6756,7 @@ components:
           description: Last 4 digits of the card.
           minLength: 4
           maxLength: 4
-          example: 1234
+          example: '1234'
         paymentToken:
           $ref: '#/components/schemas/paymentToken'
         paymentType:
@@ -6786,7 +6828,7 @@ components:
       description: 'Automatic Number Identification (ANI) submitted with order If the ANI cannot be determined, merchant must pass 0123456789 as the ANID NOTE: This field is only valid for phone-to-web requests where customer service agents navigate to a separate order entry page that does not collect iframe data Risk Inquiry Service submissions'
       type: string
       maxLength: 32
-      example: 123456789
+      example: '0123456789'
       nullable: true
     gender:
       type: string
@@ -6869,7 +6911,7 @@ components:
               description: Street number
               minLength: 1
               maxLength: 19
-              example: 3300
+              example: '3300'
             streetName:
               nullable: true
               type: string
@@ -6911,10 +6953,10 @@ components:
               format: iso-3166
           example:
             unitNumber: 123A
-            streetNumber: 3300
+            streetNumber: '3300'
             streetName: Bloor Street West
             city: Toronto
-            province: Ontario
+            province: 'ON'
             postalCode: M8X 2X2
             country: CA
         shippingAddress:
@@ -6938,7 +6980,7 @@ components:
               description: Street number
               minLength: 1
               maxLength: 19
-              example: 3300
+              example: '3300'
             streetName:
               nullable: true
               type: string
@@ -6980,18 +7022,20 @@ components:
               format: iso-3166
           example:
             unitNumber: 123A
-            streetNumber: 3300
+            streetNumber: '3300'
             streetName: Bloor Street West
             city: Toronto
-            province: Ontario
+            province: 'ON'
             postalCode: M8X 2X2
             country: CA
         dateOfBirth:
+          description: Date of Birth.
           nullable: true
           type: string
           format: date
           example: '2019-07-30'
         timestamp:
+          description: This is timestamp associated with the creation of a user in Kount service.
           nullable: true
           type: string
           format: date-time
@@ -7065,7 +7109,7 @@ components:
                   description: Last 4 digits of the card.
                   minLength: 4
                   maxLength: 4
-                  example: 1234
+                  example: '1234'
                 paymentToken:
                   nullable: true
                   description: |
@@ -7076,7 +7120,7 @@ components:
                     If the credit card information is not available and Moneris Tokenization is used to process payment set paymentType = CARD and send the token in the paymentToken field.
                   type: string
                   maxLength: 32
-                  example: 4242424242424242
+                  example: '4242424242424242'
                 paymentType:
                   $ref: '#/components/schemas/paymentType'
               required:
@@ -7122,7 +7166,7 @@ components:
     merchantId:
       in: header
       name: X-Merchant-Id
-      example: 123456789101
+      example: '0123456789101'
       description: |
         Thirteen character identification code. 
 
@@ -7243,6 +7287,7 @@ components:
       schema:
         type: string
         format: date-time
+        example: '2025-07-30T06:43:40.252Z'
     rateLimitCount:
       description: The maximum number of requests that the client can make in this window.
       schema:
@@ -7316,10 +7361,10 @@ components:
         paymentMethod:
           paymentMethodSource: CARD
           card:
-            cardNumber: '4444111122223333'
+            cardNumber: '4242424242424242'
             expiryMonth: 1
             expiryYear: 2028
-            cardSecurityCode: 123
+            cardSecurityCode: '123'
           storePaymentMethod: DO_NOT_STORE
         ecommerceIndicator: AUTHENTICATED_ECOMMERCE
         automaticCapture: true
@@ -7366,7 +7411,6 @@ components:
           credentialOnFileInformation:
             paymentIndicator: UNSCHEDULED_CREDENTIAL_ON_FILE
             paymentInformation: FIRST
-            issuerId: null
         ecommerceIndicator: AUTHENTICATED_ECOMMERCE
         automaticCapture: true
         customData:
@@ -7390,10 +7434,10 @@ components:
           displayName: MasterCard 4079
           cardBrand: MASTERCARD
           applePayVersion: EC_V1
-          data: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva
+          data: ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lJeE1qTTBOVFkzT0Rrd0lpd2libUZ0WlNJNklrcHZh
           signature: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva
           publicKeyHash: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva
-          ephemeralPublicKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva
+          ephemeralPublicKey: ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lJeE1qTTBOVFkzT0Rrd0lpd2libUZ0WlNJNklrcHZh
           applePayTransactionId: 22iWw1ySnzwiav6ToJ7KOhkY49
           walletIndicator: IN_BROWSER
         ecommerceIndicator: AUTHENTICATED_ECOMMERCE
@@ -7497,17 +7541,74 @@ components:
         amount:
           amount: 16000
           currency: CAD
-        amountDetails: null
         customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
         paymentMethod:
           paymentMethodSource: PAYMENT_METHOD_ID
           paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+        automaticCapture: false
+        dynamicDescriptor: moneris
+        ipv4: 192.0.2.146
+        ipv6: 2345:0425:2CA1:0000:0000:0567:5673:23b5
+    preAuthorizationWithCardPaymentMethod:
+      summary: Pre-Authorization With Card Payment Method
+      value:
+        idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac1
+        orderId: 1q2w3e4r5t6t78
+        invoiceNumber: 1a2s3d45v6
+        amount:
+          amount: 16000
+          currency: CAD
+        customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentMethod:
+          paymentMethodSource: CARD
+          card:
+            cardNumber: '4242424242424242'
+            expiryMonth: 1
+            expiryYear: 2028
+            cardSecurityCode: '123'
           storePaymentMethod: DO_NOT_STORE
         ecommerceIndicator: AUTHENTICATED_ECOMMERCE
         automaticCapture: false
-        customData:
-          property1: string
-          property2: string
+        dynamicDescriptor: moneris
+        ipv4: 192.0.2.146
+        ipv6: 2345:0425:2CA1:0000:0000:0567:5673:23b5
+    preAuthorizationWithTemporaryToken:
+      summary: Pre-Authorization With Temporary Payment Method
+      value:
+        idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac1
+        orderId: 1q2w3e4r5t6t78
+        invoiceNumber: 1a2s3d45v6
+        amount:
+          amount: 16000
+          currency: CAD
+        customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentMethod:
+          paymentMethodSource: TEMPORARY_TOKEN
+          temporaryToken: ot-y2mxjFqmqDisQQGB6hQ8xwQ2
+        ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+        automaticCapture: false
+        dynamicDescriptor: moneris
+        ipv4: 192.0.2.146
+        ipv6: 2345:0425:2CA1:0000:0000:0567:5673:23b5
+    preAuthorizationWithPermanentToken:
+      summary: Pre-Authorization With Permanent Payment Method
+      value:
+        idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac1
+        orderId: 1q2w3e4r5t6t78
+        invoiceNumber: 1a2s3d45v6
+        amount:
+          amount: 16000
+          currency: CAD
+        customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentMethod:
+          paymentMethodSource: PERMANENT_TOKEN
+          permanentToken: ot-y2mxjFqmqDisQQGB6hQ8xwQ2
+          credentialOnFileInformation:
+            paymentIndicator: UNSCHEDULED_CREDENTIAL_ON_FILE
+            paymentInformation: FIRST
+        ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+        automaticCapture: false
         dynamicDescriptor: moneris
         ipv4: 192.0.2.146
         ipv6: 2345:0425:2CA1:0000:0000:0567:5673:23b5
@@ -7570,9 +7671,7 @@ components:
           threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
         credentialOnFileResponse: null
         refundDetails: null
-        customData:
-          property1: string
-          property2: string
+        customData: null
     PreauthorizationCompletedResponse:
       summary: Successful Pre-Authorization
       value:
@@ -7883,7 +7982,7 @@ components:
           cardNumber: '4444111122223333'
           expiryMonth: 1
           expiryYear: 2028
-          cardSecurityCode: 123
+          cardSecurityCode: '123'
         customData:
           property1: string
           property2: string
@@ -7913,10 +8012,10 @@ components:
         displayName: MasterCard 4079
         cardBrand: MASTERCARD
         applePayVersion: EC_V1
-        data: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva
+        data: ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lJeE1qTTBOVFkzT0Rrd0lpd2libUZ0WlNJNklrcHZh
         signature: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva
         publicKeyHash: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva
-        ephemeralPublicKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva
+        ephemeralPublicKey: ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lJeE1qTTBOVFkzT0Rrd0lpd2libUZ0WlNJNklrcHZh
         applePayTransactionId: 22iWw1ySnzwiav6ToJ7KOhkY49
         walletIndicator: IN_BROWSER
         customData:
@@ -7992,7 +8091,7 @@ components:
           cardNumber: '4444111122223333'
           expiryMonth: 1
           expiryYear: 2028
-          cardSecurityCode: 123
+          cardSecurityCode: '123'
         customData:
           property1: string
           property2: string
@@ -8186,7 +8285,7 @@ components:
             cardNumber: '4444111122223333'
             expiryMonth: 1
             expiryYear: 2028
-            cardSecurityCode: 123
+            cardSecurityCode: '123'
           storePaymentMethod: DO_NOT_STORE
         ecommerceIndicator: AUTHENTICATED_ECOMMERCE
         customData:
@@ -8240,10 +8339,10 @@ components:
           displayName: MasterCard 4079
           cardBrand: MASTERCARD
           applePayVersion: EC_V1
-          data: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva
+          data: ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lJeE1qTTBOVFkzT0Rrd0lpd2libUZ0WlNJNklrcHZh
           signature: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva
           publicKeyHash: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva
-          ephemeralPublicKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva
+          ephemeralPublicKey: ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lJeE1qTTBOVFkzT0Rrd0lpd2libUZ0WlNJNklrcHZh
           applePayTransactionId: 22iWw1ySnzwiav6ToJ7KOhkY49
           walletIndicator: IN_BROWSER
         ecommerceIndicator: AUTHENTICATED_ECOMMERCE
@@ -8500,6 +8599,146 @@ components:
         customData:
           property1: string
           property2: string
+    threeDSecureBrowserChannelWithPaymentMethodId:
+      summary: 3D-Secure Browser channel, with Payment Method Id
+      value:
+        idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac2
+        amount:
+          amount: 16000
+          currency: CAD
+        browserIpAddress: 104.75.173.179
+        browserScreenHeight: 1080
+        browserScreenWidth: 1920
+        cardholderEmail: moneris@moneris.com
+        cardholderName: John Doe
+        cardholderPhoneNumber: '+18663197450'
+        threeDSecureDeviceChannel: BROWSER
+        threeDSecureMessageCategory: PAYMENT
+        billingAddress:
+          unitNumber: 123A
+          streetNumber: '3300'
+          streetName: Bloor
+          city: Toronto
+          province: 'ON'
+          postalCode: M8X 2X2
+          country: CA
+        paymentMethod:
+          paymentMethodSource: PAYMENT_METHOD_ID
+          paymentMethodId: pm0001J7HZZHPB20VCHWN8PEEPXZYH
+        threeDSecureRequestType: CARDHOLDER
+        threeDSecureNotificationUrl: https%3A%2F%2Fputsreq.com%2FnMhp2fzHDgfzSs4GiNTD
+        threeDSecureCompletionIndicator: SUCCESS
+        threeDSecureChallengeWindowSize: FULL_SCREEN
+        browserUserAgent: Mozilla/5.0 (Linux; {Android Version}; {Build Tag etc.})
+        browserJavaEnabled: true
+        browserJavascriptEnabled: true
+        browserLanguage: en
+    threeDSecureBrowserChannelWithCardPaymentMethod:
+      summary: 3D-Secure Browser channel, with Card Payment Method
+      value:
+        idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac2
+        amount:
+          amount: 16000
+          currency: CAD
+        browserIpAddress: 104.75.173.179
+        browserScreenHeight: 1080
+        browserScreenWidth: 1920
+        cardholderEmail: moneris@moneris.com
+        cardholderName: John Doe
+        cardholderPhoneNumber: '+18663197450'
+        threeDSecureDeviceChannel: BROWSER
+        threeDSecureMessageCategory: PAYMENT
+        billingAddress:
+          unitNumber: 123A
+          streetNumber: '3300'
+          streetName: Bloor
+          city: Toronto
+          province: 'ON'
+          postalCode: M8X 2X2
+          country: CA
+        paymentMethod:
+          paymentMethodSource: CARD
+          card:
+            cardNumber: '4365729291041247'
+            expiryMonth: 1
+            expiryYear: 2028
+            cardSecurityCode: '123'
+        threeDSecureRequestType: CARDHOLDER
+        threeDSecureNotificationUrl: https%3A%2F%2Fputsreq.com%2FnMhp2fzHDgfzSs4GiNTD
+        threeDSecureCompletionIndicator: SUCCESS
+        threeDSecureChallengeWindowSize: FULL_SCREEN
+        browserUserAgent: Mozilla/5.0 (Linux; {Android Version}; {Build Tag etc.})
+        browserJavaEnabled: true
+        browserJavascriptEnabled: true
+        browserLanguage: en
+    threeDSecureBrowserChannelWithTemporaryToken:
+      summary: 3D-Secure Browser channel, with Temporary Token
+      value:
+        idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac2
+        amount:
+          amount: 16000
+          currency: CAD
+        browserIpAddress: 104.75.173.179
+        browserScreenHeight: 1080
+        browserScreenWidth: 1920
+        cardholderEmail: moneris@moneris.com
+        cardholderName: John Doe
+        cardholderPhoneNumber: '+18663197450'
+        threeDSecureDeviceChannel: BROWSER
+        threeDSecureMessageCategory: PAYMENT
+        billingAddress:
+          unitNumber: 123A
+          streetNumber: '3300'
+          streetName: Bloor
+          city: Toronto
+          province: 'ON'
+          postalCode: M8X 2X2
+          country: CA
+        paymentMethod:
+          paymentMethodSource: TEMPORARY_TOKEN
+          temporaryToken: ot-y2mxjFqmqDisQQGB6hQ8xwQ2
+        threeDSecureRequestType: CARDHOLDER
+        threeDSecureNotificationUrl: https%3A%2F%2Fputsreq.com%2FnMhp2fzHDgfzSs4GiNTD
+        threeDSecureCompletionIndicator: SUCCESS
+        threeDSecureChallengeWindowSize: FULL_SCREEN
+        browserUserAgent: Mozilla/5.0 (Linux; {Android Version}; {Build Tag etc.})
+        browserJavaEnabled: true
+        browserJavascriptEnabled: true
+        browserLanguage: en
+    threeDSecureBrowserChannelWithPermanentToken:
+      summary: 3D-Secure Browser channel, with Permanent Token
+      value:
+        idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac2
+        amount:
+          amount: 16000
+          currency: CAD
+        browserIpAddress: 104.75.173.179
+        browserScreenHeight: 1080
+        browserScreenWidth: 1920
+        cardholderEmail: moneris@moneris.com
+        cardholderName: John Doe
+        cardholderPhoneNumber: '+18663197450'
+        threeDSecureDeviceChannel: BROWSER
+        threeDSecureMessageCategory: PAYMENT
+        billingAddress:
+          unitNumber: 123A
+          streetNumber: '3300'
+          streetName: Bloor
+          city: Toronto
+          province: 'ON'
+          postalCode: M8X 2X2
+          country: CA
+        paymentMethod:
+          paymentMethodSource: PERMANENT_TOKEN
+          permanentToken: ot-y2mxjFqmqDisQQGB6hQ8xwQ2
+        threeDSecureRequestType: CARDHOLDER
+        threeDSecureNotificationUrl: https%3A%2F%2Fputsreq.com%2FnMhp2fzHDgfzSs4GiNTD
+        threeDSecureCompletionIndicator: SUCCESS
+        threeDSecureChallengeWindowSize: FULL_SCREEN
+        browserUserAgent: Mozilla/5.0 (Linux; {Android Version}; {Build Tag etc.})
+        browserJavaEnabled: true
+        browserJavascriptEnabled: true
+        browserLanguage: en
   responses:
     invalidListbadRequest:
       description: Bad Request.

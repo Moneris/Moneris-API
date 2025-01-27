@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  version: 3.0.0
-  title: Moneris API (FR)
+  version: 2.0.0
+  title: API de Moneris
   description: Plateforme des API de Moneris
   termsOfService: https://www.moneris.com/fr-ca/juridiques/conditions-utilisation
   contact:
@@ -3060,6 +3060,15 @@ components:
       minLength: 3
       maxLength: 3
       example: '001'
+    authorizationCode:
+      type: string
+      maxLength: 8
+      nullable: true
+      pattern: ^[a-zA-Z0-9]*$
+      description: |
+        Contient une valeur générée par l’autorisateur pour les transactions financières. 
+        Il s’agit de l’identification de transaction de l’hôte d’autorisation.
+      example: '11223344'
     message:
       type: string
       description: |
@@ -3099,6 +3108,8 @@ components:
           $ref: '#/components/schemas/iso'
         responseCode:
           $ref: '#/components/schemas/responseCode'
+        authorizationCode:
+          $ref: '#/components/schemas/authorizationCode'
         message:
           $ref: '#/components/schemas/message'
         ecommerceIndicator:
@@ -6021,7 +6032,7 @@ components:
       enum:
         - STATIC
         - DYNAMIC
-        - OUT_OF_BAND
+        - OOB
         - DECOUPLED
         - null
       example: DYNAMIC

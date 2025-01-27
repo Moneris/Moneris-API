@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "version": "2.1.0",
+    "version": "2.0.0",
     "title": "Moneris API",
     "description": "Moneris API Platform",
     "termsOfService": "https://www.moneris.com/en/legal/terms-of-use",
@@ -419,6 +419,15 @@
                 },
                 "preAuthorizationWithPaymentMethodId": {
                   "$ref": "#/components/examples/preAuthorizationWithPaymentMethodId"
+                },
+                "preAuthorizationWithCardPaymentMethod": {
+                  "$ref": "#/components/examples/preAuthorizationWithCardPaymentMethod"
+                },
+                "preAuthorizationWithTemporaryToken": {
+                  "$ref": "#/components/examples/preAuthorizationWithTemporaryToken"
+                },
+                "preAuthorizationWithPermanentToken": {
+                  "$ref": "#/components/examples/preAuthorizationWithPermanentToken"
                 }
               }
             }
@@ -954,10 +963,7 @@
                   },
                   "credentialOnFileResponse": null,
                   "refundDetails": null,
-                  "customData": {
-                    "property1": "string",
-                    "property2": "string"
-                  }
+                  "customData": null
                 }
               }
             }
@@ -3264,6 +3270,20 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/authenticationRequest"
+              },
+              "examples": {
+                "threeDSecureBrowserChannelWithPaymentMethodId": {
+                  "$ref": "#/components/examples/threeDSecureBrowserChannelWithPaymentMethodId"
+                },
+                "threeDSecureBrowserChannelWithCardPaymentMethod": {
+                  "$ref": "#/components/examples/threeDSecureBrowserChannelWithCardPaymentMethod"
+                },
+                "threeDSecureBrowserChannelWithTemporaryToken": {
+                  "$ref": "#/components/examples/threeDSecureBrowserChannelWithTemporaryToken"
+                },
+                "threeDSecureBrowserChannelWithPermanentToken": {
+                  "$ref": "#/components/examples/threeDSecureBrowserChannelWithPermanentToken"
+                }
               }
             }
           }
@@ -3967,10 +3987,12 @@
       "ApiKeyAuth": {
         "type": "apiKey",
         "in": "header",
-        "name": "X-Api-Key"
+        "name": "X-Api-Key",
+        "description": "An API key is a token that a client provides when making API calls.\n\nAPI keys are supposed to be a secret that only the client and server know about.\n"
       },
       "OAuth2": {
         "type": "oauth2",
+        "description": "OAuth 2.0 is an authorization protocol that gives an API client limited access to user data on a web server.\n\nOAuth relies on authentication scenarios, that allows the resource owner (user) to share the protected content from the server, hosting the resource, without sharing their credentials. For that purpose, an OAuth 2.0 server issues access tokens that the client applications can use to access protected resources on behalf of the resource owner.\n\nMoneris recommends the use of OAuth 2.0 as it provides fine grained authorization levels.\n",
         "flows": {
           "clientCredentials": {
             "tokenUrl": "https://api.moneris.io/oauth2/token",
@@ -3999,12 +4021,13 @@
         "description": "Thirteen character long identification provided to merchants by Moneris. \n",
         "minLength": 13,
         "maxLength": 13,
-        "example": 123456789101
+        "example": "0123456789101"
       },
       "dateTime": {
         "type": "string",
         "format": "date-time",
-        "example": "2019-07-30T06:43:40.252Z"
+        "example": "2019-07-30T06:43:40.252Z",
+        "description": "Date & Time"
       },
       "orderId": {
         "type": "string",
@@ -4047,7 +4070,8 @@
         "format": "int32",
         "minimum": 0,
         "maximum": 999999999,
-        "example": 10000
+        "example": 10000,
+        "description": "Amount"
       },
       "currency": {
         "type": "string",
@@ -4155,7 +4179,7 @@
             "pattern": "^\\+[1-9]\\d{1,14}$",
             "minLength": 3,
             "maxLength": 16,
-            "example": 18663197450
+            "example": "+18663197450"
           },
           "email": {
             "nullable": true,
@@ -4168,7 +4192,7 @@
           }
         },
         "example": {
-          "phoneNumber": "1-866-319-7450",
+          "phoneNumber": "+18663197450",
           "email": "moneris@moneris.com"
         }
       },
@@ -4213,7 +4237,7 @@
             "description": "**BIN**: Bank Identification Number \n\nConsists of the first six to eight digits of the Primary Account Number (PAN) and identifies the relevant payment network and the specific payment issuing institution.\n",
             "minLength": 6,
             "maxLength": 8,
-            "example": 123456
+            "example": "123456"
           },
           "lastFour": {
             "nullable": true,
@@ -4221,7 +4245,7 @@
             "description": "Last 4 digits of the card.",
             "minLength": 4,
             "maxLength": 4,
-            "example": 1234
+            "example": "1234"
           },
           "expiryMonth": {
             "$ref": "#/components/schemas/expiryMonth"
@@ -4279,7 +4303,7 @@
         "description": "Used to link Primary Account Number (PAN) based transactions and transactions on associated payment tokens without using the PAN as the linking mechanism.\n",
         "minLength": 1,
         "maxLength": 29,
-        "example": 1.1112222333344446e+28
+        "example": "11112222333344445555666677778"
       },
       "storePaymentMethod": {
         "description": "Store this payment method created through this payment for future use. \n- DO_NOT_STORE: Payment method will not be stored.\n- CARDHOLDER_INITIATED: Payment method to be stored and can only re-used with cardholder's consent. Limited to store, pre-authorisation, and card validations.\"\n- MERCHANT_INITIATED: Payment method to be stored and can be reused without the cardholder's consent. For example, recurring payments.\n",
@@ -4386,7 +4410,7 @@
                 "description": "Street number",
                 "minLength": 1,
                 "maxLength": 19,
-                "example": 3300
+                "example": "3300"
               },
               "streetName": {
                 "nullable": true,
@@ -4432,10 +4456,10 @@
             },
             "example": {
               "unitNumber": "123A",
-              "streetNumber": 3300,
+              "streetNumber": "3300",
               "streetName": "Bloor Street West",
               "city": "Toronto",
-              "province": "Ontario",
+              "province": "ON",
               "postalCode": "M8X 2X2",
               "country": "CA"
             }
@@ -4478,14 +4502,22 @@
         "description": "Represents the Moneris response code for the equivalent International Organization for Standardization (ISO) response code.",
         "minLength": 2,
         "maxLength": 2,
-        "example": 0
+        "example": "00"
       },
       "responseCode": {
         "type": "string",
         "description": "\"Details Transaction Response Codes:\n- **< 50**: Transaction approved\n- **> 50**: Transaction declined\nNULL: Transaction not sent for authorization\nFor a complete list of definitions, refer to the Response Codes Table\"\n",
         "minLength": 3,
         "maxLength": 3,
-        "example": 1
+        "example": "001"
+      },
+      "authorizationCode": {
+        "type": "string",
+        "maxLength": 8,
+        "nullable": true,
+        "pattern": "^[a-zA-Z0-9]*$",
+        "description": "Contains a value generated by the authorizer for an approved financial transactions. \nThis operates as the authorizing host's transaction identification.\n",
+        "example": "11223344"
       },
       "message": {
         "type": "string",
@@ -4524,6 +4556,9 @@
           },
           "responseCode": {
             "$ref": "#/components/schemas/responseCode"
+          },
+          "authorizationCode": {
+            "$ref": "#/components/schemas/authorizationCode"
           },
           "message": {
             "$ref": "#/components/schemas/message"
@@ -5015,9 +5050,10 @@
             },
             "example": [
               {
-                "parameter": "address.postalCode",
-                "value": "MAP3J8",
-                "reasonCode": "invalid_format"
+                "parameterName": "address.postalCode",
+                "parameterValue": "MAP3J8",
+                "errorMessage": "address.Postal code does not match regular expression",
+                "reasonCode": "INVALID_FORMAT"
               }
             ]
           }
@@ -5135,7 +5171,7 @@
         "description": "Identifies the customer's credit or debit card number (Primary Account Number).",
         "minLength": 13,
         "maxLength": 19,
-        "example": 4444111122223333
+        "example": "4444111122223333"
       },
       "cardSecurityCode": {
         "maxLength": 4,
@@ -5198,7 +5234,7 @@
                 "description": "Street number",
                 "minLength": 1,
                 "maxLength": 19,
-                "example": 3300
+                "example": "3300"
               },
               "streetName": {
                 "nullable": true,
@@ -5244,10 +5280,10 @@
             },
             "example": {
               "unitNumber": "123A",
-              "streetNumber": 3300,
+              "streetNumber": "3300",
               "streetName": "Bloor Street West",
               "city": "Toronto",
-              "province": "Ontario",
+              "province": "ON",
               "postalCode": "M8X 2X2",
               "country": "CA"
             }
@@ -5336,7 +5372,7 @@
         "description": "Created when a temporary token is created and returned. This acts as a unique profile identifier, and is a required value for temporary token transactions.",
         "minLength": 25,
         "maxLength": 28,
-        "example": "ot-HCUeCFtXJfEZSSUqvUJk0"
+        "example": "ot-HCUeCFtXJfEZSSUqvUJkS0"
       },
       "paymentMethodTemporaryToken": {
         "title": "paymentMethodTemporaryToken",
@@ -5536,7 +5572,8 @@
               "data": {
                 "type": "string",
                 "description": "Encrypted payment data. Base64 encoded as a string.\n",
-                "format": "byte"
+                "format": "byte",
+                "example": "MTIzNDU2Njc4OQ=="
               },
               "signature": {
                 "type": "string",
@@ -5659,7 +5696,7 @@
                 "type": "string",
                 "minLength": 13,
                 "maxLength": 19,
-                "example": 4444111122223333
+                "example": "4444111122223333"
               },
               "expiryMonth": {
                 "$ref": "#/components/schemas/expiryMonth"
@@ -5857,7 +5894,7 @@
             "type": "string",
             "minLength": 13,
             "maxLength": 19,
-            "example": 4444111122223333
+            "example": "4444111122223333"
           },
           "expiryMonth": {
             "$ref": "#/components/schemas/expiryMonth"
@@ -5907,7 +5944,8 @@
                 "type": "string",
                 "nullable": true,
                 "format": "date-time",
-                "description": "Date and time at which the message expires. Integrators should reject any message that's expired.\n"
+                "description": "Date and time at which the message expires. Integrators should reject any message that's expired.\n",
+                "example": "2024-09-19T00:00:00Z"
               },
               "messageId": {
                 "type": "string",
@@ -6062,14 +6100,14 @@
         "type": "string",
         "description": "**CAVV**: Cardholder Authentication Verification Value\nProvided during a payment request to authenticate the card user.\n",
         "maxLength": 50,
-        "example": 109260000719349,
+        "example": "00000109260000719349",
         "nullable": true
       },
       "threeDSecureVersion": {
         "type": "string",
         "description": "Required when sending a 3-D Secure version 2.0+ transaction. If no value is provided, default to V1.",
         "maxLength": 10,
-        "example": 2.2
+        "example": "2.2"
       },
       "threeDSecureServerTransactionId": {
         "type": "string",
@@ -6669,6 +6707,7 @@
         "type": "object",
         "properties": {
           "data": {
+            "description": "List of refunds.",
             "type": "array",
             "items": {
               "type": "object",
@@ -6890,6 +6929,7 @@
         "type": "object",
         "properties": {
           "data": {
+            "description": "List of validations.",
             "type": "array",
             "items": {
               "type": "object",
@@ -7033,7 +7073,7 @@
                 "description": "Street number",
                 "minLength": 1,
                 "maxLength": 19,
-                "example": 3300
+                "example": "3300"
               },
               "streetName": {
                 "nullable": true,
@@ -7079,10 +7119,10 @@
             },
             "example": {
               "unitNumber": "123A",
-              "streetNumber": 3300,
+              "streetNumber": "3300",
               "streetName": "Bloor Street West",
               "city": "Toronto",
-              "province": "Ontario",
+              "province": "ON",
               "postalCode": "M8X 2X2",
               "country": "CA"
             }
@@ -7106,7 +7146,7 @@
                 "description": "Street number",
                 "minLength": 1,
                 "maxLength": 19,
-                "example": 3300
+                "example": "3300"
               },
               "streetName": {
                 "nullable": true,
@@ -7152,10 +7192,10 @@
             },
             "example": {
               "unitNumber": "123A",
-              "streetNumber": 3300,
+              "streetNumber": "3300",
               "streetName": "Bloor Street West",
               "city": "Toronto",
-              "province": "Ontario",
+              "province": "ON",
               "postalCode": "M8X 2X2",
               "country": "CA"
             }
@@ -7167,7 +7207,7 @@
             "pattern": "^\\+[1-9]\\d{1,14}$",
             "minLength": 3,
             "maxLength": 16,
-            "example": 18663197450
+            "example": "+18663197450"
           },
           "email": {
             "nullable": true,
@@ -7192,6 +7232,7 @@
         "title": "customerResponseList",
         "properties": {
           "data": {
+            "description": "List of customers.",
             "type": "array",
             "items": {
               "type": "object",
@@ -7254,7 +7295,7 @@
                 "description": "Street number",
                 "minLength": 1,
                 "maxLength": 19,
-                "example": 3300
+                "example": "3300"
               },
               "streetName": {
                 "nullable": true,
@@ -7300,10 +7341,10 @@
             },
             "example": {
               "unitNumber": "123A",
-              "streetNumber": 3300,
+              "streetNumber": "3300",
               "streetName": "Bloor Street West",
               "city": "Toronto",
-              "province": "Ontario",
+              "province": "ON",
               "postalCode": "M8X 2X2",
               "country": "CA"
             }
@@ -7327,7 +7368,7 @@
                 "description": "Street number",
                 "minLength": 1,
                 "maxLength": 19,
-                "example": 3300
+                "example": "3300"
               },
               "streetName": {
                 "nullable": true,
@@ -7373,10 +7414,10 @@
             },
             "example": {
               "unitNumber": "123A",
-              "streetNumber": 3300,
+              "streetNumber": "3300",
               "streetName": "Bloor Street West",
               "city": "Toronto",
-              "province": "Ontario",
+              "province": "ON",
               "postalCode": "M8X 2X2",
               "country": "CA"
             }
@@ -7388,7 +7429,7 @@
             "pattern": "^\\+[1-9]\\d{1,14}$",
             "minLength": 3,
             "maxLength": 16,
-            "example": 18663197450
+            "example": "+18663197450"
           },
           "email": {
             "nullable": true,
@@ -7443,7 +7484,7 @@
                 "description": "Street number",
                 "minLength": 1,
                 "maxLength": 19,
-                "example": 3300
+                "example": "3300"
               },
               "streetName": {
                 "nullable": true,
@@ -7489,10 +7530,10 @@
             },
             "example": {
               "unitNumber": "123A",
-              "streetNumber": 3300,
+              "streetNumber": "3300",
               "streetName": "Bloor Street West",
               "city": "Toronto",
-              "province": "Ontario",
+              "province": "ON",
               "postalCode": "M8X 2X2",
               "country": "CA"
             }
@@ -7516,7 +7557,7 @@
                 "description": "Street number",
                 "minLength": 1,
                 "maxLength": 19,
-                "example": 3300
+                "example": "3300"
               },
               "streetName": {
                 "nullable": true,
@@ -7562,10 +7603,10 @@
             },
             "example": {
               "unitNumber": "123A",
-              "streetNumber": 3300,
+              "streetNumber": "3300",
               "streetName": "Bloor Street West",
               "city": "Toronto",
-              "province": "Ontario",
+              "province": "ON",
               "postalCode": "M8X 2X2",
               "country": "CA"
             }
@@ -7577,7 +7618,7 @@
             "pattern": "^\\+[1-9]\\d{1,14}$",
             "minLength": 3,
             "maxLength": 16,
-            "example": 18663197450
+            "example": "+18663197450"
           },
           "email": {
             "nullable": true,
@@ -7607,14 +7648,14 @@
         "pattern": "^\\+[1-9]\\d{1,14}$",
         "minLength": 3,
         "maxLength": 16,
-        "example": 18663197450
+        "example": "+18663197450"
       },
       "streetNumber": {
         "type": "string",
         "description": "Street number",
         "minLength": 1,
         "maxLength": 19,
-        "example": 3300
+        "example": "3300"
       },
       "streetName": {
         "type": "string",
@@ -7767,7 +7808,7 @@
         "type": "string",
         "description": "Data that documents and supports a specific authentication process. In the current version of the specification this data element is not defined in detail, however the intention is that for each 3DS Requestor Authentication Method, this field carry data that the ACS can use to verify the authentication process. In future versions of the specification, these details are expected to be included.",
         "maxLength": 2048,
-        "example": 12345678,
+        "example": "12345678",
         "nullable": true
       },
       "threeDSecurePriorAuthenticationMethod": {
@@ -7794,7 +7835,7 @@
         "type": "string",
         "description": "This data element provides additional information to the ACS to determine the best approach for handing a request.",
         "maxLength": 36,
-        "example": 12345678,
+        "example": "12345678",
         "nullable": true
       },
       "threeDSecurePriorAuthenticationInformation": {
@@ -7939,7 +7980,7 @@
                 "description": "Street number",
                 "minLength": 1,
                 "maxLength": 19,
-                "example": 3300
+                "example": "3300"
               },
               "streetName": {
                 "nullable": true,
@@ -7985,10 +8026,10 @@
             },
             "example": {
               "unitNumber": "123A",
-              "streetNumber": 3300,
+              "streetNumber": "3300",
               "streetName": "Bloor Street West",
               "city": "Toronto",
-              "province": "Ontario",
+              "province": "ON",
               "postalCode": "M8X 2X2",
               "country": "CA"
             }
@@ -8027,10 +8068,10 @@
             },
             "example": {
               "unitNumber": "123A",
-              "streetNumber": 3300,
+              "streetNumber": "3300",
               "streetName": "Bloor Street West",
               "city": "Toronto",
-              "province": "Ontario",
+              "province": "ON",
               "postalCode": "M8X 2X2",
               "country": "CA"
             },
@@ -8437,7 +8478,7 @@
         "description": "Kount Transaction ID",
         "type": "string",
         "maxLength": 12,
-        "example": 123456789012
+        "example": "123456789012"
       },
       "kountTriggeredCounter": {
         "type": "object",
@@ -8633,7 +8674,7 @@
             "description": "Error Code displayed in Risk Inquiry Service response",
             "type": "string",
             "maxLength": 4,
-            "example": 1080,
+            "example": "1080",
             "nullable": true
           },
           "kountFingerprint": {
@@ -8778,7 +8819,7 @@
             "description": "Reason code associated with rule action",
             "type": "string",
             "maxLength": 16,
-            "example": "reasonCode",
+            "example": "Invalid Data",
             "nullable": true
           },
           "region": {
@@ -8817,10 +8858,10 @@
             "example": "DEFAULT"
           },
           "timezone": {
-            "description": "The time zone of the device; In the ISO format of +|– hh:mm",
+            "description": "The time zone of the device; In the ISO format of +|–hh:mm",
             "type": "string",
             "maxLength": 6,
-            "example": "- 04:00",
+            "example": "-04:00",
             "nullable": true
           },
           "deviceUserAgent": {
@@ -8848,7 +8889,7 @@
             "description": "Specifies version of Kount system being used",
             "type": "string",
             "maxLength": 4,
-            "example": 1,
+            "example": "1.0",
             "nullable": true
           },
           "deviceVoiceActivated": {
@@ -8868,7 +8909,7 @@
             "description": "Warning code displayed in the Risk Inquiry Service response",
             "type": "string",
             "maxLength": 4,
-            "example": 180,
+            "example": "180",
             "nullable": true
           },
           "warningDetail": {
@@ -8952,7 +8993,7 @@
         "type": "string",
         "minLength": 6,
         "maxLength": 6,
-        "example": 760000
+        "example": "760000"
       },
       "kountApiKey": {
         "description": "The API key for the associated with the Kount Merchant ID",
@@ -9010,7 +9051,7 @@
         "description": "Payment token submitted by merchant for order (credit card, payer ID, routing/transit, MICR, and account number).\n\nIf paymentType is set to NONE then the paymentToken value should be left empty (NULL).\n\nIf the credit card information is not available and Moneris Tokenization is used to process payment set paymentType = CARD and send the token in the paymentToken field.\n",
         "type": "string",
         "maxLength": 32,
-        "example": 4242424242424242
+        "example": "4242424242424242"
       },
       "paymentType": {
         "description": "Payment Type submitted by merchant. \n\nIf the credit card information is not available and Moneris Tokenization is used to process payment set paymentType = CARD and send the token in the paymentToken field.\n",
@@ -9060,7 +9101,7 @@
             "description": "Last 4 digits of the card.",
             "minLength": 4,
             "maxLength": 4,
-            "example": 1234
+            "example": "1234"
           },
           "paymentToken": {
             "$ref": "#/components/schemas/paymentToken"
@@ -9161,7 +9202,7 @@
         "description": "Automatic Number Identification (ANI) submitted with order If the ANI cannot be determined, merchant must pass 0123456789 as the ANID NOTE: This field is only valid for phone-to-web requests where customer service agents navigate to a separate order entry page that does not collect iframe data Risk Inquiry Service submissions",
         "type": "string",
         "maxLength": 32,
-        "example": 123456789,
+        "example": "0123456789",
         "nullable": true
       },
       "gender": {
@@ -9262,7 +9303,7 @@
                 "description": "Street number",
                 "minLength": 1,
                 "maxLength": 19,
-                "example": 3300
+                "example": "3300"
               },
               "streetName": {
                 "nullable": true,
@@ -9308,10 +9349,10 @@
             },
             "example": {
               "unitNumber": "123A",
-              "streetNumber": 3300,
+              "streetNumber": "3300",
               "streetName": "Bloor Street West",
               "city": "Toronto",
-              "province": "Ontario",
+              "province": "ON",
               "postalCode": "M8X 2X2",
               "country": "CA"
             }
@@ -9336,7 +9377,7 @@
                 "description": "Street number",
                 "minLength": 1,
                 "maxLength": 19,
-                "example": 3300
+                "example": "3300"
               },
               "streetName": {
                 "nullable": true,
@@ -9382,21 +9423,23 @@
             },
             "example": {
               "unitNumber": "123A",
-              "streetNumber": 3300,
+              "streetNumber": "3300",
               "streetName": "Bloor Street West",
               "city": "Toronto",
-              "province": "Ontario",
+              "province": "ON",
               "postalCode": "M8X 2X2",
               "country": "CA"
             }
           },
           "dateOfBirth": {
+            "description": "Date of Birth.",
             "nullable": true,
             "type": "string",
             "format": "date",
             "example": "2019-07-30"
           },
           "timestamp": {
+            "description": "This is timestamp associated with the creation of a user in Kount service.",
             "nullable": true,
             "type": "string",
             "format": "date-time",
@@ -9493,14 +9536,14 @@
                     "description": "Last 4 digits of the card.",
                     "minLength": 4,
                     "maxLength": 4,
-                    "example": 1234
+                    "example": "1234"
                   },
                   "paymentToken": {
                     "nullable": true,
                     "description": "Payment token submitted by merchant for order (credit card, payer ID, routing/transit, MICR, and account number).\n\nIf paymentType is set to NONE then the paymentToken value should be left empty (NULL).\n\nIf the credit card information is not available and Moneris Tokenization is used to process payment set paymentType = CARD and send the token in the paymentToken field.\n",
                     "type": "string",
                     "maxLength": 32,
-                    "example": 4242424242424242
+                    "example": "4242424242424242"
                   },
                   "paymentType": {
                     "$ref": "#/components/schemas/paymentType"
@@ -9557,7 +9600,7 @@
       "merchantId": {
         "in": "header",
         "name": "X-Merchant-Id",
-        "example": 123456789101,
+        "example": "0123456789101",
         "description": "Thirteen character identification code. \n\nNote: This code is provided by Moneris and is required to identify the Merchant executing the transaction.\"\n",
         "required": true,
         "schema": {
@@ -9693,7 +9736,8 @@
         "description": "Optional.\n\nIndicates that the resource URI will be decommissioned, and put out of service at the specified point in the future. \nMore details are available at [RFC 8594](https://www.rfc-editor.org/rfc/rfc8594.html)\n",
         "schema": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "example": "2025-07-30T06:43:40.252Z"
         }
       },
       "rateLimitCount": {
@@ -9789,10 +9833,10 @@
           "paymentMethod": {
             "paymentMethodSource": "CARD",
             "card": {
-              "cardNumber": "4444111122223333",
+              "cardNumber": "4242424242424242",
               "expiryMonth": 1,
               "expiryYear": 2028,
-              "cardSecurityCode": 123
+              "cardSecurityCode": "123"
             },
             "storePaymentMethod": "DO_NOT_STORE"
           },
@@ -9849,8 +9893,7 @@
             "permanentToken": "ot-y2mxjFqmqDisQQGB6hQ8xwQ2",
             "credentialOnFileInformation": {
               "paymentIndicator": "UNSCHEDULED_CREDENTIAL_ON_FILE",
-              "paymentInformation": "FIRST",
-              "issuerId": null
+              "paymentInformation": "FIRST"
             }
           },
           "ecommerceIndicator": "AUTHENTICATED_ECOMMERCE",
@@ -9880,10 +9923,10 @@
             "displayName": "MasterCard 4079",
             "cardBrand": "MASTERCARD",
             "applePayVersion": "EC_V1",
-            "data": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva",
+            "data": "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lJeE1qTTBOVFkzT0Rrd0lpd2libUZ0WlNJNklrcHZh",
             "signature": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva",
             "publicKeyHash": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva",
-            "ephemeralPublicKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva",
+            "ephemeralPublicKey": "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lJeE1qTTBOVFkzT0Rrd0lpd2libUZ0WlNJNklrcHZh",
             "applePayTransactionId": "22iWw1ySnzwiav6ToJ7KOhkY49",
             "walletIndicator": "IN_BROWSER"
           },
@@ -10008,19 +10051,89 @@
             "amount": 16000,
             "currency": "CAD"
           },
-          "amountDetails": null,
           "customerId": "ci0105ARZ3NDEKTSV4RRFFQ69G5FAV",
           "paymentMethod": {
             "paymentMethodSource": "PAYMENT_METHOD_ID",
-            "paymentMethodId": "pm0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+            "paymentMethodId": "pm0105ARZ3NDEKTSV4RRFFQ69G5FAV"
+          },
+          "ecommerceIndicator": "AUTHENTICATED_ECOMMERCE",
+          "automaticCapture": false,
+          "dynamicDescriptor": "moneris",
+          "ipv4": "192.0.2.146",
+          "ipv6": "2345:0425:2CA1:0000:0000:0567:5673:23b5"
+        }
+      },
+      "preAuthorizationWithCardPaymentMethod": {
+        "summary": "Pre-Authorization With Card Payment Method",
+        "value": {
+          "idempotencyKey": "5d8f812e-9969-4885-85bb-d03948eccac1",
+          "orderId": "1q2w3e4r5t6t78",
+          "invoiceNumber": "1a2s3d45v6",
+          "amount": {
+            "amount": 16000,
+            "currency": "CAD"
+          },
+          "customerId": "ci0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentMethod": {
+            "paymentMethodSource": "CARD",
+            "card": {
+              "cardNumber": "4242424242424242",
+              "expiryMonth": 1,
+              "expiryYear": 2028,
+              "cardSecurityCode": "123"
+            },
             "storePaymentMethod": "DO_NOT_STORE"
           },
           "ecommerceIndicator": "AUTHENTICATED_ECOMMERCE",
           "automaticCapture": false,
-          "customData": {
-            "property1": "string",
-            "property2": "string"
+          "dynamicDescriptor": "moneris",
+          "ipv4": "192.0.2.146",
+          "ipv6": "2345:0425:2CA1:0000:0000:0567:5673:23b5"
+        }
+      },
+      "preAuthorizationWithTemporaryToken": {
+        "summary": "Pre-Authorization With Temporary Payment Method",
+        "value": {
+          "idempotencyKey": "5d8f812e-9969-4885-85bb-d03948eccac1",
+          "orderId": "1q2w3e4r5t6t78",
+          "invoiceNumber": "1a2s3d45v6",
+          "amount": {
+            "amount": 16000,
+            "currency": "CAD"
           },
+          "customerId": "ci0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentMethod": {
+            "paymentMethodSource": "TEMPORARY_TOKEN",
+            "temporaryToken": "ot-y2mxjFqmqDisQQGB6hQ8xwQ2"
+          },
+          "ecommerceIndicator": "AUTHENTICATED_ECOMMERCE",
+          "automaticCapture": false,
+          "dynamicDescriptor": "moneris",
+          "ipv4": "192.0.2.146",
+          "ipv6": "2345:0425:2CA1:0000:0000:0567:5673:23b5"
+        }
+      },
+      "preAuthorizationWithPermanentToken": {
+        "summary": "Pre-Authorization With Permanent Payment Method",
+        "value": {
+          "idempotencyKey": "5d8f812e-9969-4885-85bb-d03948eccac1",
+          "orderId": "1q2w3e4r5t6t78",
+          "invoiceNumber": "1a2s3d45v6",
+          "amount": {
+            "amount": 16000,
+            "currency": "CAD"
+          },
+          "customerId": "ci0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentMethod": {
+            "paymentMethodSource": "PERMANENT_TOKEN",
+            "permanentToken": "ot-y2mxjFqmqDisQQGB6hQ8xwQ2",
+            "credentialOnFileInformation": {
+              "paymentIndicator": "UNSCHEDULED_CREDENTIAL_ON_FILE",
+              "paymentInformation": "FIRST"
+            }
+          },
+          "ecommerceIndicator": "AUTHENTICATED_ECOMMERCE",
+          "automaticCapture": false,
           "dynamicDescriptor": "moneris",
           "ipv4": "192.0.2.146",
           "ipv6": "2345:0425:2CA1:0000:0000:0567:5673:23b5"
@@ -10094,10 +10207,7 @@
           },
           "credentialOnFileResponse": null,
           "refundDetails": null,
-          "customData": {
-            "property1": "string",
-            "property2": "string"
-          }
+          "customData": null
         }
       },
       "PreauthorizationCompletedResponse": {
@@ -10472,7 +10582,7 @@
             "cardNumber": "4444111122223333",
             "expiryMonth": 1,
             "expiryYear": 2028,
-            "cardSecurityCode": 123
+            "cardSecurityCode": "123"
           },
           "customData": {
             "property1": "string",
@@ -10512,10 +10622,10 @@
           "displayName": "MasterCard 4079",
           "cardBrand": "MASTERCARD",
           "applePayVersion": "EC_V1",
-          "data": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva",
+          "data": "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lJeE1qTTBOVFkzT0Rrd0lpd2libUZ0WlNJNklrcHZh",
           "signature": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva",
           "publicKeyHash": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva",
-          "ephemeralPublicKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva",
+          "ephemeralPublicKey": "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lJeE1qTTBOVFkzT0Rrd0lpd2libUZ0WlNJNklrcHZh",
           "applePayTransactionId": "22iWw1ySnzwiav6ToJ7KOhkY49",
           "walletIndicator": "IN_BROWSER",
           "customData": {
@@ -10607,7 +10717,7 @@
             "cardNumber": "4444111122223333",
             "expiryMonth": 1,
             "expiryYear": 2028,
-            "cardSecurityCode": 123
+            "cardSecurityCode": "123"
           },
           "customData": {
             "property1": "string",
@@ -10845,7 +10955,7 @@
               "cardNumber": "4444111122223333",
               "expiryMonth": 1,
               "expiryYear": 2028,
-              "cardSecurityCode": 123
+              "cardSecurityCode": "123"
             },
             "storePaymentMethod": "DO_NOT_STORE"
           },
@@ -10914,10 +11024,10 @@
             "displayName": "MasterCard 4079",
             "cardBrand": "MASTERCARD",
             "applePayVersion": "EC_V1",
-            "data": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva",
+            "data": "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lJeE1qTTBOVFkzT0Rrd0lpd2libUZ0WlNJNklrcHZh",
             "signature": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva",
             "publicKeyHash": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva",
-            "ephemeralPublicKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikpva",
+            "ephemeralPublicKey": "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lJeE1qTTBOVFkzT0Rrd0lpd2libUZ0WlNJNklrcHZh",
             "applePayTransactionId": "22iWw1ySnzwiav6ToJ7KOhkY49",
             "walletIndicator": "IN_BROWSER"
           },
@@ -11227,6 +11337,167 @@
             "property1": "string",
             "property2": "string"
           }
+        }
+      },
+      "threeDSecureBrowserChannelWithPaymentMethodId": {
+        "summary": "3D-Secure Browser channel, with Payment Method Id",
+        "value": {
+          "idempotencyKey": "5d8f812e-9969-4885-85bb-d03948eccac2",
+          "amount": {
+            "amount": 16000,
+            "currency": "CAD"
+          },
+          "browserIpAddress": "104.75.173.179",
+          "browserScreenHeight": 1080,
+          "browserScreenWidth": 1920,
+          "cardholderEmail": "moneris@moneris.com",
+          "cardholderName": "John Doe",
+          "cardholderPhoneNumber": "+18663197450",
+          "threeDSecureDeviceChannel": "BROWSER",
+          "threeDSecureMessageCategory": "PAYMENT",
+          "billingAddress": {
+            "unitNumber": "123A",
+            "streetNumber": "3300",
+            "streetName": "Bloor",
+            "city": "Toronto",
+            "province": "ON",
+            "postalCode": "M8X 2X2",
+            "country": "CA"
+          },
+          "paymentMethod": {
+            "paymentMethodSource": "PAYMENT_METHOD_ID",
+            "paymentMethodId": "pm0001J7HZZHPB20VCHWN8PEEPXZYH"
+          },
+          "threeDSecureRequestType": "CARDHOLDER",
+          "threeDSecureNotificationUrl": "https%3A%2F%2Fputsreq.com%2FnMhp2fzHDgfzSs4GiNTD",
+          "threeDSecureCompletionIndicator": "SUCCESS",
+          "threeDSecureChallengeWindowSize": "FULL_SCREEN",
+          "browserUserAgent": "Mozilla/5.0 (Linux; {Android Version}; {Build Tag etc.})",
+          "browserJavaEnabled": true,
+          "browserJavascriptEnabled": true,
+          "browserLanguage": "en"
+        }
+      },
+      "threeDSecureBrowserChannelWithCardPaymentMethod": {
+        "summary": "3D-Secure Browser channel, with Card Payment Method",
+        "value": {
+          "idempotencyKey": "5d8f812e-9969-4885-85bb-d03948eccac2",
+          "amount": {
+            "amount": 16000,
+            "currency": "CAD"
+          },
+          "browserIpAddress": "104.75.173.179",
+          "browserScreenHeight": 1080,
+          "browserScreenWidth": 1920,
+          "cardholderEmail": "moneris@moneris.com",
+          "cardholderName": "John Doe",
+          "cardholderPhoneNumber": "+18663197450",
+          "threeDSecureDeviceChannel": "BROWSER",
+          "threeDSecureMessageCategory": "PAYMENT",
+          "billingAddress": {
+            "unitNumber": "123A",
+            "streetNumber": "3300",
+            "streetName": "Bloor",
+            "city": "Toronto",
+            "province": "ON",
+            "postalCode": "M8X 2X2",
+            "country": "CA"
+          },
+          "paymentMethod": {
+            "paymentMethodSource": "CARD",
+            "card": {
+              "cardNumber": "4365729291041247",
+              "expiryMonth": 1,
+              "expiryYear": 2028,
+              "cardSecurityCode": "123"
+            }
+          },
+          "threeDSecureRequestType": "CARDHOLDER",
+          "threeDSecureNotificationUrl": "https%3A%2F%2Fputsreq.com%2FnMhp2fzHDgfzSs4GiNTD",
+          "threeDSecureCompletionIndicator": "SUCCESS",
+          "threeDSecureChallengeWindowSize": "FULL_SCREEN",
+          "browserUserAgent": "Mozilla/5.0 (Linux; {Android Version}; {Build Tag etc.})",
+          "browserJavaEnabled": true,
+          "browserJavascriptEnabled": true,
+          "browserLanguage": "en"
+        }
+      },
+      "threeDSecureBrowserChannelWithTemporaryToken": {
+        "summary": "3D-Secure Browser channel, with Temporary Token",
+        "value": {
+          "idempotencyKey": "5d8f812e-9969-4885-85bb-d03948eccac2",
+          "amount": {
+            "amount": 16000,
+            "currency": "CAD"
+          },
+          "browserIpAddress": "104.75.173.179",
+          "browserScreenHeight": 1080,
+          "browserScreenWidth": 1920,
+          "cardholderEmail": "moneris@moneris.com",
+          "cardholderName": "John Doe",
+          "cardholderPhoneNumber": "+18663197450",
+          "threeDSecureDeviceChannel": "BROWSER",
+          "threeDSecureMessageCategory": "PAYMENT",
+          "billingAddress": {
+            "unitNumber": "123A",
+            "streetNumber": "3300",
+            "streetName": "Bloor",
+            "city": "Toronto",
+            "province": "ON",
+            "postalCode": "M8X 2X2",
+            "country": "CA"
+          },
+          "paymentMethod": {
+            "paymentMethodSource": "TEMPORARY_TOKEN",
+            "temporaryToken": "ot-y2mxjFqmqDisQQGB6hQ8xwQ2"
+          },
+          "threeDSecureRequestType": "CARDHOLDER",
+          "threeDSecureNotificationUrl": "https%3A%2F%2Fputsreq.com%2FnMhp2fzHDgfzSs4GiNTD",
+          "threeDSecureCompletionIndicator": "SUCCESS",
+          "threeDSecureChallengeWindowSize": "FULL_SCREEN",
+          "browserUserAgent": "Mozilla/5.0 (Linux; {Android Version}; {Build Tag etc.})",
+          "browserJavaEnabled": true,
+          "browserJavascriptEnabled": true,
+          "browserLanguage": "en"
+        }
+      },
+      "threeDSecureBrowserChannelWithPermanentToken": {
+        "summary": "3D-Secure Browser channel, with Permanent Token",
+        "value": {
+          "idempotencyKey": "5d8f812e-9969-4885-85bb-d03948eccac2",
+          "amount": {
+            "amount": 16000,
+            "currency": "CAD"
+          },
+          "browserIpAddress": "104.75.173.179",
+          "browserScreenHeight": 1080,
+          "browserScreenWidth": 1920,
+          "cardholderEmail": "moneris@moneris.com",
+          "cardholderName": "John Doe",
+          "cardholderPhoneNumber": "+18663197450",
+          "threeDSecureDeviceChannel": "BROWSER",
+          "threeDSecureMessageCategory": "PAYMENT",
+          "billingAddress": {
+            "unitNumber": "123A",
+            "streetNumber": "3300",
+            "streetName": "Bloor",
+            "city": "Toronto",
+            "province": "ON",
+            "postalCode": "M8X 2X2",
+            "country": "CA"
+          },
+          "paymentMethod": {
+            "paymentMethodSource": "PERMANENT_TOKEN",
+            "permanentToken": "ot-y2mxjFqmqDisQQGB6hQ8xwQ2"
+          },
+          "threeDSecureRequestType": "CARDHOLDER",
+          "threeDSecureNotificationUrl": "https%3A%2F%2Fputsreq.com%2FnMhp2fzHDgfzSs4GiNTD",
+          "threeDSecureCompletionIndicator": "SUCCESS",
+          "threeDSecureChallengeWindowSize": "FULL_SCREEN",
+          "browserUserAgent": "Mozilla/5.0 (Linux; {Android Version}; {Build Tag etc.})",
+          "browserJavaEnabled": true,
+          "browserJavascriptEnabled": true,
+          "browserLanguage": "en"
         }
       }
     },
