@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 2.0.0
+  version: 2.0.1
   title: Moneris API
   description: |
     Moneris API Platform
@@ -2014,6 +2014,13 @@ components:
           minLength: 30
           maxLength: 30
           example: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        customerReference:
+          nullable: true
+          type: string
+          description: Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.
+          example: 911677-212
+          minLength: 1
+          maxLength: 50
         paymentMethod:
           $ref: '#/components/schemas/paymentMethodResponse'
         paymentStatus:
@@ -3056,6 +3063,13 @@ components:
           minLength: 30
           maxLength: 30
           example: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        customerReference:
+          nullable: true
+          type: string
+          description: Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.
+          example: 911677-212
+          minLength: 1
+          maxLength: 50
         paymentMethod:
           $ref: '#/components/schemas/storePaymentMethodRequest'
         ecommerceIndicator:
@@ -3363,6 +3377,13 @@ components:
           minLength: 30
           maxLength: 30
           example: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        customerReference:
+          nullable: true
+          type: string
+          description: Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.
+          example: 911677-212
+          minLength: 1
+          maxLength: 50
         refundStatus:
           $ref: '#/components/schemas/refundStatus'
         transactionDetails:
@@ -3431,6 +3452,13 @@ components:
           minLength: 30
           maxLength: 30
           example: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        customerReference:
+          nullable: true
+          type: string
+          description: Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.
+          example: 911677-212
+          minLength: 1
+          maxLength: 50
         customData:
           $ref: '#/components/schemas/customData'
         dynamicDescriptor:
@@ -3529,6 +3557,13 @@ components:
           minLength: 30
           maxLength: 30
           example: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        customerReference:
+          nullable: true
+          type: string
+          description: Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.
+          example: 911677-212
+          minLength: 1
+          maxLength: 50
         customData:
           $ref: '#/components/schemas/customData'
       required:
@@ -3577,6 +3612,13 @@ components:
           minLength: 30
           maxLength: 30
           example: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        customerReference:
+          nullable: true
+          type: string
+          description: Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.
+          example: 911677-212
+          minLength: 1
+          maxLength: 50
         dynamicDescriptor:
           $ref: '#/components/schemas/dynamicDescriptor'
         ecommerceIndicator:
@@ -5420,6 +5462,13 @@ components:
           minLength: 30
           maxLength: 30
           example: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        customerReference:
+          nullable: true
+          type: string
+          description: Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.
+          example: 911677-212
+          minLength: 1
+          maxLength: 50
         lastFour:
           nullable: true
           type: string

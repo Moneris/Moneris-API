@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "version": "2.0.0",
+    "version": "2.0.1",
     "title": "Moneris API",
     "description": "Moneris API Platform\n\n\n[<img src=\"https://run.pstmn.io/button.svg\" alt=\"Run In Postman\" style=\"width: 128px; height:32px;\">](https://god.gw.postman.com/run-collection/25575461-f04750a0-88e9-4c83-8b58-a3aff15eeea8?action=collection%2Ffork&collection-url=entityId%3D25575461-f04750a0-88e9-4c83-8b58-a3aff15eeea8%26entityType%3Dcollection%26workspaceId%3D5d2a9a0f-57a7-441c-b2af-fe6315e80a08)\n",
     "termsOfService": "https://www.moneris.com/en/legal/terms-of-use",
@@ -3017,6 +3017,14 @@
             "maxLength": 30,
             "example": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV"
           },
+          "customerReference": {
+            "nullable": true,
+            "type": "string",
+            "description": "Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.",
+            "example": "911677-212",
+            "minLength": 1,
+            "maxLength": 50
+          },
           "paymentMethod": {
             "$ref": "#/components/schemas/paymentMethodResponse"
           },
@@ -4380,6 +4388,14 @@
             "maxLength": 30,
             "example": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV"
           },
+          "customerReference": {
+            "nullable": true,
+            "type": "string",
+            "description": "Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.",
+            "example": "911677-212",
+            "minLength": 1,
+            "maxLength": 50
+          },
           "paymentMethod": {
             "$ref": "#/components/schemas/storePaymentMethodRequest"
           },
@@ -4838,6 +4854,14 @@
             "maxLength": 30,
             "example": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV"
           },
+          "customerReference": {
+            "nullable": true,
+            "type": "string",
+            "description": "Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.",
+            "example": "911677-212",
+            "minLength": 1,
+            "maxLength": 50
+          },
           "refundStatus": {
             "$ref": "#/components/schemas/refundStatus"
           },
@@ -4922,6 +4946,14 @@
             "minLength": 30,
             "maxLength": 30,
             "example": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV"
+          },
+          "customerReference": {
+            "nullable": true,
+            "type": "string",
+            "description": "Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.",
+            "example": "911677-212",
+            "minLength": 1,
+            "maxLength": 50
           },
           "customData": {
             "$ref": "#/components/schemas/customData"
@@ -5072,6 +5104,14 @@
             "maxLength": 30,
             "example": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV"
           },
+          "customerReference": {
+            "nullable": true,
+            "type": "string",
+            "description": "Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.",
+            "example": "911677-212",
+            "minLength": 1,
+            "maxLength": 50
+          },
           "customData": {
             "$ref": "#/components/schemas/customData"
           }
@@ -5136,6 +5176,14 @@
             "minLength": 30,
             "maxLength": 30,
             "example": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV"
+          },
+          "customerReference": {
+            "nullable": true,
+            "type": "string",
+            "description": "Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.",
+            "example": "911677-212",
+            "minLength": 1,
+            "maxLength": 50
           },
           "dynamicDescriptor": {
             "$ref": "#/components/schemas/dynamicDescriptor"
@@ -7263,6 +7311,14 @@
             "minLength": 30,
             "maxLength": 30,
             "example": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV"
+          },
+          "customerReference": {
+            "nullable": true,
+            "type": "string",
+            "description": "Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.",
+            "example": "911677-212",
+            "minLength": 1,
+            "maxLength": 50
           },
           "lastFour": {
             "nullable": true,
