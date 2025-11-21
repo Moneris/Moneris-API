@@ -1,9 +1,8 @@
 openapi: 3.0.3
 info:
-  version: 2.4.0
+  version: 2.6.0
   title: Moneris API
-  description: |
-    Moneris API Platform
+  description: "Moneris API Platform\r\n\r\n\r\n[<img src=\"https://run.pstmn.io/button.svg\" alt=\"Run In Postman\" style=\"width: 128px; height:32px;\">](https://god.gw.postman.com/run-collection/25575461-f04750a0-88e9-4c83-8b58-a3aff15eeea8?action=collection%2Ffork&collection-url=entityId%3D25575461-f04750a0-88e9-4c83-8b58-a3aff15eeea8%26entityType%3Dcollection%26workspaceId%3D5d2a9a0f-57a7-441c-b2af-fe6315e80a08)"
   termsOfService: https://www.moneris.com/en/legal/terms-of-use
   contact:
     url: https://api-developer.moneris.com
@@ -38,12 +37,16 @@ tags:
     description: Perform and Manage Subscriptions
   - name: Installments
     description: Perform and Manage Installments
-  - name: Merchants
-    description: Manage Merchants
+  - name: Multi-Currency Pricing Rate Lookup
+    description: Retrieve Multi-Currency Pricing Rate Lookups
+  - name: Merchant Onboarding
+    description: Manage Merchants onboarding
   - name: Terminal & Service Orders
     description: Manage Moneris Terminal & Service Orders
   - name: Products
     description: Product recommendations
+  - name: Disputes
+    description: Perform and Manage Disputes
   - name: Events
     description: Receive events in near real-time concerning your Moneris API resources.
 paths:
@@ -254,6 +257,60 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/completePaymentSuccessResponse'
+        '400':
+          $ref: '#/components/responses/completePaymentBadRequestResponse'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '422':
+          $ref: '#/components/responses/completePaymentUnprocessableContentResponse'
+        '429':
+          $ref: '#/components/responses/tooManyRequests'
+        '500':
+          $ref: '#/components/responses/internalServer'
+        '503':
+          $ref: '#/components/responses/serviceUnavailable'
+  /payments/{payment-id}/increment:
+    parameters:
+      - $ref: '#/components/parameters/apiVersion'
+      - $ref: '#/components/parameters/correlationId'
+      - $ref: '#/components/parameters/paymentId'
+      - $ref: '#/components/parameters/merchantId'
+    post:
+      summary: Increment Payment
+      description: |
+        Increases the locked amount of funds in an existing pre-authorization (Payment with automaticCapture = false) for later settle by a single pre-authorization completion.  There is no limit to the number of Increment Payment API calls on the original estimated authorization and each new Increment Payment increases the hold on the customer's credit card.
+      operationId: incrementPayment
+      security:
+        - OAuth2:
+            - payment.write
+        - ApiKeyAuth: []
+      tags:
+        - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/incrementalAuthorizationRequest'
+            example:
+              idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac2
+              invoiceNumber: 1a2s3d45v6
+              customData:
+                property1: string
+                property2: string
+              amount:
+                amount: 10000
+                currency: CAD
+              dynamicDescriptor: moneris
+      responses:
+        '200':
+          $ref: '#/components/responses/incrementalAuthorizationSuccessResponse'
         '400':
           $ref: '#/components/responses/completePaymentBadRequestResponse'
         '401':
@@ -768,7 +825,7 @@ paths:
       - $ref: '#/components/parameters/merchantId'
     post:
       summary: Create Subscription
-      description: This operation is used to create a Subscription.
+      description: "<p>This operation is used to create a Subscription.</p>\r\n<h4>\r\n  <span>Webhooks</span>\r\n</h4>\r\n<details>\r\n  <summary style=\"color: rgba(0, 113, 145, 1);\">Webhook Definition Details</summary>\r\n  <div class=\"collapsible\">\r\n    <div class=\"tabs\">\r\n      <div class=\"tab-label\" style=\"background-color: #051D33; color: #FFFFFF;\">application/json</div>\r\n      <div class=\"tab-content\" style=\"display: block;\">\r\n        <type-definition>\r\n          <h4 class=\"text-truncate flex-grow\">Webhook Request Body</h4>\r\n          <p>\r\n          <p>This is the base definition for all event messages. It contains the common properties that are shared across all events.</p>\r\n          </p>\r\n          <div role=\"table\" class=\"table-preset table-preset-schema\" id=\"webhookRequestTable\">\r\n            <div class=\"d-contents\" role=\"rowgroup\">\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"columnheader\" class=\"table-preset-head text-truncate\">\r\n                  <span>\r\n                    Name</span>\r\n                </div>\r\n                <div role=\"columnheader\" class=\"table-preset-head text-truncate\">\r\n                  <span>\r\n                    Required</span>\r\n                </div>\r\n                <div role=\"columnheader\" class=\"table-preset-head text-truncate\">\r\n                  <span>Additional\r\n                    Info</span>\r\n                </div>\r\n                <div role=\"columnheader\" class=\"table-preset-head\">\r\n                  <span>\r\n                    Description</span>\r\n                </div>\r\n              </div>\r\n            </div>\r\n            <div class=\"d-contents\" role=\"rowgroup\">\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"eventId\">\r\n                  eventId</div>\r\n                <div role=\"cell\">\r\n                  true</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    string</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>Identifier of the triggered\r\n                    event. Can be used\r\n                    as an idempotency key to\r\n                    detect duplicates.</p>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"eventType\">\r\n                  eventType</div>\r\n                <div role=\"cell\">\r\n                  true</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    string</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>This is a\r\n                    list of all the types of\r\n                    events we currently\r\n                    send.</p>\r\n                  <ul>\r\n                    <li>RECURRING_PAYMENT_CONFIRMED: A payment transaction has been executed.</li>\r\n                  </ul>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"occuredAt\">\r\n                  occuredAt</div>\r\n                <div role=\"cell\">\r\n                  true</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    date-time</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>the timestamp of when the event occurred (not\r\n                    necessarily the same of when it was\r\n                    delivered)</p>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"apiVersion\">\r\n                  apiVersion</div>\r\n                <div role=\"cell\">\r\n                  false</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    string</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>The Moneris API Version used to\r\n                    populate the event\r\n                    payload.</p>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"objectId\">\r\n                  objectId</div>\r\n                <div role=\"cell\">\r\n                  false</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    string</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>Used to\r\n                    identify API resources which\r\n                    may be required for\r\n                    future follow-on\r\n                    transactions; i.e. Refunds,\r\n                    Corrections,\r\n                    Completions, Reversals,\r\n                    etc.</p>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"href\">\r\n                  href</div>\r\n                <div role=\"cell\">\r\n                  false</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    string</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>Uniform\r\n                    resource locator to retrieve\r\n                    resource\r\n                    details.</p>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"correlationId\">\r\n                  correlationId</div>\r\n                <div role=\"cell\">\r\n                  false</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    string</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>Correlation Id transmitted during the\r\n                    original request.\r\n                    This is useful to correlate between\r\n                    multiple events corresponding to same\r\n                    flow. </p>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"data\">\r\n                  data</div>\r\n                <div role=\"cell\">\r\n                  false</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\"\r\n                    href=\"/api-details#api=moneris-api-2025-02-20-preview&operation=createPayments\" title=\"payment\">\r\n                    payment</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>The Payment data associated with the\r\n                    event.</p>\r\n                </div>\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <code-snippet id=\"webhookRequestDefinition\" style=\"display: none;\">\r\n            <h4></h4>\r\n            <div></div>\r\n            <div class=\"flex code-snippet code-snippet-bordered\">\r\n              <div class=\"code-snippet-heading\">\r\n                <span class=\"code-snippet-title\">json</span>\r\n                <button class=\"code-snippet-command\" aria-label=\"Copy to clipboard\">\r\n                  <i class=\"icon-emb icon-emb-duplicate\"></i>\r\n                  <span>Copy</span>\r\n                </button>\r\n              </div>\r\n            </div>\r\n            <pre>\r\n<span class=\"token punctuation\">{</span>\r\n  <span class=\"token property\">\"title\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"webhookRequest\"</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"required\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">[</span>\r\n    <span class=\"token string\">\"eventId\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token string\">\"eventType\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token string\">\"occuredAt\"</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token punctuation\">]</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"object\"</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"properties\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n  <span class=\"token property\">\"eventId\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"Unique Identifier for the Event.\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"pattern\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"^[A-Za-z]{2}\\d{2}[A-Za-z0-9]{26}$\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"minLength\"</span><span class=\"token operator\">:</span> <span class=\"token string\">30</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"maxLength\"</span><span class=\"token operator\">:</span> <span class=\"token string\">30</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"ev0105ARZ3NDEKTSV4RRFFQ69G5FAV\"</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"eventType\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"This is a list of all the types of events we currently send. RECURRING_PAYMENT_CONFIRMED\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"enum\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">[</span>\r\n        <span class=\"token string\">\"RECURRING_PAYMENT_CONFIRMED\"</span>\r\n    <span class=\"token punctuation\">]</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">RECURRING_PAYMENT_CONFIRMED</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"occuredAt\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"Date & Time at which the event has occurred.\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"format\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"date-time\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">2025-02-17T18:00:00Z</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"apiVersion\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"The Moneris API Version used to populate the event payload.\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"nullable\"</span><span class=\"token operator\">:</span> <span class=\"token string\">true</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">2024-09-17</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"objectId\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"Used to identify API resources which may be required for future follow-on transactions; i.e. Refunds, Corrections, Completions, Reversals, etc.\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"nullable\"</span><span class=\"token operator\">:</span> <span class=\"token string\">true</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">pi0105ARZ3NDEKTSV4RRFFQ69G5FAV</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"href\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"Uniform resource locator to retrieve resource details\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"format\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"uri-reference\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"nullable\"</span><span class=\"token operator\">:</span> <span class=\"token string\">true</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">/payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"correlationId\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"Correlation Id transmitted during the original request.\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"nullable\"</span><span class=\"token operator\">:</span> <span class=\"token string\">true</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"f0d4c76f-f129-4b91-92a3-9a120829bbe5\"</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"data\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"object\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"Full representation of the resource that triggered the event. For Payments, it will be the Payment object\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"nullable\"</span><span class=\"token operator\">:</span> <span class=\"token string\">true</span>\r\n  <span class=\"token punctuation\">}</span>\r\n<span class=\"token punctuation\">}</span>\r\n</pre>\r\n          </code-snippet>\r\n        </type-definition>\r\n      </div>\r\n    </div>\r\n    <h3><span>Response</span> <span\r\n       >200 OK</span></h3>\r\n    <p>\r\n    <p>Webhook event processed successfully</p>\r\n    </p>\r\n    <h3><span>Response</span> <span\r\n       >400 Bad Request</span></h3>\r\n    <p>\r\n    <p>An error has occured while processing webhook event</p>\r\n    </p>\r\n  </div>\r\n</details>"
       operationId: createSubscriptions
       security:
         - OAuth2:
@@ -1623,6 +1680,130 @@ paths:
           $ref: '#/components/responses/internalServer'
         '503':
           $ref: '#/components/responses/serviceUnavailable'
+  /surcharge-lookups:
+    parameters:
+      - $ref: '#/components/parameters/apiVersion'
+      - $ref: '#/components/parameters/correlationId'
+      - $ref: '#/components/parameters/merchantId'
+    post:
+      summary: Surcharge Lookup
+      description: Performs surcharge lookup and determines if payment method is eligible or not and provides max rate and max amount if eligible.
+      operationId: surchargeLookUp
+      security:
+        - OAuth2:
+            - payment.write
+        - ApiKeyAuth: []
+      tags:
+        - Surcharge Lookup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SurchargeEligibilityRequest'
+            example:
+              idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac1
+              amount:
+                amount: 16000
+                currency: CAD
+              paymentMethod:
+                paymentMethodSource: CARD
+                card:
+                  cardNumber: '4444111122223333'
+                  expiryMonth: 1
+                  expiryYear: 2025
+                  cardSecurityCode: '123'
+      responses:
+        '200':
+          $ref: '#/components/responses/SurchargeEligibilitySuccessfulResponse'
+        '400':
+          $ref: '#/components/responses/invalidListbadRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '422':
+          $ref: '#/components/responses/unprocessableContent'
+        '429':
+          $ref: '#/components/responses/tooManyRequests'
+        '500':
+          $ref: '#/components/responses/internalServer'
+        '503':
+          $ref: '#/components/responses/serviceUnavailable'
+  /multi-currency-pricing-rates:
+    parameters:
+      - $ref: '#/components/parameters/apiVersion'
+      - $ref: '#/components/parameters/correlationId'
+      - $ref: '#/components/parameters/merchantId'
+    post:
+      summary: Multi-Currency Pricing Rate Lookup
+      description: |
+        Performs a foreign currency exchange rate look-up, and secures that exchange rate for use in a subsequent Multi-Currency Pricing financial transaction. 
+        The exchange rate retrieved by this transaction request is represented in the response as the multiCurrencyPricingRateLookupId, and the underlying exchange rate is locked in for a limited time period.
+      operationId: mcpRate
+      security:
+        - OAuth2:
+            - payment.write
+        - ApiKeyAuth: []
+      tags:
+        - Multi-Currency Pricing Rate Lookup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/multiCurrencyPricingRateLookupRequest'
+      responses:
+        '207':
+          $ref: '#/components/responses/multiCurrencyPricingRateLookup'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '422':
+          $ref: '#/components/responses/unprocessableContent'
+        '429':
+          $ref: '#/components/responses/tooManyRequests'
+        '500':
+          $ref: '#/components/responses/internalServer'
+        '503':
+          $ref: '#/components/responses/serviceUnavailable'
+  /multi-currency-pricing-rates/{multi-currency-pricing-rate-lookup-id}:
+    parameters:
+      - $ref: '#/components/parameters/apiVersion'
+      - $ref: '#/components/parameters/correlationId'
+      - $ref: '#/components/parameters/multiCurrencyPricingRateLookupId'
+      - $ref: '#/components/parameters/merchantId'
+    get:
+      summary: Retrieve Multi-Currency Pricing Rate by Id.
+      description: Retrieve Multi-Currency Pricing Rate results by Id.
+      operationId: getMultiCurrencyPricingRateById
+      security:
+        - OAuth2:
+            - payment.read
+        - OAuth2:
+            - payment.write
+        - ApiKeyAuth: []
+      tags:
+        - Multi-Currency Pricing Rate Lookup
+      responses:
+        '200':
+          $ref: '#/components/responses/multiCurrencyPricingRateLookup'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '429':
+          $ref: '#/components/responses/tooManyRequests'
+        '500':
+          $ref: '#/components/responses/internalServer'
+        '503':
+          $ref: '#/components/responses/serviceUnavailable'
   /onboarding/merchants:
     parameters:
       - $ref: '#/components/parameters/apiVersion'
@@ -1636,7 +1817,7 @@ paths:
             - onboarding.merchant.write
         - ApiKeyAuth: []
       tags:
-        - Merchants
+        - Merchant Onboarding
       requestBody:
         content:
           application/json:
@@ -1774,7 +1955,7 @@ paths:
       summary: Get the details of a Merchant
       operationId: getMerchantDetailsByMerchantId
       tags:
-        - Merchants
+        - Merchant Onboarding
       description: |
         Get merchant details by ID
       security:
@@ -1910,7 +2091,7 @@ paths:
             - onboarding.merchant.write
         - ApiKeyAuth: []
       tags:
-        - Merchants
+        - Merchant Onboarding
       description: |
         Update merchant based on the supplied payload.
       requestBody:
@@ -1965,7 +2146,7 @@ paths:
             - onboarding.merchant.write
         - ApiKeyAuth: []
       tags:
-        - Merchants
+        - Merchant Onboarding
       description: |
         Get merchant supplies by merchant ID
       responses:
@@ -3013,6 +3194,149 @@ paths:
           $ref: '#/components/responses/internalServer'
         '503':
           $ref: '#/components/responses/serviceUnavailable'
+  /disputes/{case-id}/{case-record-number}/accept:
+    post:
+      tags:
+        - Disputes
+      summary: Accept Dispute
+      description: If no longer want to dispute a chargeback or copy request.
+      parameters:
+        - $ref: '#/components/parameters/apiVersion'
+        - $ref: '#/components/parameters/merchantId'
+        - $ref: '#/components/parameters/correlationId'
+        - $ref: '#/components/parameters/caseId'
+        - $ref: '#/components/parameters/caseRecNo'
+      operationId: acceptDispute
+      security:
+        - OAuth2:
+            - dispute.write
+        - ApiKeyAuth: []
+      responses:
+        '204':
+          $ref: '#/components/responses/disputeAcceptSuccess'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '429':
+          $ref: '#/components/responses/tooManyRequests'
+        '500':
+          $ref: '#/components/responses/internalServer'
+        '503':
+          $ref: '#/components/responses/serviceUnavailable'
+  /disputes/{case-id}/{case-record-number}:
+    get:
+      tags:
+        - Disputes
+      summary: Dispute Details
+      description: To determine whether you can upload documents for a specific case.
+      parameters:
+        - $ref: '#/components/parameters/apiVersion'
+        - $ref: '#/components/parameters/merchantId'
+        - $ref: '#/components/parameters/correlationId'
+        - $ref: '#/components/parameters/caseId'
+        - $ref: '#/components/parameters/caseRecNo'
+      operationId: getDisputeByCaseIdAndRecordNumber
+      security:
+        - OAuth2:
+            - dispute.read
+        - OAuth2:
+            - dispute.write
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/getDisputeSuccess'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '429':
+          $ref: '#/components/responses/tooManyRequests'
+        '500':
+          $ref: '#/components/responses/internalServer'
+        '503':
+          $ref: '#/components/responses/serviceUnavailable'
+  /disputes/{case-id}/{case-record-number}/uploads:
+    post:
+      tags:
+        - Disputes
+      summary: Upload Images
+      description: To upload response documents associated with a disputed transaction.
+      parameters:
+        - $ref: '#/components/parameters/apiVersion'
+        - $ref: '#/components/parameters/merchantId'
+        - $ref: '#/components/parameters/correlationId'
+        - $ref: '#/components/parameters/caseId'
+        - $ref: '#/components/parameters/caseRecNo'
+      operationId: uploadDisputeImage
+      security:
+        - OAuth2:
+            - dispute.write
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/uploadImagesRequest'
+        required: true
+      responses:
+        '202':
+          $ref: '#/components/responses/uploadDisputeImagesSuccess'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '429':
+          $ref: '#/components/responses/tooManyRequests'
+        '500':
+          $ref: '#/components/responses/internalServer'
+        '503':
+          $ref: '#/components/responses/serviceUnavailable'
+  /disputes/{case-id}/{case-record-number}/uploads/{upload-reference-id}:
+    get:
+      tags:
+        - Disputes
+      summary: Check image upload status
+      description: This endpoint can be used to check image upload status
+      parameters:
+        - $ref: '#/components/parameters/apiVersion'
+        - $ref: '#/components/parameters/merchantId'
+        - $ref: '#/components/parameters/correlationId'
+        - $ref: '#/components/parameters/caseId'
+        - $ref: '#/components/parameters/caseRecNo'
+        - $ref: '#/components/parameters/uploadReferenceId'
+      operationId: getDisputeUploadStatus
+      security:
+        - OAuth2:
+            - dispute.read
+        - OAuth2:
+            - dispute.write
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/getUploadStatusSuccess'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '429':
+          $ref: '#/components/responses/tooManyRequests'
+        '500':
+          $ref: '#/components/responses/internalServer'
+        '503':
+          $ref: '#/components/responses/serviceUnavailable'
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -3047,14 +3371,12 @@ components:
             onboarding.merchant.write: Grants read & write access to merchant onboarding related APIs
             onboarding.order.read: Grants read access to onboarding orders related APIs
             onboarding.order.write: Grants read & write access to onboarding orders related APIs
-            field-services.request.read: Grants read access to field services related APIs
-            field-services.request.write: Grants read & write access to field services related APIs
+            dispute.read: Grants read access to disputes
+            dispute.write: Grants read & write access to disputes
   schemas:
     apiVersion:
       description: |
-        The endpoint's API Version. 
-
-        Must be provided through headers.
+        The endpoint's API Version.  Must be provided through headers.
       type: string
       example: '2024-09-17'
     merchantId:
@@ -3163,7 +3485,7 @@ components:
         amount: 1200
         currency: CAD
     amountDetails:
-      description: Amount Details breakdown
+      description: Contains information pertaining to the subtotal, tip, and surcharge amounts of a Payment
       type: object
       nullable: true
       properties:
@@ -3171,6 +3493,70 @@ components:
           $ref: '#/components/schemas/subTotalAmount'
         tipAmount:
           $ref: '#/components/schemas/tipAmount'
+        surchargeAmount:
+          nullable: true
+          type: object
+          description: |
+            Monetary amount. 
+            Note: The value must be in cents. Therefore $10.59 must be sent as 1059.
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+    convenienceFeeDetails:
+      description: Contains information about a Convenience Fee transaction.
+      type: object
+      nullable: true
+      properties:
+        status:
+          description: Indicates the status of the merchant and convenience fee transactions.
+          type: string
+          nullable: true
+          enum:
+            - COMPLETED_CONVENIENCE_FEE_TRANSACTION
+            - PAYMENT_COMPLETED
+            - COMPLETED_VOID_TRANSACTION
+            - COMPLETED_REFUND_TRANSACTION
+            - COMPLETED_MERCHANT_INDEPENDENT_REFUND_TRANSACTION
+            - COMPLETED_MERCHANT_REFUND_TRANSACTION
+            - COMPLETED_FIRST_VOID_TRANSACTION
+            - PAYMENT_CANCELED
+          example: COMPLETED_CONVENIENCE_FEE_TRANSACTION
+        amount:
+          description: The expected Convenience Fee amount.
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+        rate:
+          description: The Convenience Fee rate that has been defined on the merchant’s profile.
+          type: number
+          format: decimal
+        feeType:
+          description: The type of Convenience Fee that has been defined on the merchant’s profile.
+          type: string
+          enum:
+            - FIXED_AMOUNT
+            - PERCENTAGE
+      required:
+        - amount
+        - rate
+        - feeType
     paymentMethodId:
       type: string
       description: Unique Identifier of the payment method.
@@ -3498,6 +3884,8 @@ components:
         - AUTHORIZED
         - PROCESSING
         - SUCCEEDED
+        - INCREMENTED
+        - PARTIALLY_COMPLETED
       example: SUCCEEDED
     iso:
       type: string
@@ -3688,6 +4076,60 @@ components:
           $ref: '#/components/schemas/originalAmount'
         issuerId:
           $ref: '#/components/schemas/issuerId'
+    money:
+      type: object
+      description: |
+        Monetary amount. 
+        Note: The value must be in cents. Therefore $10.59 must be sent as 1059.
+      properties:
+        amount:
+          $ref: '#/components/schemas/amount'
+        currency:
+          $ref: '#/components/schemas/currency'
+      required:
+        - amount
+        - currency
+      example:
+        amount: 16000
+        currency: CAD
+    multiCurrencyPricingDetails:
+      type: object
+      nullable: true
+      description: Exchange rate for use in a subsequent MCP financial transaction
+      properties:
+        cardholderAmount:
+          $ref: '#/components/schemas/money'
+        merchantSettlementAmount:
+          description: The amount that will be paid to the merchant, in settlement currency
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+        multiCurrencyPricingExchangeRate:
+          description: The foreign exchange rate (foreign currency to CAD) that will be used for the transaction
+          type: number
+          format: decimal
+          example: 1.2346
+      required:
+        - cardholderAmount
+        - merchantSettlementAmount
+        - multiCurrencyPricingExchangeRate
+      example:
+        cardholderAmount:
+          currency: USD
+          amount: 30000
+        merchantSettlementAmount:
+          currency: CAD
+          amount: 37035
+        multiCurrencyPricingExchangeRate: 1.2345
     refundId:
       type: string
       pattern: ^[A-Za-z]{2}\d{2}[A-Za-z0-9]{26}$
@@ -3713,22 +4155,6 @@ components:
           $ref: '#/components/schemas/refundUri'
       required:
         - refundId
-    money:
-      type: object
-      description: |
-        Monetary amount. 
-        Note: The value must be in cents. Therefore $10.59 must be sent as 1059.
-      properties:
-        amount:
-          $ref: '#/components/schemas/amount'
-        currency:
-          $ref: '#/components/schemas/currency'
-      required:
-        - amount
-        - currency
-      example:
-        amount: 16000
-        currency: CAD
     refundDetails:
       description: Refund details if any has occured.
       type: object
@@ -3826,6 +4252,47 @@ components:
         - planTermsAndConditionsVersion
         - planAcceptanceId
         - planStatus
+    processedAt:
+      description: Time at which the object was processed
+      type: string
+      format: date-time
+      example: '2019-07-30T06:43:40.252Z'
+    incrementalAuthorization:
+      description: Incremental Authorization object containing amount and processedAt time.
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/money'
+        processedAt:
+          $ref: '#/components/schemas/processedAt'
+      required:
+        - amount
+        - processedAt
+    incrementalAuthorizations:
+      description: List of all previous incremental authorizations.
+      type: array
+      items:
+        $ref: '#/components/schemas/incrementalAuthorization'
+    multipleCompletion:
+      description: Multiple Completion object containing amount, processedAt time, and finalCompletion flag
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/money'
+        processedAt:
+          $ref: '#/components/schemas/processedAt'
+        finalCompletion:
+          type: boolean
+          description: Indicates whether this is the last Completion request for a Payment. To indicate that additional Completions will be performed, please pass finalCompletion as false.
+      required:
+        - amount
+        - processedAt
+        - finalCompletion
+    multipleCompletions:
+      description: List of all Multiple Completion transactions.
+      type: array
+      items:
+        $ref: '#/components/schemas/multipleCompletion'
     payment:
       title: payment
       type: object
@@ -3889,6 +4356,8 @@ components:
             currency: CAD
         amountDetails:
           $ref: '#/components/schemas/amountDetails'
+        convenienceFeeDetails:
+          $ref: '#/components/schemas/convenienceFeeDetails'
         customerId:
           nullable: true
           type: string
@@ -3914,6 +4383,8 @@ components:
           $ref: '#/components/schemas/verificationDetails'
         credentialOnFileResponse:
           $ref: '#/components/schemas/credentialOnFileResponse'
+        multiCurrencyPricingDetails:
+          $ref: '#/components/schemas/multiCurrencyPricingDetails'
         refundDetails:
           $ref: '#/components/schemas/refundDetails'
         subscription:
@@ -3922,6 +4393,10 @@ components:
           $ref: '#/components/schemas/installmentPlanDetails'
         customData:
           $ref: '#/components/schemas/customData'
+        incrementalAuthorizations:
+          $ref: '#/components/schemas/incrementalAuthorizations'
+        multipleCompletions:
+          $ref: '#/components/schemas/multipleCompletions'
       required:
         - paymentId
         - merchantId
@@ -4092,6 +4567,15 @@ components:
       minLength: 1
       maxLength: 36
       example: 6q5w4e7r8t9y
+    convenienceFee:
+      description: Allows merchants to apply an additional charge to a customer's bill (with their consent) for the convenience of being able to pay for goods and services using an alternative payment channel.
+      type: object
+      nullable: true
+      properties:
+        amount:
+          $ref: '#/components/schemas/money'
+      required:
+        - amount
     paymentMethodRequestSource:
       type: string
       description: |
@@ -4850,6 +5334,10 @@ components:
         - **true**: (Default) will prompt Moneris to capture the payment when it is authorized. This performs a Purchase transaction.
         - **false**: will prompt Moneris to place a hold on the funds when the payment is authorized. This performs a Pre-Authorization transaction.
       default: true
+    incrementalAuthorizationIndicator:
+      type: boolean
+      description: This flag is used for processing the Pre-Authorization transaction as an Incremental Authorization transaction.
+      default: false
     resourceId:
       type: string
       description: Used to identify API resources which may be required for future follow-on transactions; i.e. Refunds, Corrections, Completions, Reversals, etc.
@@ -4927,6 +5415,30 @@ components:
         - planId
         - planIdReference
         - planTermsAndConditionsVersion
+    multiCurrencyPricingOptIn:
+      type: string
+      description: Indicates if Multi-Currency Pricing is to be used for this transaction.
+      enum:
+        - OPT_IN
+      example: OPT_IN
+    multiCurrencyPricingTransactionRequest:
+      description: Multi-Currency Pricing (MCP) Object
+      title: multiCurrencyPricingDetails
+      type: object
+      nullable: true
+      properties:
+        multiCurrencyPricingOptIn:
+          $ref: '#/components/schemas/multiCurrencyPricingOptIn'
+        multiCurrencyPricingRateLookupId:
+          nullable: true
+          type: string
+          description: Used to identify API resources which may be required for future follow-on transactions; i.e. Refunds, Corrections, Completions, Reversals, etc.
+          pattern: ^[A-Za-z]{2}\d{2}[A-Za-z0-9]{26}$
+          minLength: 30
+          maxLength: 30
+          example: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+      required:
+        - multiCurrencyPricingOptIn
     ipv4:
       type: string
       format: ipv4
@@ -4951,7 +5463,7 @@ components:
         invoiceNumber:
           $ref: '#/components/schemas/invoiceNumber'
         amount:
-          description: This amount excludes surcharge, application and converience fee.
+          description: This amount includes the surcharge fee.
           type: object
           properties:
             amount:
@@ -4966,6 +5478,8 @@ components:
             currency: CAD
         amountDetails:
           $ref: '#/components/schemas/amountDetails'
+        convenienceFee:
+          $ref: '#/components/schemas/convenienceFee'
         customerId:
           nullable: true
           description: The unique identifier of the customer.
@@ -4998,6 +5512,8 @@ components:
           default: SSL_MERCHANT
         automaticCapture:
           $ref: '#/components/schemas/automaticCapture'
+        incrementalAuthorization:
+          $ref: '#/components/schemas/incrementalAuthorizationIndicator'
         customData:
           nullable: true
           description: Merchant can send custom meta data with the transaction in this object. Moneris will echo these values back in response.
@@ -5023,6 +5539,8 @@ components:
           $ref: '#/components/schemas/threeDSecureData'
         installmentPlanInformation:
           $ref: '#/components/schemas/installmentPlanInformation'
+        multiCurrencyPricing:
+          $ref: '#/components/schemas/multiCurrencyPricingTransactionRequest'
         ipv4:
           $ref: '#/components/schemas/ipv4'
         ipv6:
@@ -5037,6 +5555,22 @@ components:
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/idempotencyKey'
+        multipleCompletion:
+          nullable: true
+          description: Multiple Completion object containing amount, processedAt time, and finalCompletion flag
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/money'
+            processedAt:
+              $ref: '#/components/schemas/processedAt'
+            finalCompletion:
+              type: boolean
+              description: Indicates whether this is the last Completion request for a Payment. To indicate that additional Completions will be performed, please pass finalCompletion as false.
+          required:
+            - amount
+            - processedAt
+            - finalCompletion
         customData:
           $ref: '#/components/schemas/customData'
         reason:
@@ -5079,8 +5613,63 @@ components:
           example:
             amount: 16000
             currency: CAD
+        amountDetails:
+          description: Contains information pertaining to the surcharge amount of a Payment.
+          type: object
+          nullable: true
+          properties:
+            surchargeAmount:
+              nullable: true
+              type: object
+              description: |
+                Monetary amount. 
+                Note: The value must be in cents. Therefore $10.59 must be sent as 1059.
+              properties:
+                amount:
+                  $ref: '#/components/schemas/amount'
+                currency:
+                  $ref: '#/components/schemas/currency'
+              required:
+                - amount
+                - currency
+              example:
+                amount: 16000
+                currency: CAD
+        finalCompletion:
+          type: boolean
+          description: Indicates whether this is the last Completion request for a Payment. To indicate that additional Completions will be performed, please pass finalCompletion as false.
+          default: true
+        multiCurrencyPricing:
+          $ref: '#/components/schemas/multiCurrencyPricingTransactionRequest'
       required:
         - idempotencyKey
+    incrementalAuthorizationRequest:
+      title: incrementalAuthorization
+      type: object
+      properties:
+        idempotencyKey:
+          $ref: '#/components/schemas/idempotencyKey'
+        invoiceNumber:
+          $ref: '#/components/schemas/invoiceNumber'
+        amount:
+          description: This amount excludes surcharge, application and converience fee.
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+        customData:
+          $ref: '#/components/schemas/customData'
+      required:
+        - idempotencyKey
+        - amount
     paymentMethodList:
       description: List of Payment Methods
       type: object
@@ -5280,6 +5869,28 @@ components:
           $ref: '#/components/schemas/modifiedAt'
         refundAmount:
           $ref: '#/components/schemas/refundAmount'
+        amountDetails:
+          description: Contains information pertaining to the surcharge amount of a Payment.
+          nullable: true
+          type: object
+          properties:
+            surchargeAmount:
+              nullable: true
+              type: object
+              description: |
+                Monetary amount. 
+                Note: The value must be in cents. Therefore $10.59 must be sent as 1059.
+              properties:
+                amount:
+                  $ref: '#/components/schemas/amount'
+                currency:
+                  $ref: '#/components/schemas/currency'
+              required:
+                - amount
+                - currency
+              example:
+                amount: 16000
+                currency: CAD
         customerId:
           nullable: true
           type: string
@@ -5308,6 +5919,8 @@ components:
           nullable: true
         credentialOnFileResponse:
           $ref: '#/components/schemas/credentialOnFileResponse'
+        multiCurrencyPricingDetails:
+          $ref: '#/components/schemas/multiCurrencyPricingDetails'
         customData:
           $ref: '#/components/schemas/customData'
       required:
@@ -5326,7 +5939,6 @@ components:
           description: List of refunds.
           type: array
           items:
-            type: object
             $ref: '#/components/schemas/refund'
         self:
           $ref: '#/components/schemas/self'
@@ -5362,6 +5974,30 @@ components:
           $ref: '#/components/schemas/invoiceNumber'
         refundAmount:
           $ref: '#/components/schemas/refundAmount'
+        multiCurrencyPricing:
+          $ref: '#/components/schemas/multiCurrencyPricingTransactionRequest'
+        amountDetails:
+          description: Contains information pertaining to the surcharge amount of a Payment.
+          type: object
+          nullable: true
+          properties:
+            surchargeAmount:
+              nullable: true
+              type: object
+              description: |
+                Monetary amount. 
+                Note: The value must be in cents. Therefore $10.59 must be sent as 1059.
+              properties:
+                amount:
+                  $ref: '#/components/schemas/amount'
+                currency:
+                  $ref: '#/components/schemas/currency'
+              required:
+                - amount
+                - currency
+              example:
+                amount: 16000
+                currency: CAD
         customerId:
           nullable: true
           description: Unique Customer Identifier.
@@ -5405,6 +6041,22 @@ components:
           properties:
             paymentId:
               $ref: '#/components/schemas/paymentId'
+            multipleCompletion:
+              nullable: true
+              description: Multiple Completion object containing amount, processedAt time, and finalCompletion flag
+              type: object
+              properties:
+                amount:
+                  $ref: '#/components/schemas/money'
+                processedAt:
+                  $ref: '#/components/schemas/processedAt'
+                finalCompletion:
+                  type: boolean
+                  description: Indicates whether this is the last Completion request for a Payment. To indicate that additional Completions will be performed, please pass finalCompletion as false.
+              required:
+                - amount
+                - processedAt
+                - finalCompletion
           required:
             - paymentId
         - $ref: '#/components/schemas/createRefundRequestBase'
@@ -8652,6 +9304,264 @@ components:
       required:
         - installmentPlans
         - paymentMethod
+    surChargePaymentMethodRequest:
+      title: surchargePaymentMethodRequest
+      description: |
+        surcharge payment Method details.
+        Note: If defined, this will result in the creation of a Permanent Payment Method as defined in the Payment Method API.
+      oneOf:
+        - $ref: '#/components/schemas/paymentMethodWithId'
+        - $ref: '#/components/schemas/paymentMethodCard'
+        - $ref: '#/components/schemas/paymentMethodTemporaryToken'
+        - $ref: '#/components/schemas/paymentMethodPermanentToken'
+      discriminator:
+        propertyName: paymentMethodSource
+        mapping:
+          PAYMENT_METHOD_ID: '#/components/schemas/paymentMethodWithId'
+          CARD: '#/components/schemas/paymentMethodCard'
+          TEMPORARY_TOKEN: '#/components/schemas/paymentMethodTemporaryToken'
+          PERMANENT_TOKEN: '#/components/schemas/paymentMethodPermanentToken'
+    SurchargeEligibilityRequest:
+      title: surchargeEligibilityRequest
+      type: object
+      properties:
+        idempotencyKey:
+          $ref: '#/components/schemas/idempotencyKey'
+        amount:
+          description: This is for surcharge amount.
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+        paymentMethod:
+          $ref: '#/components/schemas/surChargePaymentMethodRequest'
+      required:
+        - idempotencyKey
+        - paymentMethod
+        - amount
+    SurchargeEligibility:
+      type: object
+      properties:
+        merchantId:
+          $ref: '#/components/schemas/merchantId'
+        amount:
+          description: Represents the surcharge amount
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+        surchargeMessage:
+          type: string
+          description: Message indicating surcharge eligibility status
+        maximumSurchargeRate:
+          type: number
+          format: double
+          description: Maximum surcharge rate applicable
+        maximumSurchargeAmount:
+          $ref: '#/components/schemas/money'
+        paymentMethod:
+          $ref: '#/components/schemas/paymentMethod'
+      required:
+        - merchantId
+        - amount
+        - surchargeMessage
+        - maximumSurchargeRate
+        - maximumSurchargeAmount
+        - paymentMethod
+    multiCurrencyPricingTransactionType:
+      type: string
+      description: Value representing the type of subsequent transaction request that the rate token will be used for
+      enum:
+        - PAYMENT
+        - REFUND
+      example: PAYMENT
+    multiCurrencyPricingRateCardholderInformation:
+      type: object
+      description: Multi-Currency Pricing (MCP) Rate Information Object
+      properties:
+        amountType:
+          type: string
+          description: The type of rate lookup to perform.
+          enum:
+            - CARDHOLDER
+          example: CARDHOLDER
+        amount:
+          $ref: '#/components/schemas/money'
+      required:
+        - amount
+        - amountType
+    multiCurrencyPricingRateMerchantSettlementInformation:
+      type: object
+      description: Multi-Currency Pricing (MCP) Rate Merchant Settlement Information Object
+      properties:
+        amountType:
+          type: string
+          description: The type of rate lookup to perform.
+          enum:
+            - MERCHANT_SETTLEMENT
+          example: MERCHANT_SETTLEMENT
+        amount:
+          $ref: '#/components/schemas/money'
+        cardholderCurrency:
+          $ref: '#/components/schemas/currency'
+      required:
+        - amount
+        - amountType
+        - cardholderCurrency
+    multiCurrencyPricingRateInformationRequest:
+      description: Multi-Currency Pricing (MCP) Rate Information Request Object
+      oneOf:
+        - $ref: '#/components/schemas/multiCurrencyPricingRateCardholderInformation'
+        - $ref: '#/components/schemas/multiCurrencyPricingRateMerchantSettlementInformation'
+      discriminator:
+        propertyName: amountType
+        mapping:
+          CARDHOLDER: '#/components/schemas/multiCurrencyPricingRateCardholderInformation'
+          MERCHANT_SETTLEMENT: '#/components/schemas/multiCurrencyPricingRateMerchantSettlementInformation'
+    multiCurrencyPricingRateLookupRequest:
+      title: Multi-Currency Pricing (MCP) Rate Request
+      type: object
+      properties:
+        multiCurrencyPricingTransactionType:
+          $ref: '#/components/schemas/multiCurrencyPricingTransactionType'
+        multiCurrencyPricingRateInformationRequests:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/multiCurrencyPricingRateInformationRequest'
+          example:
+            - amount:
+                currency: USD
+                amount: 3000
+              amountType: CARDHOLDER
+            - amount:
+                currency: USD
+                amount: 4015
+              cardholderCurrency: USD
+              amountType: MERCHANT_SETTLEMENT
+        customData:
+          $ref: '#/components/schemas/customData'
+      required:
+        - multiCurrencyPricingTransactionType
+        - multiCurrencyPricingRateInformationRequests
+    multiCurrencyPricingRateConversion:
+      type: object
+      description: Exchange rate for use in a subsequent MCP financial transaction
+      properties:
+        cardholderAmount:
+          $ref: '#/components/schemas/money'
+        merchantSettlementAmount:
+          description: The amount that will be paid to the merchant, in settlement currency
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+        multiCurrencyPricingExchangeRate:
+          description: The foreign exchange rate (foreign currency to CAD) that will be used for the transaction
+          type: number
+          format: decimal
+          example: 1.2346
+        multiCurrencyPricingStatusCode:
+          description: HTTP Status code of the MCP transaction
+          type: integer
+          format: int32
+          minimum: 100
+          maximum: 9999
+          example: 200
+        multiCurrencyPricingStatusMessage:
+          description: Message corresponding to the MCP Status Code
+          type: string
+      required:
+        - cardholderAmount
+        - merchantSettlementAmount
+        - multiCurrencyPricingExchangeRate
+        - multiCurrencyPricingStatusCode
+        - multiCurrencyPricingStatusMessage
+      example:
+        cardholderAmount:
+          currency: USD
+          amount: 30000
+        merchantSettlementAmount:
+          currency: CAD
+          amount: 25000
+        multiCurrencyPricingExchangeRate: 1.2345
+        multiCurrencyPricingStatusCode: 200
+        multiCurrencyPricingStatusMessage: OK
+    multiCurrencyPricingRateLookup:
+      title: Multi-Currency Pricing (MCP) Rate Response
+      type: object
+      properties:
+        multiCurrencyPricingRateLookupId:
+          $ref: '#/components/schemas/resourceId'
+        multiCurrencyPricingTransactionType:
+          $ref: '#/components/schemas/multiCurrencyPricingTransactionType'
+        rateValidityEndTime:
+          $ref: '#/components/schemas/dateTime'
+        rateConversions:
+          type: array
+          items:
+            $ref: '#/components/schemas/multiCurrencyPricingRateConversion'
+          example:
+            - cardholderAmount:
+                amount: 3000
+                currency: USD
+              merchantSettlementAmount:
+                amount: 4024
+                currency: CAD
+              multiCurrencyPricingExchangeRate: 1.3413
+              multiCurrencyPricingStatusCode: 200
+              multiCurrencyPricingStatusMessage: ''
+            - cardholderAmount:
+                amount: 2993
+                currency: USD
+              merchantSettlementAmount:
+                amount: 4015
+                currency: CAD
+              multiCurrencyPricingExchangeRate: 1.3413
+              multiCurrencyPricingStatusCode: 200
+              multiCurrencyPricingStatusMessage: ''
+        customData:
+          nullable: true
+          description: Merchant can send custom meta data with the transaction in this object. Moneris will echo these values back in response.
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 1
+            maxLength: 50
+          maxProperties: 10
+        createdAt:
+          $ref: '#/components/schemas/createdAt'
+      required:
+        - multiCurrencyPricingRateLookupId
+        - multiCurrencyPricingTransactionType
+        - rateValidityEndTime
+        - rateConversions
+        - createdAt
     chainId:
       type: string
       description: A unique identifier assigned to a specific organizational chain.
@@ -8663,7 +9573,7 @@ components:
       type: string
       description: The name or identifier of the financial institution.
       maxLength: 5
-      example: 809
+      example: '00809'
       pattern: ^\d{5}
     transitNumber:
       type: string
@@ -8781,7 +9691,7 @@ components:
       nullable: true
       format: uri
       maxLength: 255
-      example: www.abc.com
+      example: https://www.abc.com
     serviceProvider:
       type: string
       description: The name or identifier of the service provider associated to the business.
@@ -10242,7 +11152,7 @@ components:
           type: string
           description: A score indicating the level of risk associated with the merchant's transactions.
           maxLength: 60
-          example: A+
+          example: A_PLUS
           enum:
             - A
             - A_PLUS
@@ -10284,7 +11194,7 @@ components:
       type: string
       description: A score indicating the level of risk associated with the merchant's transactions.
       maxLength: 60
-      example: A+
+      example: A_PLUS
       enum:
         - A
         - A_PLUS
@@ -17878,6 +18788,99 @@ components:
           description: A list of solution items.
           items:
             $ref: '#/components/schemas/solution'
+    disputeDocument:
+      description: Return the image details for the specific case.
+      type: object
+      required:
+        - receivedAt
+        - fileName
+        - images
+      properties:
+        receivedAt:
+          description: Date when the original image received.
+          type: string
+          format: date-time
+        fileName:
+          description: Name of the image file.
+          type: string
+        totalPages:
+          description: Number of pages in the file.
+          type: integer
+          format: int32
+        images:
+          description: Images.
+          type: array
+          items:
+            type: object
+            required:
+              - image
+            properties:
+              image:
+                description: Image file.
+                type: string
+                format: base64url
+              pageNo:
+                description: Page number.
+                type: integer
+                format: int32
+    dispute:
+      description: Dispute information for specific case.
+      type: object
+      required:
+        - caseRecordNumber
+        - caseId
+        - documents
+      properties:
+        imageUploadAllowed:
+          description: Indicates whether documents may or may not be uploaded for the case.
+          type: boolean
+        acceptAllowed:
+          description: Indicates whether acceptance is permitted for the case.
+          type: boolean
+        caseRecordNumber:
+          description: The record number of the case associated with the uploaded files.
+          type: string
+        caseId:
+          description: The case ID of the uploaded files.
+          type: string
+        documents:
+          description: List of evidence documents for the dispute.
+          type: array
+          items:
+            $ref: '#/components/schemas/disputeDocument'
+    uploadImagesRequest:
+      description: Information of files.
+      type: object
+      properties:
+        files:
+          description: Array of file objects.
+          type: array
+          maxItems: 5
+          items:
+            type: string
+            format: binary
+    uploadStatus:
+      description: Response for status check endpoint call.
+      type: object
+      required:
+        - uploadReferenceId
+        - uploadStatus
+      properties:
+        uploadReferenceId:
+          description: Upload reference id.
+          example: IU1001ARZ3NDEKTSV4RRFFQ69G5FAV
+          type: string
+        uploadStatus:
+          type: string
+          description: |
+            Status type. 
+              - `PENDING`: The Images have been pending upload.  
+              - `FAILED`: Image upload failed. Failure could be caused by different reasons.
+              - `SUCCESSFUL`: Images uploaded successfully.
+          enum:
+            - PENDING
+            - FAILED
+            - SUCCESSFUL
   parameters:
     apiVersion:
       in: header
@@ -18009,6 +19012,13 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/resourceId'
+    multiCurrencyPricingRateLookupId:
+      in: path
+      name: multi-currency-pricing-rate-lookup-id
+      description: The unique identifier of the multiCurrencyPricing Rate Operation
+      required: true
+      schema:
+        $ref: '#/components/schemas/resourceId'
     prm-merchants_merchantId:
       in: path
       name: merchant-id
@@ -18031,6 +19041,33 @@ components:
       name: Accept-Language
       description: |
         This value indicates the natural language and locale that the client prefers
+      required: true
+      schema:
+        type: string
+    caseId:
+      name: case-id
+      in: path
+      description: The case ID associated with the uploaded files.
+      required: true
+      example: '121719004438'
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9]{12}$
+    caseRecNo:
+      name: case-record-number
+      in: path
+      description: The case record number of the files. This must be a value between "0" and "99".
+      required: true
+      example: 1
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 99
+    uploadReferenceId:
+      description: Upload reference Id.
+      example: IU1001ARZ3NDEKTSV4RRFFQ69G5FAV
+      in: path
+      name: upload-reference-id
       required: true
       schema:
         type: string
@@ -18804,6 +19841,92 @@ components:
           examples:
             declined:
               $ref: '#/components/examples/DeclineErrorResponse'
+    incrementalAuthorizationSuccessResponse:
+      description: Incremental Authorization successfully created. Authorized Payment amount incremented successfully.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/payment'
+          example:
+            paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            merchantId: '0123456789101'
+            orderId: 1q2w3e4r5t6t78
+            invoiceNumber: 1a2s3d45v6
+            transactionDateTime: '2019-07-30T06:43:40.252Z'
+            createdAt: '2019-07-30T06:43:40.252Z'
+            modifiedAt: '2019-07-30T06:43:40.252Z'
+            amount:
+              amount: 20000
+              currency: CAD
+            authorizedAmount:
+              amount: 36000
+              currency: CAD
+            capturableAmount:
+              amount: 0
+              currency: CAD
+            amountDetails: null
+            customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            paymentMethod:
+              paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+              merchantId: '0123456789101'
+              cardholderInformation: null
+              contactDetails: null
+              billingAddress: null
+              paymentMethodInformation:
+                paymentMethodType: CARD
+                paymentMethodSource: CARD
+                cardInformation:
+                  bankIdentificationNumber: '123456'
+                  lastFour: '1234'
+                  expiryMonth: 1
+                  expiryYear: 2028
+                  cardBrand: MASTERCARD
+                  cardType: CREDIT
+                  cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                  issuer: RBC
+                paymentAccountReference: '11112222333344445555666677778'
+                storePaymentMethod: DO_NOT_STORE
+              createdAt: '2019-07-30T06:43:40.252Z'
+              modifiedAt: null
+              customData:
+                property1: string
+                property2: string
+            paymentStatus: INCREMENTED
+            transactionDetails:
+              transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+              isoResponseCode: '00'
+              responseCode: '000'
+              message: approved
+              ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+            verificationDetails:
+              addressVerificationServiceResultCode: FULL_MATCH
+              cardSecurityCodeResultCode: MATCH
+              threeDSecureAuthenticationValueResultCode: VISA_CAVV_PASSED_VALIDATION_ATTEMPTED
+            credentialOnFileResponse: null
+            refundDetails: null
+            customData:
+              property1: string
+              property2: string
+            incrementalAuthorizations:
+              - amount:
+                  amount: 10000
+                  currency: CAD
+                processedAt: '2025-07-30T06:43:40.252Z'
+              - amount:
+                  amount: 20000
+                  currency: CAD
+                processedAt: '2025-08-30T06:43:40.252Z'
     listPaymentMethodsResponse:
       description: Paginated list of payment methods
       headers:
@@ -19388,106 +20511,13 @@ components:
           schema:
             $ref: '#/components/schemas/error'
           example:
-            data:
-              - refundId: ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                payment:
-                  paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                merchantId: '0123456789101'
-                paymentMethod:
-                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                  merchantId: '0123456789101'
-                  cardholderInformation: null
-                  contactDetails: null
-                  billingAddress: null
-                  paymentMethodInformation:
-                    paymentMethodType: CARD
-                    paymentMethodSource: CARD
-                    cardInformation:
-                      bankIdentificationNumber: '123456'
-                      lastFour: '1234'
-                      expiryMonth: 1
-                      expiryYear: 2028
-                      cardBrand: MASTERCARD
-                      cardType: CREDIT
-                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                      issuer: RBC
-                    paymentAccountReference: '11112222333344445555666677778'
-                    storePaymentMethod: DO_NOT_STORE
-                  createdAt: '2019-07-30T06:43:40.252Z'
-                  modifiedAt: null
-                  customData:
-                    property1: string
-                    property2: string
-                createdAt: '2019-07-30T06:43:40.252Z'
-                modifiedAt: '2019-07-30T06:43:40.252Z'
-                refundAmount:
-                  amount: 1600
-                  currency: CAD
-                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                refundStatus: SUCCEEDED
-                transactionDetails:
-                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
-                  isoResponseCode: '00'
-                  responseCode: '000'
-                  message: SUCCESS
-                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
-                reason: Defective product
-                credentialOnFileResponse: null
-                customData:
-                  property1: string
-                  property2: string
-              - refundId: ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                payment:
-                  paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                merchantId: '0123456789101'
-                paymentMethod:
-                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                  merchantId: '0123456789101'
-                  cardholderInformation: null
-                  contactDetails: null
-                  billingAddress: null
-                  paymentMethodInformation:
-                    paymentMethodType: CARD
-                    paymentMethodSource: CARD
-                    cardInformation:
-                      bankIdentificationNumber: '123456'
-                      lastFour: '1234'
-                      expiryMonth: 1
-                      expiryYear: 2028
-                      cardBrand: MASTERCARD
-                      cardType: CREDIT
-                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
-                      issuer: RBC
-                    paymentAccountReference: '11112222333344445555666677778'
-                    storePaymentMethod: DO_NOT_STORE
-                  createdAt: '2019-07-30T06:43:40.252Z'
-                  modifiedAt: null
-                  customData:
-                    property1: string
-                    property2: string
-                createdAt: '2019-07-30T06:43:40.252Z'
-                modifiedAt: '2019-07-30T06:43:40.252Z'
-                refundAmount:
-                  amount: 1600
-                  currency: CAD
-                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
-                refundStatus: DECLINED
-                transactionDetails:
-                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
-                  isoResponseCode: '51'
-                  responseCode: '054'
-                  message: Expired Card
-                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
-                reason: Defective product
-                credentialOnFileResponse: null
-                customData:
-                  property1: string
-                  property2: string
-            self: /refunds?cursor=d41d8cd98f00b&limit=50
-            first: /refunds?cursor=d41d8cd98f00b&limit=50
-            last: /refunds?cursor=d41d8cd98f00b&limit=50
-            next: null
-            previous: null
+            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
+            title: NOT_FOUND
+            status: 404
+            detail: null
+            instance: /payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            category: INVALID_REQUEST_ERROR
+            errors: []
     listValidationsSuccessResponse:
       description: List of Card Validations
       headers:
@@ -19715,6 +20745,7 @@ components:
             customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
             createdAt: '2023-02-25T06:43:40.252Z'
             modifiedAt: '2023-02-26T06:43:40.252Z'
+            subscriptionType: RECURRING
             billingInformation:
               billingIntervalUnit: WEEK
               billingIntervalFrequency: 2
@@ -19799,6 +20830,7 @@ components:
             customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
             createdAt: '2023-02-25T06:43:40.252Z'
             modifiedAt: '2023-02-26T06:43:40.252Z'
+            subscriptionType: RECURRING
             billingInformation:
               billingIntervalUnit: WEEK
               billingIntervalFrequency: 2
@@ -19883,6 +20915,7 @@ components:
             customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
             createdAt: '2023-02-25T06:43:40.252Z'
             modifiedAt: '2023-02-26T06:43:40.252Z'
+            subscriptionType: RECURRING
             billingInformation:
               billingIntervalUnit: WEEK
               billingIntervalFrequency: 2
@@ -19967,6 +21000,7 @@ components:
             customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
             createdAt: '2023-02-25T06:43:40.252Z'
             modifiedAt: '2023-02-26T06:43:40.252Z'
+            subscriptionType: RECURRING
             billingInformation:
               billingIntervalUnit: WEEK
               billingIntervalFrequency: 2
@@ -20045,6 +21079,7 @@ components:
             $ref: '#/components/schemas/subscription'
           example:
             subscriptionId: rp0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            subscriptionType: RECURRING
             merchantId: '0123456789101'
             orderId: 1q2w3e4r5t6t78
             invoiceNumber: 1a2s3d45v6
@@ -20129,6 +21164,7 @@ components:
             $ref: '#/components/schemas/subscription'
           example:
             subscriptionId: rp0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            subscriptionType: RECURRING
             merchantId: '0123456789101'
             orderId: 1q2w3e4r5t6t78
             invoiceNumber: 1a2s3d45v6
@@ -20213,6 +21249,7 @@ components:
             $ref: '#/components/schemas/subscription'
           example:
             subscriptionId: rp0105ARZ3NDEKTSV4RRFFQ69G5FAV
+            subscriptionType: RECURRING
             merchantId: '0123456789101'
             orderId: 1q2w3e4r5t6t78
             invoiceNumber: 1a2s3d45v6
@@ -20588,6 +21625,168 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/installmentEligibilityResponse'
+    SurchargeEligibilitySuccessfulResponse:
+      description: surcharge eligible response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SurchargeEligibility'
+          example:
+            merchantId: '0030200564948'
+            amount:
+              amount: 5600
+              currency: CAD
+            surchargeMessage: Surcharge eligible
+            maximumSurchargeRate: 2.4
+            maximumSurchargeAmount:
+              amount: 134
+              currency: CAD
+            paymentMethod:
+              paymentMethodId: pm0001JYKTKZM2R5BXDFF1QGGXYRYP
+              merchantId: '0030200564948'
+              cardholderInformation:
+                cardholderName: John Doe
+                companyName: SP Ltd
+              contactDetails:
+                phoneNumber: '+18663197450'
+                email: moneris@moneris.com
+              billingAddress:
+                unitNumber: 123A
+                streetNumber: '3300'
+                streetName: Bloor Street West
+                city: Toronto
+                province: 'ON'
+                postalCode: M8X 2X2
+                country: CA
+              paymentMethodInformation:
+                paymentMethodType: CARD
+                cardInformation:
+                  bankIdentificationNumber: '424242'
+                  lastFour: '4242'
+                  expiryMonth: 1
+                  expiryYear: 2026
+                  cardBrand: VISA
+                  cardType: CREDIT
+                  cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                  issuer: RBC
+                paymentAccountReference: '11112222333344445555666677778'
+                storePaymentMethod: DO_NOT_STORE
+                paymentMethodSource: CARD
+              createdAt: '2025-06-25T15:17:05.285Z'
+              modifiedAt: '2025-06-25T15:17:05.285Z'
+              customData:
+                property1: string
+                property2: string
+    multiCurrencyPricingRateLookup:
+      description: Multi-Currency Pricing (MCP) Rate lookup Response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/multiCurrencyPricingRateLookup'
+    disputeAcceptSuccess:
+      description: The dispute has been accepted successfully.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+    getDisputeSuccess:
+      description: OK
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/dispute'
+          example:
+            imageUploadAllowed: false
+            acceptAllowed: false
+            caseRecordNumber: '1'
+            caseId: '121719004438'
+            documents:
+              - receivedAt: '2023-01-01T00:00:00Z'
+                fileName: evidence1.jpg
+                totalPages: 1
+                images:
+                  - image: base64encodedstring
+                    pageNo: 1
+              - receivedAt: '2023-01-02T00:00:00Z'
+                fileName: evidence2.jpg
+                totalPages: 1
+                images:
+                  - image: base64encodedstring
+                    pageNo: 1
+                  - image: base64encodedstring
+                    pageNo: 2
+    uploadDisputeImagesSuccess:
+      description: Dispute image upload has been accepted.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+        Location:
+          $ref: '#/components/headers/location'
+    getUploadStatusSuccess:
+      description: Upload Status retrieved successfully.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/uploadStatus'
   examples:
     InvalidListRequestErrorResponse:
       summary: Invalid query parameter
