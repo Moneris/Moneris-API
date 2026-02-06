@@ -3528,7 +3528,7 @@ components:
             - COMPLETED_MERCHANT_REFUND_TRANSACTION
             - COMPLETED_FIRST_VOID_TRANSACTION
             - PAYMENT_CANCELED
-          example: COMPLETED_CONVENIENCE_FEE_TRANSACTION
+          example: COMPLETED_SECOND_PURCHASE_TRANSACTION
         amount:
           description: The expected Convenience Fee amount.
           type: object
@@ -4126,10 +4126,7 @@ components:
         cardholderAmount:
           currency: USD
           amount: 30000
-        merchantSettlementAmount:
-          currency: CAD
-          amount: 37035
-        multiCurrencyPricingExchangeRate: 1.2345
+        multiCurrencyPricingRate: 1.2345
     refundId:
       type: string
       pattern: ^[A-Za-z]{2}\d{2}[A-Za-z0-9]{26}$
@@ -4659,8 +4656,7 @@ components:
     cardNumber:
       type: string
       description: Identifies the customer's credit or debit card number (Primary Account Number).
-      minLength: 13
-      maxLength: 19
+      pattern: ^[0-9]{13,19}$
       example: '4242424242424242'
     cardSecurityCode:
       type: string
@@ -5056,8 +5052,7 @@ components:
             applicationPrimaryAccountNumber:
               description: The unique identifier for the primary account number for the payment card.
               type: string
-              minLength: 13
-              maxLength: 19
+              pattern: ^[0-9]{13,19}$
               example: '4242424242424242'
             expiryMonth:
               $ref: '#/components/schemas/expiryMonth'
@@ -5197,8 +5192,7 @@ components:
         personalAccountNumber:
           description: The personal account number charged. This string contains only digits.
           type: string
-          minLength: 13
-          maxLength: 19
+          pattern: ^[0-9]{13,19}$
           example: '4242424242424242'
         expiryMonth:
           $ref: '#/components/schemas/expiryMonth'
@@ -5939,6 +5933,7 @@ components:
           description: List of refunds.
           type: array
           items:
+            type: object
             $ref: '#/components/schemas/refund'
         self:
           $ref: '#/components/schemas/self'
@@ -9509,7 +9504,7 @@ components:
         merchantSettlementAmount:
           currency: CAD
           amount: 25000
-        multiCurrencyPricingExchangeRate: 1.2345
+        multiCurrencyPricingRate: 1.2345
         multiCurrencyPricingStatusCode: 200
         multiCurrencyPricingStatusMessage: OK
     multiCurrencyPricingRateLookup:
@@ -9573,7 +9568,7 @@ components:
       type: string
       description: The name or identifier of the financial institution.
       maxLength: 5
-      example: '00809'
+      example: 809
       pattern: ^\d{5}
     transitNumber:
       type: string
@@ -9691,7 +9686,7 @@ components:
       nullable: true
       format: uri
       maxLength: 255
-      example: https://www.abc.com
+      example: www.abc.com
     serviceProvider:
       type: string
       description: The name or identifier of the service provider associated to the business.
@@ -11152,7 +11147,7 @@ components:
           type: string
           description: A score indicating the level of risk associated with the merchant's transactions.
           maxLength: 60
-          example: A_PLUS
+          example: A+
           enum:
             - A
             - A_PLUS
@@ -11194,7 +11189,7 @@ components:
       type: string
       description: A score indicating the level of risk associated with the merchant's transactions.
       maxLength: 60
-      example: A_PLUS
+      example: A+
       enum:
         - A
         - A_PLUS
@@ -19058,7 +19053,7 @@ components:
       in: path
       description: The case record number of the files. This must be a value between "0" and "99".
       required: true
-      example: 1
+      example: '1'
       schema:
         type: integer
         minimum: 0
@@ -19922,11 +19917,11 @@ components:
               - amount:
                   amount: 10000
                   currency: CAD
-                processedAt: '2025-07-30T06:43:40.252Z'
+                createdAt: '2025-07-30T06:43:40.252Z'
               - amount:
                   amount: 20000
                   currency: CAD
-                processedAt: '2025-08-30T06:43:40.252Z'
+                createdAt: '2025-08-30T06:43:40.252Z'
     listPaymentMethodsResponse:
       description: Paginated list of payment methods
       headers:
@@ -20511,13 +20506,106 @@ components:
           schema:
             $ref: '#/components/schemas/error'
           example:
-            type: https://developer.moneris.com/en/More/Testing/Response%20Codes
-            title: NOT_FOUND
-            status: 404
-            detail: null
-            instance: /payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-            category: INVALID_REQUEST_ERROR
-            errors: []
+            data:
+              - refundId: ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                payment:
+                  paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                merchantId: '0123456789101'
+                paymentMethod:
+                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                  merchantId: '0123456789101'
+                  cardholderInformation: null
+                  contactDetails: null
+                  billingAddress: null
+                  paymentMethodInformation:
+                    paymentMethodType: CARD
+                    paymentMethodSource: CARD
+                    cardInformation:
+                      bankIdentificationNumber: '123456'
+                      lastFour: '1234'
+                      expiryMonth: 1
+                      expiryYear: 2028
+                      cardBrand: MASTERCARD
+                      cardType: CREDIT
+                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                      issuer: RBC
+                    paymentAccountReference: '11112222333344445555666677778'
+                    storePaymentMethod: DO_NOT_STORE
+                  createdAt: '2019-07-30T06:43:40.252Z'
+                  modifiedAt: null
+                  customData:
+                    property1: string
+                    property2: string
+                createdAt: '2019-07-30T06:43:40.252Z'
+                modifiedAt: '2019-07-30T06:43:40.252Z'
+                refundAmount:
+                  amount: 1600
+                  currency: CAD
+                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                refundStatus: SUCCEEDED
+                transactionDetails:
+                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+                  isoResponseCode: '00'
+                  responseCode: '000'
+                  message: SUCCESS
+                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                reason: Defective product
+                credentialOnFileResponse: null
+                customData:
+                  property1: string
+                  property2: string
+              - refundId: ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                payment:
+                  paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                merchantId: '0123456789101'
+                paymentMethod:
+                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                  merchantId: '0123456789101'
+                  cardholderInformation: null
+                  contactDetails: null
+                  billingAddress: null
+                  paymentMethodInformation:
+                    paymentMethodType: CARD
+                    paymentMethodSource: CARD
+                    cardInformation:
+                      bankIdentificationNumber: '123456'
+                      lastFour: '1234'
+                      expiryMonth: 1
+                      expiryYear: 2028
+                      cardBrand: MASTERCARD
+                      cardType: CREDIT
+                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                      issuer: RBC
+                    paymentAccountReference: '11112222333344445555666677778'
+                    storePaymentMethod: DO_NOT_STORE
+                  createdAt: '2019-07-30T06:43:40.252Z'
+                  modifiedAt: null
+                  customData:
+                    property1: string
+                    property2: string
+                createdAt: '2019-07-30T06:43:40.252Z'
+                modifiedAt: '2019-07-30T06:43:40.252Z'
+                refundAmount:
+                  amount: 1600
+                  currency: CAD
+                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                refundStatus: DECLINED
+                transactionDetails:
+                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+                  isoResponseCode: '51'
+                  responseCode: '054'
+                  message: Expired Card
+                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                reason: Defective product
+                credentialOnFileResponse: null
+                customData:
+                  property1: string
+                  property2: string
+            self: /refunds?cursor=d41d8cd98f00b&limit=50
+            first: /refunds?cursor=d41d8cd98f00b&limit=50
+            last: /refunds?cursor=d41d8cd98f00b&limit=50
+            next: null
+            previous: null
     listValidationsSuccessResponse:
       description: List of Card Validations
       headers:
@@ -20745,7 +20833,6 @@ components:
             customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
             createdAt: '2023-02-25T06:43:40.252Z'
             modifiedAt: '2023-02-26T06:43:40.252Z'
-            subscriptionType: RECURRING
             billingInformation:
               billingIntervalUnit: WEEK
               billingIntervalFrequency: 2
@@ -20830,7 +20917,6 @@ components:
             customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
             createdAt: '2023-02-25T06:43:40.252Z'
             modifiedAt: '2023-02-26T06:43:40.252Z'
-            subscriptionType: RECURRING
             billingInformation:
               billingIntervalUnit: WEEK
               billingIntervalFrequency: 2
@@ -20915,7 +21001,6 @@ components:
             customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
             createdAt: '2023-02-25T06:43:40.252Z'
             modifiedAt: '2023-02-26T06:43:40.252Z'
-            subscriptionType: RECURRING
             billingInformation:
               billingIntervalUnit: WEEK
               billingIntervalFrequency: 2
@@ -21000,7 +21085,6 @@ components:
             customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
             createdAt: '2023-02-25T06:43:40.252Z'
             modifiedAt: '2023-02-26T06:43:40.252Z'
-            subscriptionType: RECURRING
             billingInformation:
               billingIntervalUnit: WEEK
               billingIntervalFrequency: 2
@@ -21079,7 +21163,6 @@ components:
             $ref: '#/components/schemas/subscription'
           example:
             subscriptionId: rp0105ARZ3NDEKTSV4RRFFQ69G5FAV
-            subscriptionType: RECURRING
             merchantId: '0123456789101'
             orderId: 1q2w3e4r5t6t78
             invoiceNumber: 1a2s3d45v6
@@ -21164,7 +21247,6 @@ components:
             $ref: '#/components/schemas/subscription'
           example:
             subscriptionId: rp0105ARZ3NDEKTSV4RRFFQ69G5FAV
-            subscriptionType: RECURRING
             merchantId: '0123456789101'
             orderId: 1q2w3e4r5t6t78
             invoiceNumber: 1a2s3d45v6
@@ -21249,7 +21331,6 @@ components:
             $ref: '#/components/schemas/subscription'
           example:
             subscriptionId: rp0105ARZ3NDEKTSV4RRFFQ69G5FAV
-            subscriptionType: RECURRING
             merchantId: '0123456789101'
             orderId: 1q2w3e4r5t6t78
             invoiceNumber: 1a2s3d45v6
