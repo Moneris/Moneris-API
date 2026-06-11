@@ -16,10 +16,10 @@ info:
     url: https://developer.moneris.com/Agreements/Terms%20of%20Use
   x-audience: external-public
 servers:
-  - url: https://api.moneris.io
-    description: Serveur de production (utilise des données réelles)
   - url: https://api.sb.moneris.io
     description: Serveur de test (utilise des données de test)
+  - url: https://api.moneris.io
+    description: Serveur de production (utilise des données réelles)
 tags:
   - name: Paiements
     description: Effectuer et gérer les paiements
@@ -2287,8 +2287,7 @@ components:
     cardNumber:
       type: string
       description: Identifie le numéro de carte de crédit ou de débit du client (numéro de compte principal).
-      minLength: 13
-      maxLength: 19
+      pattern: ^[0-9]{13,19}$
       example: '4242424242424242'
     cardSecurityCode:
       type: string
@@ -2686,8 +2685,7 @@ components:
             applicationPrimaryAccountNumber:
               description: Identifie le numéro de carte de crédit ou de débit du client (numéro de compte principal).
               type: string
-              minLength: 13
-              maxLength: 19
+              pattern: ^[0-9]{13,19}$
               example: '4242424242424242'
             expiryMonth:
               $ref: '#/components/schemas/expiryMonth'
@@ -2827,8 +2825,7 @@ components:
         personalAccountNumber:
           description: Identifie le numéro de carte de crédit ou de débit du client (numéro de compte principal).
           type: string
-          minLength: 13
-          maxLength: 19
+          pattern: ^[0-9]{13,19}$
           example: '4242424242424242'
         expiryMonth:
           $ref: '#/components/schemas/expiryMonth'
