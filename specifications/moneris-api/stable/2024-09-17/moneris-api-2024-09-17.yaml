@@ -16,11 +16,11 @@ info:
     url: https://developer.moneris.com/Agreements/Terms%20of%20Use
   x-audience: external-public
 servers:
-  - url: https://api.moneris.io
-    description: Production server (uses live data)
-    x-internal: false
   - url: https://api.sb.moneris.io
     description: Sandbox server (uses test data)
+    x-internal: false
+  - url: https://api.moneris.io
+    description: Production server (uses live data)
     x-internal: false
 tags:
   - name: Payments
@@ -2286,8 +2286,7 @@ components:
     cardNumber:
       type: string
       description: Identifies the customer's credit or debit card number (Primary Account Number).
-      minLength: 13
-      maxLength: 19
+      pattern: ^[0-9]{13,19}$
       example: '4242424242424242'
     cardSecurityCode:
       type: string
@@ -2683,8 +2682,7 @@ components:
             applicationPrimaryAccountNumber:
               description: The unique identifier for the primary account number for the payment card.
               type: string
-              minLength: 13
-              maxLength: 19
+              pattern: ^[0-9]{13,19}$
               example: '4242424242424242'
             expiryMonth:
               $ref: '#/components/schemas/expiryMonth'
@@ -2824,8 +2822,7 @@ components:
         personalAccountNumber:
           description: The personal account number charged. This string contains only digits.
           type: string
-          minLength: 13
-          maxLength: 19
+          pattern: ^[0-9]{13,19}$
           example: '4242424242424242'
         expiryMonth:
           $ref: '#/components/schemas/expiryMonth'
