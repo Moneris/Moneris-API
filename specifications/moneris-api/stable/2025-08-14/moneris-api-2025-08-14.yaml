@@ -2,7 +2,11 @@ openapi: 3.0.3
 info:
   version: 2.6.0
   title: Moneris API
-  description: "Moneris API Platform\r\n\r\n\r\n[<img src=\"https://run.pstmn.io/button.svg\" alt=\"Run In Postman\" style=\"width: 128px; height:32px;\">](https://god.gw.postman.com/run-collection/25575461-f04750a0-88e9-4c83-8b58-a3aff15eeea8?action=collection%2Ffork&collection-url=entityId%3D25575461-f04750a0-88e9-4c83-8b58-a3aff15eeea8%26entityType%3Dcollection%26workspaceId%3D5d2a9a0f-57a7-441c-b2af-fe6315e80a08)"
+  description: |-
+    Moneris API Platform
+
+
+    [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height:32px;">](https://god.gw.postman.com/run-collection/25575461-f04750a0-88e9-4c83-8b58-a3aff15eeea8?action=collection%2Ffork&collection-url=entityId%3D25575461-f04750a0-88e9-4c83-8b58-a3aff15eeea8%26entityType%3Dcollection%26workspaceId%3D5d2a9a0f-57a7-441c-b2af-fe6315e80a08)
   termsOfService: https://www.moneris.com/en/legal/terms-of-use
   contact:
     url: https://api-developer.moneris.com
@@ -12,11 +16,11 @@ info:
     url: https://developer.moneris.com/Agreements/Terms%20of%20Use
   x-audience: external-public
 servers:
-  - url: https://api.moneris.io
-    description: Production server (uses live data)
-    x-internal: false
   - url: https://api.sb.moneris.io
     description: Sandbox server (uses test data)
+    x-internal: false
+  - url: https://api.moneris.io
+    description: Production server (uses live data)
     x-internal: false
 tags:
   - name: Payments
@@ -825,7 +829,271 @@ paths:
       - $ref: '#/components/parameters/merchantId'
     post:
       summary: Create Subscription
-      description: "<p>This operation is used to create a Subscription.</p>\r\n<h4>\r\n  <span>Webhooks</span>\r\n</h4>\r\n<details>\r\n  <summary style=\"color: rgba(0, 113, 145, 1);\">Webhook Definition Details</summary>\r\n  <div class=\"collapsible\">\r\n    <div class=\"tabs\">\r\n      <div class=\"tab-label\" style=\"background-color: #051D33; color: #FFFFFF;\">application/json</div>\r\n      <div class=\"tab-content\" style=\"display: block;\">\r\n        <type-definition>\r\n          <h4 class=\"text-truncate flex-grow\">Webhook Request Body</h4>\r\n          <p>\r\n          <p>This is the base definition for all event messages. It contains the common properties that are shared across all events.</p>\r\n          </p>\r\n          <div role=\"table\" class=\"table-preset table-preset-schema\" id=\"webhookRequestTable\">\r\n            <div class=\"d-contents\" role=\"rowgroup\">\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"columnheader\" class=\"table-preset-head text-truncate\">\r\n                  <span>\r\n                    Name</span>\r\n                </div>\r\n                <div role=\"columnheader\" class=\"table-preset-head text-truncate\">\r\n                  <span>\r\n                    Required</span>\r\n                </div>\r\n                <div role=\"columnheader\" class=\"table-preset-head text-truncate\">\r\n                  <span>Additional\r\n                    Info</span>\r\n                </div>\r\n                <div role=\"columnheader\" class=\"table-preset-head\">\r\n                  <span>\r\n                    Description</span>\r\n                </div>\r\n              </div>\r\n            </div>\r\n            <div class=\"d-contents\" role=\"rowgroup\">\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"eventId\">\r\n                  eventId</div>\r\n                <div role=\"cell\">\r\n                  true</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    string</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>Identifier of the triggered\r\n                    event. Can be used\r\n                    as an idempotency key to\r\n                    detect duplicates.</p>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"eventType\">\r\n                  eventType</div>\r\n                <div role=\"cell\">\r\n                  true</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    string</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>This is a\r\n                    list of all the types of\r\n                    events we currently\r\n                    send.</p>\r\n                  <ul>\r\n                    <li>RECURRING_PAYMENT_CONFIRMED: A payment transaction has been executed.</li>\r\n                  </ul>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"occuredAt\">\r\n                  occuredAt</div>\r\n                <div role=\"cell\">\r\n                  true</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    date-time</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>the timestamp of when the event occurred (not\r\n                    necessarily the same of when it was\r\n                    delivered)</p>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"apiVersion\">\r\n                  apiVersion</div>\r\n                <div role=\"cell\">\r\n                  false</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    string</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>The Moneris API Version used to\r\n                    populate the event\r\n                    payload.</p>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"objectId\">\r\n                  objectId</div>\r\n                <div role=\"cell\">\r\n                  false</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    string</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>Used to\r\n                    identify API resources which\r\n                    may be required for\r\n                    future follow-on\r\n                    transactions; i.e. Refunds,\r\n                    Corrections,\r\n                    Completions, Reversals,\r\n                    etc.</p>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"href\">\r\n                  href</div>\r\n                <div role=\"cell\">\r\n                  false</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    string</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>Uniform\r\n                    resource locator to retrieve\r\n                    resource\r\n                    details.</p>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"correlationId\">\r\n                  correlationId</div>\r\n                <div role=\"cell\">\r\n                  false</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\" title=\"string\">\r\n                    string</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>Correlation Id transmitted during the\r\n                    original request.\r\n                    This is useful to correlate between\r\n                    multiple events corresponding to same\r\n                    flow. </p>\r\n                </div>\r\n              </div>\r\n              <div class=\"d-contents\" role=\"row\">\r\n                <div role=\"cell\" class=\"text-truncate\" title=\"data\">\r\n                  data</div>\r\n                <div role=\"cell\">\r\n                  false</div>\r\n                <div role=\"cell\" class=\"text-truncate\">\r\n                  <a class=\"text-monospace\"\r\n                    href=\"/api-details#api=moneris-api-2025-02-20-preview&operation=createPayments\" title=\"payment\">\r\n                    payment</a>\r\n                </div>\r\n                <div role=\"cell\">\r\n                  <p>The Payment data associated with the\r\n                    event.</p>\r\n                </div>\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <code-snippet id=\"webhookRequestDefinition\" style=\"display: none;\">\r\n            <h4></h4>\r\n            <div></div>\r\n            <div class=\"flex code-snippet code-snippet-bordered\">\r\n              <div class=\"code-snippet-heading\">\r\n                <span class=\"code-snippet-title\">json</span>\r\n                <button class=\"code-snippet-command\" aria-label=\"Copy to clipboard\">\r\n                  <i class=\"icon-emb icon-emb-duplicate\"></i>\r\n                  <span>Copy</span>\r\n                </button>\r\n              </div>\r\n            </div>\r\n            <pre>\r\n<span class=\"token punctuation\">{</span>\r\n  <span class=\"token property\">\"title\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"webhookRequest\"</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"required\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">[</span>\r\n    <span class=\"token string\">\"eventId\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token string\">\"eventType\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token string\">\"occuredAt\"</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token punctuation\">]</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"object\"</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"properties\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n  <span class=\"token property\">\"eventId\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"Unique Identifier for the Event.\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"pattern\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"^[A-Za-z]{2}\\d{2}[A-Za-z0-9]{26}$\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"minLength\"</span><span class=\"token operator\">:</span> <span class=\"token string\">30</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"maxLength\"</span><span class=\"token operator\">:</span> <span class=\"token string\">30</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"ev0105ARZ3NDEKTSV4RRFFQ69G5FAV\"</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"eventType\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"This is a list of all the types of events we currently send. RECURRING_PAYMENT_CONFIRMED\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"enum\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">[</span>\r\n        <span class=\"token string\">\"RECURRING_PAYMENT_CONFIRMED\"</span>\r\n    <span class=\"token punctuation\">]</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">RECURRING_PAYMENT_CONFIRMED</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"occuredAt\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"Date & Time at which the event has occurred.\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"format\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"date-time\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">2025-02-17T18:00:00Z</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"apiVersion\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"The Moneris API Version used to populate the event payload.\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"nullable\"</span><span class=\"token operator\">:</span> <span class=\"token string\">true</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">2024-09-17</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"objectId\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"Used to identify API resources which may be required for future follow-on transactions; i.e. Refunds, Corrections, Completions, Reversals, etc.\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"nullable\"</span><span class=\"token operator\">:</span> <span class=\"token string\">true</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">pi0105ARZ3NDEKTSV4RRFFQ69G5FAV</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"href\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"Uniform resource locator to retrieve resource details\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"format\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"uri-reference\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"nullable\"</span><span class=\"token operator\">:</span> <span class=\"token string\">true</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">/payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"correlationId\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"string\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"Correlation Id transmitted during the original request.\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"nullable\"</span><span class=\"token operator\">:</span> <span class=\"token string\">true</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"example\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"f0d4c76f-f129-4b91-92a3-9a120829bbe5\"</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token punctuation\">}</span><span class=\"token punctuation\">,</span>\r\n  <span class=\"token property\">\"data\"</span><span class=\"token operator\">:</span> <span class=\"token punctuation\">{</span>\r\n    <span class=\"token property\">\"type\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"object\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"description\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"Full representation of the resource that triggered the event. For Payments, it will be the Payment object\"</span><span class=\"token punctuation\">,</span>\r\n    <span class=\"token property\">\"nullable\"</span><span class=\"token operator\">:</span> <span class=\"token string\">true</span>\r\n  <span class=\"token punctuation\">}</span>\r\n<span class=\"token punctuation\">}</span>\r\n</pre>\r\n          </code-snippet>\r\n        </type-definition>\r\n      </div>\r\n    </div>\r\n    <h3><span>Response</span> <span\r\n       >200 OK</span></h3>\r\n    <p>\r\n    <p>Webhook event processed successfully</p>\r\n    </p>\r\n    <h3><span>Response</span> <span\r\n       >400 Bad Request</span></h3>\r\n    <p>\r\n    <p>An error has occured while processing webhook event</p>\r\n    </p>\r\n  </div>\r\n</details>"
+      description: |-
+        <p>This operation is used to create a Subscription.</p>
+        <h4>
+          <span>Webhooks</span>
+        </h4>
+        <details>
+          <summary style="color: rgba(0, 113, 145, 1);">Webhook Definition Details</summary>
+          <div class="collapsible">
+            <div class="tabs">
+              <div class="tab-label" style="background-color: #051D33; color: #FFFFFF;">application/json</div>
+              <div class="tab-content" style="display: block;">
+                <type-definition>
+                  <h4 class="text-truncate flex-grow">Webhook Request Body</h4>
+                  <p>
+                  <p>This is the base definition for all event messages. It contains the common properties that are shared across all events.</p>
+                  </p>
+                  <div role="table" class="table-preset table-preset-schema" id="webhookRequestTable">
+                    <div class="d-contents" role="rowgroup">
+                      <div class="d-contents" role="row">
+                        <div role="columnheader" class="table-preset-head text-truncate">
+                          <span>
+                            Name</span>
+                        </div>
+                        <div role="columnheader" class="table-preset-head text-truncate">
+                          <span>
+                            Required</span>
+                        </div>
+                        <div role="columnheader" class="table-preset-head text-truncate">
+                          <span>Additional
+                            Info</span>
+                        </div>
+                        <div role="columnheader" class="table-preset-head">
+                          <span>
+                            Description</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-contents" role="rowgroup">
+                      <div class="d-contents" role="row">
+                        <div role="cell" class="text-truncate" title="eventId">
+                          eventId</div>
+                        <div role="cell">
+                          true</div>
+                        <div role="cell" class="text-truncate">
+                          <a class="text-monospace" title="string">
+                            string</a>
+                        </div>
+                        <div role="cell">
+                          <p>Identifier of the triggered
+                            event. Can be used
+                            as an idempotency key to
+                            detect duplicates.</p>
+                        </div>
+                      </div>
+                      <div class="d-contents" role="row">
+                        <div role="cell" class="text-truncate" title="eventType">
+                          eventType</div>
+                        <div role="cell">
+                          true</div>
+                        <div role="cell" class="text-truncate">
+                          <a class="text-monospace" title="string">
+                            string</a>
+                        </div>
+                        <div role="cell">
+                          <p>This is a
+                            list of all the types of
+                            events we currently
+                            send.</p>
+                          <ul>
+                            <li>RECURRING_PAYMENT_CONFIRMED: A payment transaction has been executed.</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="d-contents" role="row">
+                        <div role="cell" class="text-truncate" title="occuredAt">
+                          occuredAt</div>
+                        <div role="cell">
+                          true</div>
+                        <div role="cell" class="text-truncate">
+                          <a class="text-monospace" title="string">
+                            date-time</a>
+                        </div>
+                        <div role="cell">
+                          <p>the timestamp of when the event occurred (not
+                            necessarily the same of when it was
+                            delivered)</p>
+                        </div>
+                      </div>
+                      <div class="d-contents" role="row">
+                        <div role="cell" class="text-truncate" title="apiVersion">
+                          apiVersion</div>
+                        <div role="cell">
+                          false</div>
+                        <div role="cell" class="text-truncate">
+                          <a class="text-monospace" title="string">
+                            string</a>
+                        </div>
+                        <div role="cell">
+                          <p>The Moneris API Version used to
+                            populate the event
+                            payload.</p>
+                        </div>
+                      </div>
+                      <div class="d-contents" role="row">
+                        <div role="cell" class="text-truncate" title="objectId">
+                          objectId</div>
+                        <div role="cell">
+                          false</div>
+                        <div role="cell" class="text-truncate">
+                          <a class="text-monospace" title="string">
+                            string</a>
+                        </div>
+                        <div role="cell">
+                          <p>Used to
+                            identify API resources which
+                            may be required for
+                            future follow-on
+                            transactions; i.e. Refunds,
+                            Corrections,
+                            Completions, Reversals,
+                            etc.</p>
+                        </div>
+                      </div>
+                      <div class="d-contents" role="row">
+                        <div role="cell" class="text-truncate" title="href">
+                          href</div>
+                        <div role="cell">
+                          false</div>
+                        <div role="cell" class="text-truncate">
+                          <a class="text-monospace" title="string">
+                            string</a>
+                        </div>
+                        <div role="cell">
+                          <p>Uniform
+                            resource locator to retrieve
+                            resource
+                            details.</p>
+                        </div>
+                      </div>
+                      <div class="d-contents" role="row">
+                        <div role="cell" class="text-truncate" title="correlationId">
+                          correlationId</div>
+                        <div role="cell">
+                          false</div>
+                        <div role="cell" class="text-truncate">
+                          <a class="text-monospace" title="string">
+                            string</a>
+                        </div>
+                        <div role="cell">
+                          <p>Correlation Id transmitted during the
+                            original request.
+                            This is useful to correlate between
+                            multiple events corresponding to same
+                            flow. </p>
+                        </div>
+                      </div>
+                      <div class="d-contents" role="row">
+                        <div role="cell" class="text-truncate" title="data">
+                          data</div>
+                        <div role="cell">
+                          false</div>
+                        <div role="cell" class="text-truncate">
+                          <a class="text-monospace"
+                            href="/api-details#api=moneris-api-2025-02-20-preview&operation=createPayments" title="payment">
+                            payment</a>
+                        </div>
+                        <div role="cell">
+                          <p>The Payment data associated with the
+                            event.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <code-snippet id="webhookRequestDefinition" style="display: none;">
+                    <h4></h4>
+                    <div></div>
+                    <div class="flex code-snippet code-snippet-bordered">
+                      <div class="code-snippet-heading">
+                        <span class="code-snippet-title">json</span>
+                        <button class="code-snippet-command" aria-label="Copy to clipboard">
+                          <i class="icon-emb icon-emb-duplicate"></i>
+                          <span>Copy</span>
+                        </button>
+                      </div>
+                    </div>
+                    <pre>
+        <span class="token punctuation">{</span>
+          <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"webhookRequest"</span><span class="token punctuation">,</span>
+          <span class="token property">"required"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"eventId"</span><span class="token punctuation">,</span>
+            <span class="token string">"eventType"</span><span class="token punctuation">,</span>
+            <span class="token string">"occuredAt"</span><span class="token punctuation">,</span>
+          <span class="token punctuation">]</span><span class="token punctuation">,</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+          <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"eventId"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span>
+            <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"Unique Identifier for the Event."</span><span class="token punctuation">,</span>
+            <span class="token property">"pattern"</span><span class="token operator">:</span> <span class="token string">"^[A-Za-z]{2}\d{2}[A-Za-z0-9]{26}$"</span><span class="token punctuation">,</span>
+            <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token string">30</span><span class="token punctuation">,</span>
+            <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token string">30</span><span class="token punctuation">,</span>
+            <span class="token property">"example"</span><span class="token operator">:</span> <span class="token string">"ev0105ARZ3NDEKTSV4RRFFQ69G5FAV"</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"eventType"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+            <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"This is a list of all the types of events we currently send. RECURRING_PAYMENT_CONFIRMED"</span><span class="token punctuation">,</span>
+            <span class="token property">"enum"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">"RECURRING_PAYMENT_CONFIRMED"</span>
+            <span class="token punctuation">]</span>
+            <span class="token property">"example"</span><span class="token operator">:</span> <span class="token string">RECURRING_PAYMENT_CONFIRMED</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"occuredAt"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+            <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"Date & Time at which the event has occurred."</span><span class="token punctuation">,</span>
+            <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"date-time"</span><span class="token punctuation">,</span>
+            <span class="token property">"example"</span><span class="token operator">:</span> <span class="token string">2025-02-17T18:00:00Z</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"apiVersion"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+            <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"The Moneris API Version used to populate the event payload."</span><span class="token punctuation">,</span>
+            <span class="token property">"nullable"</span><span class="token operator">:</span> <span class="token string">true</span><span class="token punctuation">,</span>
+            <span class="token property">"example"</span><span class="token operator">:</span> <span class="token string">2024-09-17</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+            <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"Used to identify API resources which may be required for future follow-on transactions; i.e. Refunds, Corrections, Completions, Reversals, etc."</span><span class="token punctuation">,</span>
+            <span class="token property">"nullable"</span><span class="token operator">:</span> <span class="token string">true</span><span class="token punctuation">,</span>
+            <span class="token property">"example"</span><span class="token operator">:</span> <span class="token string">pi0105ARZ3NDEKTSV4RRFFQ69G5FAV</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"href"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+            <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"Uniform resource locator to retrieve resource details"</span><span class="token punctuation">,</span>
+            <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"uri-reference"</span><span class="token punctuation">,</span>
+            <span class="token property">"nullable"</span><span class="token operator">:</span> <span class="token string">true</span><span class="token punctuation">,</span>
+            <span class="token property">"example"</span><span class="token operator">:</span> <span class="token string">/payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"correlationId"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+            <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"Correlation Id transmitted during the original request."</span><span class="token punctuation">,</span>
+            <span class="token property">"nullable"</span><span class="token operator">:</span> <span class="token string">true</span><span class="token punctuation">,</span>
+            <span class="token property">"example"</span><span class="token operator">:</span> <span class="token string">"f0d4c76f-f129-4b91-92a3-9a120829bbe5"</span><span class="token punctuation">,</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+            <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"Full representation of the resource that triggered the event. For Payments, it will be the Payment object"</span><span class="token punctuation">,</span>
+            <span class="token property">"nullable"</span><span class="token operator">:</span> <span class="token string">true</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        </pre>
+                  </code-snippet>
+                </type-definition>
+              </div>
+            </div>
+            <h3><span>Response</span> <span
+               >200 OK</span></h3>
+            <p>
+            <p>Webhook event processed successfully</p>
+            </p>
+            <h3><span>Response</span> <span
+               >400 Bad Request</span></h3>
+            <p>
+            <p>An error has occured while processing webhook event</p>
+            </p>
+          </div>
+        </details>
       operationId: createSubscriptions
       security:
         - OAuth2:
