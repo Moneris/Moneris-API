@@ -15,10 +15,10 @@ info:
     url: https://developer.moneris.com/Agreements/Terms%20of%20Use
   x-audience: external-public
 servers:
-  - url: https://api.moneris.io
-    description: Production server (uses live data)
   - url: https://api.sb.moneris.io
     description: Sandbox server (uses test data)
+  - url: https://api.moneris.io
+    description: Production server (uses live data)
 paths:
   /payments:
     parameters:
