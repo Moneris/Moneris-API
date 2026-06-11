@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 2.13.0
+  version: 2.15.0
   title: Moneris API
   description: |-
     Moneris API Platform
@@ -16,11 +16,11 @@ info:
     url: https://developer.moneris.com/Agreements/Terms%20of%20Use
   x-audience: external-public
 servers:
-  - url: https://api.moneris.io
-    description: Production server (uses live data)
-    x-internal: false
   - url: https://api.sb.moneris.io
     description: Sandbox server (uses test data)
+    x-internal: false
+  - url: https://api.moneris.io
+    description: Production server (uses live data)
     x-internal: false
 tags:
   - name: Payments
@@ -55,6 +55,8 @@ tags:
     description: Receive events in near real-time concerning your Moneris API resources.
   - name: KONEK
     description: KONEK APIs for Merchant - Consent Management
+  - name: Original Credit Transactions
+    description: Perform and Manage Original Credit Transactions (OCTs)
 paths:
   /payments:
     parameters:
@@ -456,10 +458,11 @@ paths:
         '503':
           $ref: '#/components/responses/serviceUnavailable'
     put:
-      summary: Update Payment method
+      summary: Update Payment Method
       description: |
-        Update payment method referenced by its Id. 
-        Certain details may not be updated if the payment method was used in a transaction.
+        Updates a payment method identified by its Id by replacing the entire payment method object with the new data provided.
+        This API supports updates only for payment methods that are not stored.
+        To update specific fields of a payment method (both stored or not), use the Update Payment Method Information (Patch) API instead.
       operationId: updatePaymentMethod
       security:
         - OAuth2:
@@ -488,6 +491,48 @@ paths:
                 $ref: '#/components/examples/googlePayEncryptedPaymentMethodRequest'
               google_pay_decrypted:
                 $ref: '#/components/examples/googlePayDecryptedPaymentMethodRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/paymentMethodUpdateSuccessResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/paymentMethodNotFoundResponse'
+        '409':
+          $ref: '#/components/responses/concurrencyConflict'
+        '422':
+          $ref: '#/components/responses/unprocessableContent'
+        '429':
+          $ref: '#/components/responses/tooManyRequests'
+        '500':
+          $ref: '#/components/responses/internalServer'
+        '503':
+          $ref: '#/components/responses/serviceUnavailable'
+    patch:
+      summary: Update Payment Method Information
+      description: |
+        Updates specific fields of a payment method identified by its Id. 
+        This API supports updates for both stored and not stored payment methods.
+      operationId: updatePaymentMethodInformation
+      security:
+        - OAuth2:
+            - payment.write
+        - ApiKeyAuth: []
+      tags:
+        - Payment Methods
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/updatePaymentMethodInformationRequest'
+            examples:
+              card:
+                $ref: '#/components/examples/updatePaymentMethodInformationRequest'
       responses:
         '200':
           $ref: '#/components/responses/paymentMethodUpdateSuccessResponse'
@@ -2131,6 +2176,7 @@ paths:
                   visaDebitTransactionVolume: 0
                   amexTransactionVolume: 25000
                   interacTransactionVolume: 50000
+                  interacDirectTransactionVolume: 40000
                   masterCardDebitTransactionVolume: 0
                   offeredProductsAndServicesDescription: food
                 merchantDetails:
@@ -2269,6 +2315,7 @@ paths:
                   visaDebitTransactionVolume: 0
                   amexTransactionVolume: 25000
                   interacTransactionVolume: 50000
+                  interacDirectTransactionVolume: 40000
                   masterCardDebitTransactionVolume: 0
                   offeredProductsAndServicesDescription: food
                 merchantDetails:
@@ -2403,6 +2450,7 @@ paths:
                   visaDebitTransactionVolume: 0
                   amexTransactionVolume: 25000
                   interacTransactionVolume: 50000
+                  interacDirectTransactionVolume: 40000
                   masterCardDebitTransactionVolume: 0
                   offeredProductsAndServicesDescription: food
                 merchantDetails:
@@ -4284,6 +4332,120 @@ paths:
           $ref: '#/components/responses/internalServer'
         '503':
           $ref: '#/components/responses/serviceUnavailable'
+  /original-credit-transactions:
+    parameters:
+      - $ref: '#/components/parameters/apiVersion'
+      - $ref: '#/components/parameters/correlationId'
+      - $ref: '#/components/parameters/merchantId'
+    get:
+      summary: List Original Credit Transactions
+      description: Returns a paginated list of original credit transactions.
+      operationId: getOriginalCreditTransactions
+      security:
+        - OAuth2:
+            - payment.read
+        - OAuth2:
+            - payment.write
+        - ApiKeyAuth: []
+      tags:
+        - Original Credit Transactions
+      parameters:
+        - $ref: '#/components/parameters/pageBeforeCursor'
+        - $ref: '#/components/parameters/pageLimit'
+        - $ref: '#/components/parameters/createdFrom'
+        - $ref: '#/components/parameters/createdTo'
+      responses:
+        '200':
+          $ref: '#/components/responses/listOriginalCreditTransactionsResponse'
+        '400':
+          $ref: '#/components/responses/invalidListbadRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '429':
+          $ref: '#/components/responses/tooManyRequests'
+        '500':
+          $ref: '#/components/responses/internalServer'
+        '503':
+          $ref: '#/components/responses/serviceUnavailable'
+    post:
+      summary: Create Original Credit Transaction
+      description: This operation is used to initiate an Original Credit Transaction.
+      operationId: createOriginalCreditTransaction
+      security:
+        - OAuth2:
+            - payment.write
+        - ApiKeyAuth: []
+      tags:
+        - Original Credit Transactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createOriginalCreditTransactionRequest'
+            examples:
+              originalCreditTransactionPurchaseWithPaymentMethodId:
+                $ref: '#/components/examples/originalCreditTransactionWithPaymentMethodId'
+              originalCreditTransactionPurchaseWithCardPaymentMethod:
+                $ref: '#/components/examples/originalCreditTransactionWithCardPaymentMethod'
+              originalCreditTransactionPurchaseWithTemporaryTokenPaymentMethod:
+                $ref: '#/components/examples/originalCreditTransactionWithTemporaryPaymentMethod'
+              originalCreditTransactionPurchaseWithPermanentTokenPaymentMethod:
+                $ref: '#/components/examples/originalCreditTransactionWithPermanentPaymentMethod'
+      responses:
+        '201':
+          $ref: '#/components/responses/createOriginalCreditTransactionSuccessResponse'
+        '400':
+          $ref: '#/components/responses/createOriginalCreditTransactionBadRequestResponse'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '409':
+          $ref: '#/components/responses/conflict'
+        '422':
+          $ref: '#/components/responses/createOriginalCreditTransactionUnprocessableContentResponse'
+        '429':
+          $ref: '#/components/responses/tooManyRequests'
+        '500':
+          $ref: '#/components/responses/internalServer'
+        '503':
+          $ref: '#/components/responses/serviceUnavailable'
+  /original-credit-transactions/{original-credit-transaction-id}:
+    parameters:
+      - $ref: '#/components/parameters/apiVersion'
+      - $ref: '#/components/parameters/correlationId'
+      - $ref: '#/components/parameters/originalCreditTransactionId'
+      - $ref: '#/components/parameters/merchantId'
+    get:
+      summary: Retrieve Original Credit Transaction
+      description: Retrieve an Original Credit Transaction by its Id
+      operationId: getOriginalCreditTransaction
+      security:
+        - OAuth2:
+            - payment.read
+        - OAuth2:
+            - payment.write
+        - ApiKeyAuth: []
+      tags:
+        - Original Credit Transactions
+      responses:
+        '200':
+          $ref: '#/components/responses/retrieveOriginalCreditTransactionSuccessResponse'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '429':
+          $ref: '#/components/responses/tooManyRequests'
+        '500':
+          $ref: '#/components/responses/internalServer'
+        '503':
+          $ref: '#/components/responses/serviceUnavailable'
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -4519,6 +4681,38 @@ components:
       minLength: 1
       maxLength: 60
       example: John Doe
+    firstName:
+      type: string
+      description: First name.
+      minLength: 1
+      maxLength: 30
+      example: John
+      nullable: true
+    middleName:
+      type: string
+      description: Customer's middle name.
+      minLength: 1
+      maxLength: 30
+      example: J.
+      nullable: true
+    lastName:
+      type: string
+      description: Last name.
+      minLength: 1
+      maxLength: 30
+      example: Doe
+      nullable: true
+    cardholderNameDetails:
+      type: object
+      description: Cardholder name details
+      nullable: true
+      properties:
+        firstName:
+          $ref: '#/components/schemas/firstName'
+        middleName:
+          $ref: '#/components/schemas/middleName'
+        lastName:
+          $ref: '#/components/schemas/lastName'
     companyName:
       type: string
       description: Identifies the associated company name
@@ -4533,6 +4727,8 @@ components:
       properties:
         cardholderName:
           $ref: '#/components/schemas/cardholderName'
+        cardholderNameDetails:
+          $ref: '#/components/schemas/cardholderNameDetails'
         companyName:
           $ref: '#/components/schemas/companyName'
       required:
@@ -6994,6 +7190,128 @@ components:
           GOOGLE_PAY_DECRYPTED: '#/components/schemas/googlePayDecryptedWallet'
       required:
         - paymentMethodSource
+    address:
+      type: object
+      description: |
+        The postal address including street, town/city, province, and postal code.
+        Optionally an unit number can be provided.
+      properties:
+        unitNumber:
+          nullable: true
+          type: string
+          description: Unit number
+          minLength: 1
+          maxLength: 19
+          example: 123A
+        streetNumber:
+          nullable: true
+          type: string
+          description: Street number
+          minLength: 1
+          maxLength: 19
+          example: '3300'
+        streetName:
+          nullable: true
+          type: string
+          description: Street name
+          minLength: 1
+          maxLength: 100
+          example: Bloor
+        city:
+          nullable: true
+          type: string
+          description: |
+            Identifies the city.
+          minLength: 1
+          maxLength: 50
+          example: Toronto
+        province:
+          nullable: true
+          type: string
+          description: 'Province or state ISO 3166-2 code '
+          minLength: 1
+          maxLength: 3
+          format: iso-3166-2
+          example: 'ON'
+        postalCode:
+          nullable: true
+          type: string
+          description: Postal or zip code
+          minLength: 1
+          maxLength: 30
+          example: M8X 2X2
+        country:
+          nullable: true
+          type: string
+          description: |
+            Provides the two letter country code according the ISO 3166-1 alpha-2 standard. 
+            For a complete list of country codes, visit: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
+          minLength: 2
+          maxLength: 2
+          example: CA
+          format: iso-3166
+      example:
+        unitNumber: 123A
+        streetNumber: '3300'
+        streetName: Bloor Street West
+        city: Toronto
+        province: 'ON'
+        postalCode: M8X 2X2
+        country: CA
+    updatePaymentMethodInformationRequest:
+      title: updatePaymentMethodInformationRequest
+      description: |
+        Used to update payment data of an existing payment method.
+      type: object
+      properties:
+        cardholderInformation:
+          type: object
+          description: Information about the holder of the card.
+          properties:
+            cardholderName:
+              $ref: '#/components/schemas/cardholderName'
+            cardholderNameDetails:
+              $ref: '#/components/schemas/cardholderNameDetails'
+            companyName:
+              $ref: '#/components/schemas/companyName'
+        contactDetails:
+          $ref: '#/components/schemas/contactDetails'
+        billingAddress:
+          $ref: '#/components/schemas/address'
+        credentialOnFileInformation:
+          description: 'Contains fields related to the Credential on File (CoF) '
+          properties:
+            paymentIndicator:
+              $ref: '#/components/schemas/paymentIndicator'
+            paymentInformation:
+              $ref: '#/components/schemas/paymentInformation'
+            issuerId:
+              $ref: '#/components/schemas/issuerId'
+          required:
+            - issuerId
+        card:
+          type: object
+          properties:
+            cardNumber:
+              $ref: '#/components/schemas/cardNumber'
+            expiryMonth:
+              $ref: '#/components/schemas/expiryMonth'
+            expiryYear:
+              $ref: '#/components/schemas/expiryYear'
+            cardSecurityCode:
+              type: string
+              pattern: '[0-9]*'
+              description: |
+                CVD value located on credit card.  The CVD value (supplied by the cardholder) must only be passed to the payment gateway.  Under no circumstances may it be stored for subsequent use or displayed  as part of the receipt information.
+
+                Note: The CVD value is not supported for updating a stored payment method.
+              minLength: 3
+              maxLength: 4
+              example: '123'
+          required:
+            - cardNumber
+            - expiryMonth
+            - expiryYear
     paymentUri:
       title: Payment URI
       nullable: true
@@ -7463,6 +7781,43 @@ components:
           example: 911677-212
           minLength: 1
           maxLength: 50
+        accountNameVerificationResults:
+          nullable: true
+          title: AccountNameVerificationResults
+          type: object
+          description: |
+            The results of the account name verification.
+          properties:
+            firstNameMatchResultCode:
+              type: string
+              description: |
+                Indicates the verification status for the first name. e.g. - 01 - Match - 99 - No Match - 50 - Partial Match
+              example: 01 - Match
+              nullable: true
+            middleNameMatchResultCode:
+              type: string
+              description: |
+                Indicates the verification status for the middle name. e.g. - 01 - Match - 99 - No Match - 50 - Partial Match
+              example: 50 - Partial Match
+              nullable: true
+            lastNameMatchResultCode:
+              type: string
+              description: |
+                Indicates the verification status for the last name. e.g. - 01 - Match - 99 - No Match - 50 - Partial Match
+              example: 99 - No Match
+              nullable: true
+            fullNameMatchResultCode:
+              type: string
+              description: |
+                Indicates the verification status for the full name. e.g. - 01 - Match - 99 - No Match - 50 - Partial Match
+              example: 99 - No Match
+              nullable: true
+            overallMatchStatusCode:
+              type: string
+              description: |
+                Indicates the overall verification status. e.g. - 00 - Name Match Performed - 01 - No Name Match Performed - 02 - Name Match Performed Not Supported
+              example: 00 - Name Match Performed
+              nullable: true
         customData:
           $ref: '#/components/schemas/customData'
       required:
@@ -8189,27 +8544,6 @@ components:
       required:
         - idempotencyKey
         - additionalSubscriptionIntervalCount
-    firstName:
-      type: string
-      description: First name.
-      minLength: 1
-      maxLength: 30
-      example: John
-      nullable: true
-    middleName:
-      type: string
-      description: Customer's middle name.
-      minLength: 1
-      maxLength: 30
-      example: J.
-      nullable: true
-    lastName:
-      type: string
-      description: Last name.
-      minLength: 1
-      maxLength: 30
-      example: Doe
-      nullable: true
     customer:
       title: customer
       type: object
@@ -9005,9 +9339,7 @@ components:
         - NO_PREFERENCE
         - NO_CHALLENGE_REQUESTED
         - CHALLENGE_REQUESTED_MANDATE
-        - null
       example: NO_PREFERENCE
-      nullable: true
       default: NO_PREFERENCE
     threeDSecureChallengeWindowSize:
       type: string
@@ -10997,6 +11329,13 @@ components:
           items:
             $ref: '#/components/schemas/additionalBankingAccount'
           maxItems: 10
+    serviceFrequency:
+      type: string
+      nullable: true
+      maxLength: 20
+      enum:
+        - DAILY
+        - MONTHLY
     settlementOption:
       type: string
       description: The method for settling transactions.
@@ -11093,6 +11432,11 @@ components:
       description: A numeric value representing the total transaction volume generated through Interac payments.
       format: int32
       example: 1000
+    interacDirectTransactionVolume:
+      type: integer
+      description: A numeric value representing the total transaction volume generated through Interac Direct payments.
+      format: int32
+      example: 1000
     masterCardDebitTransactionVolume:
       type: integer
       description: A numeric value representing the total transaction volume generated through MasterCard Debit payments.
@@ -11181,6 +11525,8 @@ components:
           $ref: '#/components/schemas/amexTransactionVolume'
         interacTransactionVolume:
           $ref: '#/components/schemas/interacTransactionVolume'
+        interacDirectTransactionVolume:
+          $ref: '#/components/schemas/interacDirectTransactionVolume'
         masterCardDebitTransactionVolume:
           $ref: '#/components/schemas/masterCardDebitTransactionVolume'
         unionPayTransactionVolume:
@@ -11233,6 +11579,11 @@ components:
       type: integer
       description: An integer representing the number of months the merchant has been in ownership.
       format: int32
+    phoneNumberExtension:
+      type: string
+      maxLength: 50
+      example: '1068'
+      nullable: true
     merchantType:
       type: string
       description: The category of the merchant's business.
@@ -11287,80 +11638,14 @@ components:
           $ref: '#/components/schemas/monthsOfOwnership'
         customerServicePhoneNumber:
           $ref: '#/components/schemas/phoneNumber'
+        customerServicePhoneNumberExtension:
+          $ref: '#/components/schemas/phoneNumberExtension'
         email:
           $ref: '#/components/schemas/email'
         merchantType:
           $ref: '#/components/schemas/merchantType'
         storeNumber:
           $ref: '#/components/schemas/storeNumber'
-    address:
-      type: object
-      description: |
-        The postal address including street, town/city, province, and postal code.
-        Optionally an unit number can be provided.
-      properties:
-        unitNumber:
-          nullable: true
-          type: string
-          description: Unit number
-          minLength: 1
-          maxLength: 19
-          example: 123A
-        streetNumber:
-          nullable: true
-          type: string
-          description: Street number
-          minLength: 1
-          maxLength: 19
-          example: '3300'
-        streetName:
-          nullable: true
-          type: string
-          description: Street name
-          minLength: 1
-          maxLength: 100
-          example: Bloor
-        city:
-          nullable: true
-          type: string
-          description: |
-            Identifies the city.
-          minLength: 1
-          maxLength: 50
-          example: Toronto
-        province:
-          nullable: true
-          type: string
-          description: 'Province or state ISO 3166-2 code '
-          minLength: 1
-          maxLength: 3
-          format: iso-3166-2
-          example: 'ON'
-        postalCode:
-          nullable: true
-          type: string
-          description: Postal or zip code
-          minLength: 1
-          maxLength: 30
-          example: M8X 2X2
-        country:
-          nullable: true
-          type: string
-          description: |
-            Provides the two letter country code according the ISO 3166-1 alpha-2 standard. 
-            For a complete list of country codes, visit: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
-          minLength: 2
-          maxLength: 2
-          example: CA
-          format: iso-3166
-      example:
-        unitNumber: 123A
-        streetNumber: '3300'
-        streetName: Bloor Street West
-        city: Toronto
-        province: 'ON'
-        postalCode: M8X 2X2
-        country: CA
     deliveryAddressConfirmed:
       type: boolean
       default: false
@@ -11372,6 +11657,14 @@ components:
         - $ref: '#/components/schemas/address'
         - type: object
           properties:
+            mobilePhoneNumber:
+              nullable: true
+              type: string
+              description: Phone number.
+              pattern: ^\+[1-9]\d{1,14}$
+              minLength: 3
+              maxLength: 16
+              example: '+18663197450'
             phoneNumber:
               nullable: true
               type: string
@@ -11380,6 +11673,11 @@ components:
               minLength: 3
               maxLength: 16
               example: '+18663197450'
+            phoneNumberExtension:
+              nullable: true
+              type: string
+              maxLength: 50
+              example: '1068'
             deliveryAddressConfirmed:
               $ref: '#/components/schemas/deliveryAddressConfirmed'
     marketSegment:
@@ -11593,7 +11891,7 @@ components:
         - LIMITED_PARTNERSHIP
         - PARTNERSHIP
         - NON_PROFIT
-        - NON_FOR_PROFIT
+        - NOT_FOR_PROFIT
         - PRIVATE_CORPORATION
         - PUBLIC_CORPORATION
         - GOVERNMENT
@@ -11723,6 +12021,14 @@ components:
             - $ref: '#/components/schemas/address'
             - type: object
               properties:
+                mobilePhoneNumber:
+                  nullable: true
+                  type: string
+                  description: Phone number.
+                  pattern: ^\+[1-9]\d{1,14}$
+                  minLength: 3
+                  maxLength: 16
+                  example: '+18663197450'
                 phoneNumber:
                   nullable: true
                   type: string
@@ -11731,6 +12037,11 @@ components:
                   minLength: 3
                   maxLength: 16
                   example: '+18663197450'
+                phoneNumberExtension:
+                  nullable: true
+                  type: string
+                  maxLength: 50
+                  example: '1068'
                 deliveryAddressConfirmed:
                   $ref: '#/components/schemas/deliveryAddressConfirmed'
     securityDetails:
@@ -11802,6 +12113,8 @@ components:
           required:
             - settlementOption
           properties:
+            depositFrequency:
+              $ref: '#/components/schemas/serviceFrequency'
             settlementOption:
               $ref: '#/components/schemas/settlementOption'
             settlementTime:
@@ -11935,6 +12248,8 @@ components:
               $ref: '#/components/schemas/amexTransactionVolume'
             interacTransactionVolume:
               $ref: '#/components/schemas/interacTransactionVolume'
+            interacDirectTransactionVolume:
+              $ref: '#/components/schemas/interacDirectTransactionVolume'
             masterCardDebitTransactionVolume:
               $ref: '#/components/schemas/masterCardDebitTransactionVolume'
             unionPayTransactionVolume:
@@ -12055,6 +12370,8 @@ components:
           required:
             - settlementOption
           properties:
+            depositFrequency:
+              $ref: '#/components/schemas/serviceFrequency'
             settlementOption:
               $ref: '#/components/schemas/settlementOption'
             settlementTime:
@@ -12264,6 +12581,31 @@ components:
           $ref: '#/components/schemas/next'
         previous:
           $ref: '#/components/schemas/previous'
+    highRiskKonekQuestionnaire:
+      type: object
+      description: Questionnaire for high-risk Konek merchants, capturing compliance and risk-related responses required during the onboarding process.
+      nullable: true
+      properties:
+        required:
+          type: boolean
+          description: Indicates whether the high-risk Konek questionnaire is mandatory for this order.
+        questionnaireResponses:
+          type: array
+          description: A list of question-and-answer pairs for the high-risk Konek compliance questionnaire.
+          items:
+            type: object
+            properties:
+              questionId:
+                type: string
+                description: A unique identifier for the questionnaire question (e.g., Q001, Q002).
+                maxLength: 20
+                nullable: true
+              answer:
+                type: string
+                description: The full text of the compliance question being answered by the merchant.
+                nullable: true
+                maxLength: 500
+          maxItems: 20
     representativeCode:
       type: string
       description: A code that identifies the representative agent associated with the order.
@@ -12475,9 +12817,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -12514,9 +12858,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -12621,6 +12967,7 @@ components:
           - AMEX
           - DISCOVER
           - INTERAC
+          - INTERAC_DIRECT
           - MASTERCARD
           - MASTERCARD_DEBIT
           - UNION_PAY
@@ -12656,9 +13003,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -12705,41 +13054,13 @@ components:
           example:
             amount: 16000
             currency: CAD
-    merchantDiscountRate:
+    percentage:
       type: number
-      description: The merchant discount rate applied to transactions under transaction plan.
-      format: double
-      default: 0
+      format: decimal
+      description: Percentage up to 2 decimal points.
       minimum: 0
-      maximum: 1
-    minimumMerchantDiscountRate:
-      type: number
-      description: The minimum merchant discount rate that applies under the transaction plan.
-      format: double
-      default: 0
-      minimum: 0
-      maximum: 1
-    maximumMerchantDiscountRate:
-      type: number
-      description: The maximum merchant discount rate that applies under the transaction plan.
-      default: 0
-      format: double
-      minimum: 0
-      maximum: 1
-    transactionRate:
-      type: number
-      description: The single payment processing event under the transaction plan.
-      default: 0
-      format: double
-      minimum: 0
-      maximum: 1
-    disqualifiedTransactionMerchantDiscountRate:
-      type: number
-      description: The merchant discount rate applied to transactions that do not meet certain qualifying criteria under the transaction plan.
-      default: 0
-      format: double
-      minimum: 0
-      maximum: 1
+      maximum: 100
+      example: 90.5
     transactionPlanTier:
       type: string
       description: The level or band within the transaction plan.
@@ -12826,32 +13147,18 @@ components:
       description: The type of payment mode associated with a transaction under the transaction plan.
       nullable: true
       maxLength: 10
-    minimumDisqualifiedTransactionMerchantDiscountRate:
-      type: number
-      description: The minimum merchant discount rate value applied to transactions that do not meet certain qualifying criteria under the transaction plan.
-      default: 0
-      format: double
-      minimum: 0
-      maximum: 1
-    maximumDisqualifiedTransactionMerchantDiscountRate:
-      type: number
-      description: The maximum merchant discount rate value applied to transactions that do not meet certain qualifying criteria under the transaction plan.
-      default: 0
-      format: double
-      minimum: 0
-      maximum: 1
     transactionPlan:
       type: object
       description: An object containing the transaction plan details.
       properties:
         merchantDiscountRate:
-          $ref: '#/components/schemas/merchantDiscountRate'
+          $ref: '#/components/schemas/percentage'
         minimumMerchantDiscountRate:
-          $ref: '#/components/schemas/minimumMerchantDiscountRate'
+          $ref: '#/components/schemas/percentage'
         maximumMerchantDiscountRate:
-          $ref: '#/components/schemas/maximumMerchantDiscountRate'
+          $ref: '#/components/schemas/percentage'
         transactionRate:
-          $ref: '#/components/schemas/transactionRate'
+          $ref: '#/components/schemas/percentage'
         minimumTransactionValue:
           description: The minimum transaction value that applies under the transaction plan.
           nullable: true
@@ -12883,7 +13190,7 @@ components:
             amount: 16000
             currency: CAD
         disqualifiedTransactionMerchantDiscountRate:
-          $ref: '#/components/schemas/disqualifiedTransactionMerchantDiscountRate'
+          $ref: '#/components/schemas/percentage'
         transactionPlanTier:
           $ref: '#/components/schemas/transactionPlanTier'
         feeTypeCode:
@@ -12891,9 +13198,9 @@ components:
         paymentModeCode:
           $ref: '#/components/schemas/paymentModeCode'
         minimumDisqualifiedTransactionMerchantDiscountRate:
-          $ref: '#/components/schemas/minimumDisqualifiedTransactionMerchantDiscountRate'
+          $ref: '#/components/schemas/percentage'
         maximumDisqualifiedTransactionMerchantDiscountRate:
-          $ref: '#/components/schemas/maximumDisqualifiedTransactionMerchantDiscountRate'
+          $ref: '#/components/schemas/percentage'
     transactionPlans:
       type: array
       description: A list of transaction items.
@@ -12954,9 +13261,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -12999,19 +13308,9 @@ components:
       description: An object containing all details related to assessment plan.
       properties:
         merchantDiscountRate:
-          description: The merchant discount rate applied to transactions under the assessment plan.
-          type: number
-          format: double
-          default: 0
-          minimum: 0
-          maximum: 1
+          $ref: '#/components/schemas/percentage'
         transactionRate:
-          description: The single payment processing event under the assessment plan.
-          type: number
-          default: 0
-          format: double
-          minimum: 0
-          maximum: 1
+          $ref: '#/components/schemas/percentage'
         feeTypeCode:
           $ref: '#/components/schemas/feeTypeCode'
         cardOriginCode:
@@ -13049,9 +13348,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -13088,9 +13389,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -13105,6 +13408,9 @@ components:
               $ref: '#/components/schemas/waivePeriod'
           required:
             - unitPrice
+    isAuthorizationOnly:
+      type: boolean
+      description: A boolean flag indicating whether the card plan is for authorization-only transactions.
     otherFinancialInstitutionCardType:
       type: string
       description: Represents the specific type of card used within the OFI institution card plan.
@@ -13136,20 +13442,17 @@ components:
       description: Indicates the type of deposit arrangement for the merchant account.
       nullable: true
       maxLength: 10
-    authorizationDescription:
-      type: string
-      description: A description of the authorization process or requirements for the transaction.
-      nullable: true
-      maxLength: 10
     cardOption:
       type: string
       description: Specifies the type of card used or service option for a transaction plan.
       nullable: true
-      maxLength: 10
+      maxLength: 30
     ofiCardPlan:
       type: object
       description: An object containing all details about the Ofi Card Plan.
       properties:
+        isAuthorizationOnly:
+          $ref: '#/components/schemas/isAuthorizationOnly'
         otherFinancialInstitutionCardType:
           $ref: '#/components/schemas/otherFinancialInstitutionCardType'
         cardAcquirer:
@@ -13189,9 +13492,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -13208,8 +13513,6 @@ components:
             - unitPrice
         depositType:
           $ref: '#/components/schemas/depositType'
-        authorizationDescription:
-          $ref: '#/components/schemas/authorizationDescription'
         cardOption:
           $ref: '#/components/schemas/cardOption'
     otherFinancialInstitutionCards:
@@ -13392,6 +13695,23 @@ components:
                   $ref: '#/components/schemas/assessmentPlans'
                 serviceFeeDetails:
                   $ref: '#/components/schemas/serviceFeeDetails'
+            interacDirect:
+              nullable: true
+              type: object
+              description: An object containing the franchise plan details.
+              properties:
+                isCommunicationsOptOut:
+                  $ref: '#/components/schemas/isCommunicationsOptOut'
+                cardFeeDetails:
+                  $ref: '#/components/schemas/cardFeeDetails'
+                transactionPlans:
+                  $ref: '#/components/schemas/transactionPlans'
+                cardBrandPlans:
+                  $ref: '#/components/schemas/cardBrandPlans'
+                assessmentPlans:
+                  $ref: '#/components/schemas/assessmentPlans'
+                serviceFeeDetails:
+                  $ref: '#/components/schemas/serviceFeeDetails'
             amex:
               nullable: true
               type: object
@@ -13422,6 +13742,7 @@ components:
           description: The identifier for the kit.
           example: WIX_POS_ESSENTIAL_ELO
           enum:
+            - GA_SINGLE
             - WIX_POS_ESSENTIAL_ELO
             - WIX_POS_FULL_ELO_WIRED
             - WINPOS_ESSENTIAL
@@ -13469,18 +13790,6 @@ components:
         hardwareName:
           type: string
           description: The name of the hardware.
-          example: CASH_DRAWER
-          enum:
-            - CASH_DRAWER
-            - ELO_TABLET
-            - EPSON_PRINTER
-            - PAPER_ROLL
-            - PRINTER_HP
-            - SCANNER_HP
-            - SOCKET_SCANNER
-            - STAR_MICRONICS_CASH_DRAWER
-            - TABLET_HP
-            - ZEBRA_SCANNER
           nullable: true
         unitPrice:
           nullable: true
@@ -13551,6 +13860,7 @@ components:
               description: The identifier for the kit.
               example: WIX_POS_ESSENTIAL_ELO
               enum:
+                - GA_SINGLE
                 - WIX_POS_ESSENTIAL_ELO
                 - WIX_POS_FULL_ELO_WIRED
                 - WINPOS_ESSENTIAL
@@ -13639,9 +13949,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -13714,9 +14026,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -13774,9 +14088,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -13813,9 +14129,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -13852,9 +14170,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -13891,9 +14211,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -13930,9 +14252,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -13969,9 +14293,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -14008,9 +14334,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -14047,9 +14375,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -14086,9 +14416,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -14125,9 +14457,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -14164,9 +14498,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -14203,9 +14539,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -14242,9 +14580,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -14399,11 +14739,6 @@ components:
       items:
         $ref: '#/components/schemas/supply'
       maxItems: 116
-    collectionRate:
-      type: integer
-      description: The rate at which payments are collected or deducted.
-      format: int32
-      example: 10
     monerisAdvanceFeeDetails:
       type: object
       description: A list of fees associated with Moneris Advance.
@@ -14431,9 +14766,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -14470,9 +14807,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -14510,7 +14849,7 @@ components:
             amount: 16000
             currency: CAD
         collectionRate:
-          $ref: '#/components/schemas/collectionRate'
+          $ref: '#/components/schemas/percentage'
         premiumAmount:
           nullable: true
           type: object
@@ -14535,8 +14874,7 @@ components:
           type: boolean
           description: A boolean flag indicating whether this is a subsequent advance.
         flatFeeRate:
-          type: string
-          description: The flat fee rate for the Moneris Advance product.
+          $ref: '#/components/schemas/percentage'
         feeDetails:
           $ref: '#/components/schemas/monerisAdvanceFeeDetails'
     integratedProduct:
@@ -14599,9 +14937,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -14638,9 +14978,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -14677,9 +15019,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -14716,9 +15060,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -14755,9 +15101,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -14794,9 +15142,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -14833,9 +15183,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -14872,9 +15224,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -14911,9 +15265,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -14950,9 +15306,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -14989,9 +15347,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15028,9 +15388,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15067,9 +15429,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15106,9 +15470,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15218,9 +15584,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15257,9 +15625,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15327,10 +15697,7 @@ components:
                 description: The service type associated with the PetroTrak product.
                 maxLength: 50
               discountRate:
-                type: string
-                nullable: true
-                description: The discount rate type associated with the PetroTrak product.
-                maxLength: 50
+                $ref: '#/components/schemas/percentage'
               discountRateValue:
                 nullable: true
                 description: The discount rate value associated with the PetroTrak product.
@@ -15384,9 +15751,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15423,9 +15792,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15462,9 +15833,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15501,9 +15874,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15540,9 +15915,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15579,9 +15956,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15618,9 +15997,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15657,9 +16038,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -15723,9 +16106,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -15795,9 +16180,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -15864,9 +16251,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -15903,9 +16292,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -15942,9 +16333,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -15981,9 +16374,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16020,9 +16415,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16059,9 +16456,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16098,9 +16497,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16137,9 +16538,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16176,9 +16579,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16215,9 +16620,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16254,9 +16661,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16293,9 +16702,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16332,9 +16743,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16371,9 +16784,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16410,9 +16825,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16449,9 +16866,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16488,9 +16907,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16527,9 +16948,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16904,9 +17327,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -16943,9 +17368,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -17029,9 +17456,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17068,9 +17497,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17107,9 +17538,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17146,9 +17579,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17185,9 +17620,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17224,9 +17661,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17263,9 +17702,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17302,9 +17743,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17341,9 +17784,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17380,9 +17825,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17439,6 +17886,47 @@ components:
           nullable: true
           description: An object representing the fees associated with the Moneris Go Appetit product.
           properties:
+            kitchenDisplaySystemFee:
+              nullable: true
+              type: object
+              description: Represents a monetary charge applied to a transaction or service.
+              properties:
+                feeType:
+                  $ref: '#/components/schemas/feeType'
+                unitPrice:
+                  $ref: '#/components/schemas/money'
+                taxes:
+                  type: array
+                  description: A list of tax items associated with the fee.
+                  items:
+                    $ref: '#/components/schemas/tax'
+                  maxItems: 10
+                frequency:
+                  description: The frequency at which the fee is charged, such as monthly or annually.
+                  type: string
+                  nullable: true
+                  maxLength: 20
+                  enum:
+                    - DAILY
+                    - WEEKLY
+                    - MONTHLY
+                    - QUARTERLY
+                    - ONE_OFF
+                    - SEMIANNUALLY
+                    - ANNUALLY
+                quantity:
+                  type: integer
+                  description: Represent the number of times a fee is applied based on its frequency.
+                  format: int32
+                  minimum: 1
+                  maximum: 30
+                  example: 3
+                isApproved:
+                  $ref: '#/components/schemas/isApproved'
+                waivePeriod:
+                  $ref: '#/components/schemas/waivePeriod'
+              required:
+                - unitPrice
             softwarePackageFee:
               nullable: true
               type: object
@@ -17461,9 +17949,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17500,9 +17990,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17539,9 +18031,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17578,9 +18072,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17622,9 +18118,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -17661,9 +18159,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -17684,83 +18184,9 @@ components:
       nullable: true
       properties:
         monerisVisaInstallmentsFee:
-          nullable: true
-          type: object
-          description: Represents a monetary charge applied to a transaction or service.
-          properties:
-            feeType:
-              $ref: '#/components/schemas/feeType'
-            unitPrice:
-              $ref: '#/components/schemas/money'
-            taxes:
-              type: array
-              description: A list of tax items associated with the fee.
-              items:
-                $ref: '#/components/schemas/tax'
-              maxItems: 10
-            frequency:
-              description: The frequency at which the fee is charged, such as monthly or annually.
-              type: string
-              nullable: true
-              maxLength: 20
-              enum:
-                - DAILY
-                - MONTHLY
-                - QUARTERLY
-                - ONE_OFF
-                - ANNUALLY
-            quantity:
-              type: integer
-              description: Represent the number of times a fee is applied based on its frequency.
-              format: int32
-              minimum: 1
-              maximum: 30
-              example: 3
-            isApproved:
-              $ref: '#/components/schemas/isApproved'
-            waivePeriod:
-              $ref: '#/components/schemas/waivePeriod'
-          required:
-            - unitPrice
+          $ref: '#/components/schemas/percentage'
         visaInstallmentsAccessFee:
-          nullable: true
-          type: object
-          description: Represents a monetary charge applied to a transaction or service.
-          properties:
-            feeType:
-              $ref: '#/components/schemas/feeType'
-            unitPrice:
-              $ref: '#/components/schemas/money'
-            taxes:
-              type: array
-              description: A list of tax items associated with the fee.
-              items:
-                $ref: '#/components/schemas/tax'
-              maxItems: 10
-            frequency:
-              description: The frequency at which the fee is charged, such as monthly or annually.
-              type: string
-              nullable: true
-              maxLength: 20
-              enum:
-                - DAILY
-                - MONTHLY
-                - QUARTERLY
-                - ONE_OFF
-                - ANNUALLY
-            quantity:
-              type: integer
-              description: Represent the number of times a fee is applied based on its frequency.
-              format: int32
-              minimum: 1
-              maximum: 30
-              example: 3
-            isApproved:
-              $ref: '#/components/schemas/isApproved'
-            waivePeriod:
-              $ref: '#/components/schemas/waivePeriod'
-          required:
-            - unitPrice
+          $ref: '#/components/schemas/percentage'
     wix:
       type: object
       description: Contains details about Wix configuration and package information.
@@ -17795,9 +18221,9 @@ components:
           example: CORE
           nullable: true
         packageFee:
+          nullable: true
           type: object
           description: Details about the package fee.
-          nullable: true
           properties:
             frequency:
               description: The frequency of the package fee.
@@ -17806,27 +18232,34 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             unitPrice:
+              $ref: '#/components/schemas/money'
+        discountPackageFee:
+          nullable: true
+          type: object
+          description: Details about the package fee.
+          properties:
+            frequency:
+              description: The frequency of the package fee.
+              type: string
               nullable: true
-              type: object
-              description: |
-                Monetary amount. 
-                Note: The value must be in cents. Therefore $10.59 must be sent as 1059.
-              properties:
-                amount:
-                  $ref: '#/components/schemas/amount'
-                currency:
-                  $ref: '#/components/schemas/currency'
-              required:
-                - amount
-                - currency
-              example:
-                amount: 16000
-                currency: CAD
+              maxLength: 20
+              enum:
+                - DAILY
+                - WEEKLY
+                - MONTHLY
+                - QUARTERLY
+                - ONE_OFF
+                - SEMIANNUALLY
+                - ANNUALLY
+            unitPrice:
+              $ref: '#/components/schemas/money'
     wixPointOfSale:
       type: object
       description: An object containing details about the Wix Point of Sale product.
@@ -17874,9 +18307,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -17935,9 +18370,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -17974,9 +18411,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18013,9 +18452,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18052,9 +18493,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18145,9 +18588,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18184,9 +18629,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18223,9 +18670,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18262,9 +18711,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18301,9 +18752,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18340,9 +18793,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18379,9 +18834,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18418,48 +18875,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
-            addressVerificationServiceFee:
-              description: A fee charged for using the address verification service.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18475,7 +18895,7 @@ components:
               required:
                 - unitPrice
             verifiedByVisaFee:
-              description: A fee associated with verified by visa.
+              description: The 3D setup fee applied to transactions processed through Visa's Verified by Visa program.
               nullable: true
               type: object
               properties:
@@ -18496,9 +18916,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18535,9 +18957,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18574,48 +18998,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
-            vaultPerClickPerTransactionFee:
-              description: A fee charged for each transaction processed using a tokenized payment method from the vault, initiated by a single click or action.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18652,9 +19039,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18691,9 +19080,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18730,9 +19121,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18749,43 +19142,11 @@ components:
                 - unitPrice
             transactionFee:
               description: A fee applied per individual transaction processed.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              type: number
+              format: decimal
+              minimum: 0
+              maximum: 100
+              example: 90.5
             monthlyFee:
               description: A recurring fee charged on a monthly basis for continued access.
               nullable: true
@@ -18808,9 +19169,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18847,9 +19210,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18886,9 +19251,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18925,9 +19292,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -18944,43 +19313,11 @@ components:
                 - unitPrice
             eCommerceAssessmentTransactionFee:
               description: A fee applied to transaction assessed for e-commerce risk.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              type: number
+              format: decimal
+              minimum: 0
+              maximum: 100
+              example: 90.5
             eCommerceCardBrandTransactionFee:
               description: A fee applied to e-commerce transactions based on the card brand.
               nullable: true
@@ -19003,9 +19340,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -19042,9 +19381,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -19081,9 +19422,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -19120,9 +19463,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -19159,9 +19504,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -19198,9 +19545,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -19217,121 +19566,25 @@ components:
                 - unitPrice
             visa3dSecureAuthenticationTransactionFee:
               description: A fee applied to transaction processed using Visa's 3D secure authentication protocol.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              type: number
+              format: decimal
+              minimum: 0
+              maximum: 100
+              example: 90.5
             amex3dSecureAuthenticationTransactionFee:
               description: A fee applied to transaction processed using Amex's 3D secure authentication protocol.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              type: number
+              format: decimal
+              minimum: 0
+              maximum: 100
+              example: 90.5
             mastercard3dSecureAuthenticationTransactionFee:
               description: A fee applied to transaction processed using Mastercard's 3D secure authentication protocol.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              type: number
+              format: decimal
+              minimum: 0
+              maximum: 100
+              example: 90.5
             visa3dSecureAuthenticationMerchantDiscountRateFee:
               description: The Merchant Discount Rate applied to transactions processed through Visa's 3D secure authentication protocol.
               nullable: true
@@ -19354,9 +19607,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -19393,9 +19648,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -19432,9 +19689,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -19482,9 +19741,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -19538,9 +19799,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -19577,9 +19840,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -19635,9 +19900,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -19674,9 +19941,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -19751,9 +20020,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -19817,9 +20088,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -19910,6 +20183,7 @@ components:
                       description: The identifier for the kit.
                       example: WIX_POS_ESSENTIAL_ELO
                       enum:
+                        - GA_SINGLE
                         - WIX_POS_ESSENTIAL_ELO
                         - WIX_POS_FULL_ELO_WIRED
                         - WINPOS_ESSENTIAL
@@ -19997,9 +20271,11 @@ components:
                           maxLength: 20
                           enum:
                             - DAILY
+                            - WEEKLY
                             - MONTHLY
                             - QUARTERLY
                             - ONE_OFF
+                            - SEMIANNUALLY
                             - ANNUALLY
                         quantity:
                           type: integer
@@ -20036,9 +20312,11 @@ components:
                           maxLength: 20
                           enum:
                             - DAILY
+                            - WEEKLY
                             - MONTHLY
                             - QUARTERLY
                             - ONE_OFF
+                            - SEMIANNUALLY
                             - ANNUALLY
                         quantity:
                           type: integer
@@ -20075,9 +20353,11 @@ components:
                           maxLength: 20
                           enum:
                             - DAILY
+                            - WEEKLY
                             - MONTHLY
                             - QUARTERLY
                             - ONE_OFF
+                            - SEMIANNUALLY
                             - ANNUALLY
                         quantity:
                           type: integer
@@ -20114,9 +20394,11 @@ components:
                           maxLength: 20
                           enum:
                             - DAILY
+                            - WEEKLY
                             - MONTHLY
                             - QUARTERLY
                             - ONE_OFF
+                            - SEMIANNUALLY
                             - ANNUALLY
                         quantity:
                           type: integer
@@ -20158,9 +20440,11 @@ components:
                           maxLength: 20
                           enum:
                             - DAILY
+                            - WEEKLY
                             - MONTHLY
                             - QUARTERLY
                             - ONE_OFF
+                            - SEMIANNUALLY
                             - ANNUALLY
                         quantity:
                           type: integer
@@ -20197,9 +20481,11 @@ components:
                           maxLength: 20
                           enum:
                             - DAILY
+                            - WEEKLY
                             - MONTHLY
                             - QUARTERLY
                             - ONE_OFF
+                            - SEMIANNUALLY
                             - ANNUALLY
                         quantity:
                           type: integer
@@ -20236,9 +20522,11 @@ components:
                           maxLength: 20
                           enum:
                             - DAILY
+                            - WEEKLY
                             - MONTHLY
                             - QUARTERLY
                             - ONE_OFF
+                            - SEMIANNUALLY
                             - ANNUALLY
                         quantity:
                           type: integer
@@ -20275,9 +20563,11 @@ components:
                           maxLength: 20
                           enum:
                             - DAILY
+                            - WEEKLY
                             - MONTHLY
                             - QUARTERLY
                             - ONE_OFF
+                            - SEMIANNUALLY
                             - ANNUALLY
                         quantity:
                           type: integer
@@ -20314,9 +20604,11 @@ components:
                       maxLength: 20
                       enum:
                         - DAILY
+                        - WEEKLY
                         - MONTHLY
                         - QUARTERLY
                         - ONE_OFF
+                        - SEMIANNUALLY
                         - ANNUALLY
                     quantity:
                       type: integer
@@ -20353,9 +20645,11 @@ components:
                       maxLength: 20
                       enum:
                         - DAILY
+                        - WEEKLY
                         - MONTHLY
                         - QUARTERLY
                         - ONE_OFF
+                        - SEMIANNUALLY
                         - ANNUALLY
                     quantity:
                       type: integer
@@ -20409,9 +20703,11 @@ components:
                   maxLength: 20
                   enum:
                     - DAILY
+                    - WEEKLY
                     - MONTHLY
                     - QUARTERLY
                     - ONE_OFF
+                    - SEMIANNUALLY
                     - ANNUALLY
                 quantity:
                   type: integer
@@ -20426,12 +20722,56 @@ components:
                   $ref: '#/components/schemas/waivePeriod'
               required:
                 - unitPrice
-    interacEcommerceFeeDetails:
+    orderFee:
       type: object
-      description: An object representing the fees associated with Interac eCommerce.
-      nullable: true
+      description: Represents a monetary charge applied to a transaction or service.
       properties:
-        ecommerceAssessmentTransactionFee:
+        feeType:
+          $ref: '#/components/schemas/feeType'
+        unitPrice:
+          $ref: '#/components/schemas/money'
+        taxes:
+          type: array
+          description: A list of tax items associated with the fee.
+          items:
+            $ref: '#/components/schemas/tax'
+          maxItems: 10
+        frequency:
+          description: The frequency at which the fee is charged, such as monthly or annually.
+          type: string
+          nullable: true
+          maxLength: 20
+          enum:
+            - DAILY
+            - WEEKLY
+            - MONTHLY
+            - QUARTERLY
+            - ONE_OFF
+            - SEMIANNUALLY
+            - ANNUALLY
+        quantity:
+          type: integer
+          description: Represent the number of times a fee is applied based on its frequency.
+          format: int32
+          minimum: 1
+          maximum: 30
+          example: 3
+        isApproved:
+          $ref: '#/components/schemas/isApproved'
+        waivePeriod:
+          $ref: '#/components/schemas/waivePeriod'
+      required:
+        - unitPrice
+    interacSurchargeFeeDetails:
+      type: object
+      description: An object representing the fees associated with Interac Surcharge.
+      nullable: true
+      required:
+        - setupFee
+      properties:
+        setupFee:
+          $ref: '#/components/schemas/orderFee'
+        monthlyFee:
           nullable: true
           type: object
           description: Represents a monetary charge applied to a transaction or service.
@@ -20453,126 +20793,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
-                - ANNUALLY
-            quantity:
-              type: integer
-              description: Represent the number of times a fee is applied based on its frequency.
-              format: int32
-              minimum: 1
-              maximum: 30
-              example: 3
-            isApproved:
-              $ref: '#/components/schemas/isApproved'
-            waivePeriod:
-              $ref: '#/components/schemas/waivePeriod'
-          required:
-            - unitPrice
-        ecommerceCardBrandTransactionFee:
-          nullable: true
-          type: object
-          description: Represents a monetary charge applied to a transaction or service.
-          properties:
-            feeType:
-              $ref: '#/components/schemas/feeType'
-            unitPrice:
-              $ref: '#/components/schemas/money'
-            taxes:
-              type: array
-              description: A list of tax items associated with the fee.
-              items:
-                $ref: '#/components/schemas/tax'
-              maxItems: 10
-            frequency:
-              description: The frequency at which the fee is charged, such as monthly or annually.
-              type: string
-              nullable: true
-              maxLength: 20
-              enum:
-                - DAILY
-                - MONTHLY
-                - QUARTERLY
-                - ONE_OFF
-                - ANNUALLY
-            quantity:
-              type: integer
-              description: Represent the number of times a fee is applied based on its frequency.
-              format: int32
-              minimum: 1
-              maximum: 30
-              example: 3
-            isApproved:
-              $ref: '#/components/schemas/isApproved'
-            waivePeriod:
-              $ref: '#/components/schemas/waivePeriod'
-          required:
-            - unitPrice
-        ecommerceTransactionFee:
-          nullable: true
-          type: object
-          description: Represents a monetary charge applied to a transaction or service.
-          properties:
-            feeType:
-              $ref: '#/components/schemas/feeType'
-            unitPrice:
-              $ref: '#/components/schemas/money'
-            taxes:
-              type: array
-              description: A list of tax items associated with the fee.
-              items:
-                $ref: '#/components/schemas/tax'
-              maxItems: 10
-            frequency:
-              description: The frequency at which the fee is charged, such as monthly or annually.
-              type: string
-              nullable: true
-              maxLength: 20
-              enum:
-                - DAILY
-                - MONTHLY
-                - QUARTERLY
-                - ONE_OFF
-                - ANNUALLY
-            quantity:
-              type: integer
-              description: Represent the number of times a fee is applied based on its frequency.
-              format: int32
-              minimum: 1
-              maximum: 30
-              example: 3
-            isApproved:
-              $ref: '#/components/schemas/isApproved'
-            waivePeriod:
-              $ref: '#/components/schemas/waivePeriod'
-          required:
-            - unitPrice
-        ecommerceMinimumMerchantDiscountFee:
-          nullable: true
-          type: object
-          description: Represents a monetary charge applied to a transaction or service.
-          properties:
-            feeType:
-              $ref: '#/components/schemas/feeType'
-            unitPrice:
-              $ref: '#/components/schemas/money'
-            taxes:
-              type: array
-              description: A list of tax items associated with the fee.
-              items:
-                $ref: '#/components/schemas/tax'
-              maxItems: 10
-            frequency:
-              description: The frequency at which the fee is charged, such as monthly or annually.
-              type: string
-              nullable: true
-              maxLength: 20
-              enum:
-                - DAILY
-                - MONTHLY
-                - QUARTERLY
-                - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -20602,62 +20827,35 @@ components:
     hasPaymentRequest:
       type: boolean
       description: A boolean flag indicating whether the payment request is included.
-    serviceFrequency:
+    sch-orders_serviceFrequency:
       type: string
       nullable: true
       maxLength: 20
       enum:
         - DAILY
+        - WEEKLY
         - MONTHLY
         - QUARTERLY
         - ONE_OFF
+        - SEMIANNUALLY
         - ANNUALLY
     visaAccountUpdater:
       type: object
       description: An object containing details about the Visa Account Updater product.
       nullable: true
+      required:
+        - perMatchFee
+        - accountUpdaterMonthlyFee
+        - inquiryFrequency
+        - accountsOnFileNumber
+        - visaAccountsNumber
       properties:
         perMatchFee:
-          nullable: true
-          type: object
-          description: Represents a monetary charge applied to a transaction or service.
-          properties:
-            feeType:
-              $ref: '#/components/schemas/feeType'
-            unitPrice:
-              $ref: '#/components/schemas/money'
-            taxes:
-              type: array
-              description: A list of tax items associated with the fee.
-              items:
-                $ref: '#/components/schemas/tax'
-              maxItems: 10
-            frequency:
-              description: The frequency at which the fee is charged, such as monthly or annually.
-              type: string
-              nullable: true
-              maxLength: 20
-              enum:
-                - DAILY
-                - MONTHLY
-                - QUARTERLY
-                - ONE_OFF
-                - ANNUALLY
-            quantity:
-              type: integer
-              description: Represent the number of times a fee is applied based on its frequency.
-              format: int32
-              minimum: 1
-              maximum: 30
-              example: 3
-            isApproved:
-              $ref: '#/components/schemas/isApproved'
-            waivePeriod:
-              $ref: '#/components/schemas/waivePeriod'
-          required:
-            - unitPrice
+          $ref: '#/components/schemas/orderFee'
+        accountUpdaterMonthlyFee:
+          $ref: '#/components/schemas/orderFee'
         inquiryFrequency:
-          $ref: '#/components/schemas/serviceFrequency'
+          $ref: '#/components/schemas/sch-orders_serviceFrequency'
         accountsOnFileNumber:
           type: integer
           description: The total number of accounts on file for Visa Account Updater.
@@ -20666,7 +20864,7 @@ components:
           maximum: 1000000
         visaAccountsNumber:
           type: integer
-          description: The account number associated with Visa Account Updater.
+          description: The estimated number of Visa accounts that will be updated through the Visa Account Updater service.
           format: int32
           minimum: 1
           maximum: 1000000
@@ -20704,9 +20902,11 @@ components:
               maxLength: 20
               enum:
                 - DAILY
+                - WEEKLY
                 - MONTHLY
                 - QUARTERLY
                 - ONE_OFF
+                - SEMIANNUALLY
                 - ANNUALLY
             quantity:
               type: integer
@@ -20796,44 +20996,6 @@ components:
             - SHELL
             - SHIFT4
             - STAPLES_BUSINESS_DEPOT
-    orderFee:
-      type: object
-      description: Represents a monetary charge applied to a transaction or service.
-      properties:
-        feeType:
-          $ref: '#/components/schemas/feeType'
-        unitPrice:
-          $ref: '#/components/schemas/money'
-        taxes:
-          type: array
-          description: A list of tax items associated with the fee.
-          items:
-            $ref: '#/components/schemas/tax'
-          maxItems: 10
-        frequency:
-          description: The frequency at which the fee is charged, such as monthly or annually.
-          type: string
-          nullable: true
-          maxLength: 20
-          enum:
-            - DAILY
-            - MONTHLY
-            - QUARTERLY
-            - ONE_OFF
-            - ANNUALLY
-        quantity:
-          type: integer
-          description: Represent the number of times a fee is applied based on its frequency.
-          format: int32
-          minimum: 1
-          maximum: 30
-          example: 3
-        isApproved:
-          $ref: '#/components/schemas/isApproved'
-        waivePeriod:
-          $ref: '#/components/schemas/waivePeriod'
-      required:
-        - unitPrice
     quickBooksFeeDetails:
       type: object
       description: An object representing the fees associated with QuickBooks Connector.
@@ -20842,6 +21004,18 @@ components:
         - serviceFee
       properties:
         serviceFee:
+          $ref: '#/components/schemas/orderFee'
+    automaticBillingUpdateFeeDetails:
+      type: object
+      description: An object containing details about the Automatic Billing Update product.
+      nullable: true
+      required:
+        - perMatchFee
+        - accountUpdaterMonthlyFee
+      properties:
+        perMatchFee:
+          $ref: '#/components/schemas/orderFee'
+        accountUpdaterMonthlyFee:
           $ref: '#/components/schemas/orderFee'
     productDetails:
       type: object
@@ -20900,8 +21074,8 @@ components:
           $ref: '#/components/schemas/payDProPlus'
         payDPro:
           $ref: '#/components/schemas/payDPro'
-        interacEcommerceFeeDetails:
-          $ref: '#/components/schemas/interacEcommerceFeeDetails'
+        interacSurchargeFeeDetails:
+          $ref: '#/components/schemas/interacSurchargeFeeDetails'
         loyalty:
           $ref: '#/components/schemas/loyalty'
         hasPaymentRequest:
@@ -20912,6 +21086,8 @@ components:
           $ref: '#/components/schemas/processor'
         quickBooksFeeDetails:
           $ref: '#/components/schemas/quickBooksFeeDetails'
+        automaticBillingUpdateFeeDetails:
+          $ref: '#/components/schemas/automaticBillingUpdateFeeDetails'
     isAutoAdjudicationRequired:
       type: boolean
       description: A boolean flag indicating whether the auto adjudication process is required.
@@ -20947,6 +21123,8 @@ components:
           $ref: '#/components/schemas/idempotencyKey'
         marketSegment:
           $ref: '#/components/schemas/marketSegment'
+        highRiskKonekQuestionnaire:
+          $ref: '#/components/schemas/highRiskKonekQuestionnaire'
         representativeCode:
           $ref: '#/components/schemas/representativeCode'
         existingProductDetails:
@@ -21108,6 +21286,23 @@ components:
                 serviceFeeDetails:
                   $ref: '#/components/schemas/serviceFeeDetails'
             interac:
+              nullable: true
+              type: object
+              description: An object containing the franchise plan details.
+              properties:
+                isCommunicationsOptOut:
+                  $ref: '#/components/schemas/isCommunicationsOptOut'
+                cardFeeDetails:
+                  $ref: '#/components/schemas/cardFeeDetails'
+                transactionPlans:
+                  $ref: '#/components/schemas/transactionPlans'
+                cardBrandPlans:
+                  $ref: '#/components/schemas/cardBrandPlans'
+                assessmentPlans:
+                  $ref: '#/components/schemas/assessmentPlans'
+                serviceFeeDetails:
+                  $ref: '#/components/schemas/serviceFeeDetails'
+            interacDirect:
               nullable: true
               type: object
               description: An object containing the franchise plan details.
@@ -21295,6 +21490,7 @@ components:
         - CREDIT_ADJUDICATION
         - DECLINED_APPLICATION
         - CREDIT_ADJUDICATION_REVIEW
+        - SALES_APPROVAL
         - SCHEDULE_POS_INSTALL
     partnerName:
       type: string
@@ -21438,8 +21634,8 @@ components:
               $ref: '#/components/schemas/payDProPlus'
             payDPro:
               $ref: '#/components/schemas/payDPro'
-            interacEcommerceFeeDetails:
-              $ref: '#/components/schemas/interacEcommerceFeeDetails'
+            interacSurchargeFeeDetails:
+              $ref: '#/components/schemas/interacSurchargeFeeDetails'
             loyalty:
               $ref: '#/components/schemas/loyalty'
             hasPaymentRequest:
@@ -21450,6 +21646,8 @@ components:
               $ref: '#/components/schemas/processor'
             quickBooksFeeDetails:
               $ref: '#/components/schemas/quickBooksFeeDetails'
+            automaticBillingUpdateFeeDetails:
+              $ref: '#/components/schemas/automaticBillingUpdateFeeDetails'
         bankerInformation:
           nullable: true
           type: object
@@ -21635,6 +21833,23 @@ components:
                 serviceFeeDetails:
                   $ref: '#/components/schemas/serviceFeeDetails'
             interac:
+              nullable: true
+              type: object
+              description: An object containing the franchise plan details.
+              properties:
+                isCommunicationsOptOut:
+                  $ref: '#/components/schemas/isCommunicationsOptOut'
+                cardFeeDetails:
+                  $ref: '#/components/schemas/cardFeeDetails'
+                transactionPlans:
+                  $ref: '#/components/schemas/transactionPlans'
+                cardBrandPlans:
+                  $ref: '#/components/schemas/cardBrandPlans'
+                assessmentPlans:
+                  $ref: '#/components/schemas/assessmentPlans'
+                serviceFeeDetails:
+                  $ref: '#/components/schemas/serviceFeeDetails'
+            interacDirect:
               nullable: true
               type: object
               description: An object containing the franchise plan details.
@@ -22040,6 +22255,7 @@ components:
                   description: The identifier for the kit.
                   example: WIX_POS_ESSENTIAL_ELO
                   enum:
+                    - GA_SINGLE
                     - WIX_POS_ESSENTIAL_ELO
                     - WIX_POS_FULL_ELO_WIRED
                     - WINPOS_ESSENTIAL
@@ -22108,6 +22324,8 @@ components:
       properties:
         marketSegment:
           $ref: '#/components/schemas/marketSegment'
+        highRiskKonekQuestionnaire:
+          $ref: '#/components/schemas/highRiskKonekQuestionnaire'
         representativeCode:
           $ref: '#/components/schemas/representativeCode'
         isConfirmed:
@@ -22259,6 +22477,23 @@ components:
                 serviceFeeDetails:
                   $ref: '#/components/schemas/serviceFeeDetails'
             interac:
+              nullable: true
+              type: object
+              description: An object containing the franchise plan details.
+              properties:
+                isCommunicationsOptOut:
+                  $ref: '#/components/schemas/isCommunicationsOptOut'
+                cardFeeDetails:
+                  $ref: '#/components/schemas/cardFeeDetails'
+                transactionPlans:
+                  $ref: '#/components/schemas/transactionPlans'
+                cardBrandPlans:
+                  $ref: '#/components/schemas/cardBrandPlans'
+                assessmentPlans:
+                  $ref: '#/components/schemas/assessmentPlans'
+                serviceFeeDetails:
+                  $ref: '#/components/schemas/serviceFeeDetails'
+            interacDirect:
               nullable: true
               type: object
               description: An object containing the franchise plan details.
@@ -23536,6 +23771,211 @@ components:
           required:
             - accountId
         - $ref: '#/components/schemas/partnerMerchantAccountDetails'
+    originalCreditTransactionId:
+      type: string
+      description: Unique Identification for the Original Credit Transaction
+      pattern: ^[A-Za-z]{2}\d{2}[A-Za-z0-9]{26}$
+      minLength: 30
+      maxLength: 30
+      example: oc0105ARZ3NDEKTSV4RRFFQ69G5FAV
+    originalCreditTransactionStatus:
+      type: string
+      description: Original Credit Transaction Status description.
+      enum:
+        - DECLINED
+        - SUCCEEDED
+      example: SUCCEEDED
+    fastFundsIndicator:
+      type: boolean
+      default: false
+      description: This flag is returned true if the card can support fast funds.
+    originalCreditTransaction:
+      title: originalCreditTransaction
+      type: object
+      description: Returns a processed original-credit-transaction
+      properties:
+        originalCreditTransactionId:
+          $ref: '#/components/schemas/originalCreditTransactionId'
+        merchantId:
+          $ref: '#/components/schemas/merchantId'
+        orderId:
+          $ref: '#/components/schemas/orderId'
+        invoiceNumber:
+          $ref: '#/components/schemas/invoiceNumber'
+        transactionDateTime:
+          $ref: '#/components/schemas/transactionDateTime'
+        createdAt:
+          $ref: '#/components/schemas/createdAt'
+        amount:
+          description: This amount excludes surcharge, application and convenience fee.
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+        customerId:
+          nullable: true
+          type: string
+          description: Unique Identification for the Customer
+          example: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+          pattern: ^[A-Za-z]{2}\d{2}[A-Za-z0-9]{26}$
+          minLength: 30
+          maxLength: 30
+        customerReference:
+          nullable: true
+          type: string
+          description: Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.
+          example: 911677-212
+          minLength: 1
+          maxLength: 50
+        paymentMethod:
+          $ref: '#/components/schemas/cardPaymentMethod'
+        originalCreditTransactionStatus:
+          $ref: '#/components/schemas/originalCreditTransactionStatus'
+        fastFundsIndicator:
+          $ref: '#/components/schemas/fastFundsIndicator'
+        transactionDetails:
+          $ref: '#/components/schemas/statusDetails'
+        customData:
+          $ref: '#/components/schemas/customData'
+      required:
+        - originalCreditTransactionId
+        - merchantId
+        - transactionDateTime
+        - createdAt
+        - amount
+        - paymentMethod
+        - originalCreditTransactionStatus
+        - transactionDetails
+    originalCreditTransactionList:
+      title: originalCreditTransactionList
+      type: object
+      description: Response body, returns a paginated list of original-credit-transactions
+      properties:
+        data:
+          description: Original-Credit-Transactions list.
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/originalCreditTransaction'
+        self:
+          $ref: '#/components/schemas/self'
+        first:
+          $ref: '#/components/schemas/first'
+        last:
+          $ref: '#/components/schemas/last'
+        next:
+          $ref: '#/components/schemas/next'
+        previous:
+          $ref: '#/components/schemas/previous'
+      required:
+        - data
+    originalCreditTransactionPaymentMethodRequest:
+      title: originalCreditTransactionPaymentMethodRequest
+      description: |
+        Used to collect payment data needed to execute the transaction. 
+        Can also be used to collect and save customer payment instruments on file. 
+      oneOf:
+        - $ref: '#/components/schemas/paymentMethodWithId'
+        - $ref: '#/components/schemas/paymentMethodCard'
+        - $ref: '#/components/schemas/paymentMethodTemporaryToken'
+        - $ref: '#/components/schemas/paymentMethodPermanentToken'
+      discriminator:
+        propertyName: paymentMethodSource
+        mapping:
+          PAYMENT_METHOD_ID: '#/components/schemas/paymentMethodWithId'
+          CARD: '#/components/schemas/paymentMethodCard'
+          TEMPORARY_TOKEN: '#/components/schemas/paymentMethodTemporaryToken'
+          PERMANENT_TOKEN: '#/components/schemas/paymentMethodPermanentToken'
+      required:
+        - paymentMethodSource
+    createOriginalCreditTransactionRequest:
+      title: originalCreditTransactionRequest
+      type: object
+      description: Request body, used to initiate an original-credit-transaction
+      properties:
+        idempotencyKey:
+          $ref: '#/components/schemas/idempotencyKey'
+        orderId:
+          $ref: '#/components/schemas/orderId'
+        invoiceNumber:
+          $ref: '#/components/schemas/invoiceNumber'
+        amount:
+          description: This amount includes the surcharge fee.
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+        customerId:
+          nullable: true
+          description: The unique identifier of the customer.
+          type: string
+          example: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+          pattern: ^[A-Za-z]{2}\d{2}[A-Za-z0-9]{26}$
+          minLength: 30
+          maxLength: 30
+        customerReference:
+          nullable: true
+          type: string
+          description: Unique Identification for the Customer. This can be an identifier generated from a merchant-defined identifier.
+          example: 911677-212
+          minLength: 1
+          maxLength: 50
+        paymentMethod:
+          $ref: '#/components/schemas/originalCreditTransactionPaymentMethodRequest'
+        ecommerceIndicator:
+          description: Describes the category of e-commerce transaction being processed.
+          type: string
+          enum:
+            - MAIL_TELEPHONE_ORDER_SINGLE
+            - MAIL_TELEPHONE_ORDER_RECURRING
+            - MAIL_TELEPHONE_ORDER_INSTALMENT
+            - MAIL_TELEPHONE_ORDER_UNKNOWN
+            - AUTHENTICATED_ECOMMERCE
+            - NON_AUTHENTICATED_ECOMMERCE
+            - SSL_MERCHANT
+          example: AUTHENTICATED_ECOMMERCE
+          default: SSL_MERCHANT
+        customData:
+          nullable: true
+          description: Merchant can send custom meta data with the transaction in this object. Moneris will echo these values back in response.
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 1
+            maxLength: 50
+          maxProperties: 10
+        dynamicDescriptor:
+          nullable: true
+          type: string
+          description: |
+            Merchant defined description sent on a per-transaction basis that will appear on the credit card statement.  
+
+            Dependent on the card Issuer, the statement will typically show the dynamic descriptor appended to the merchant's existing business name separated by the '/' character.  
+
+            **Note**: The combined length of the merchant's business name, forward slash '/' character, and the dynamic descriptor may not exceed 22 characters.
+          minLength: 1
+          maxLength: 20
+          example: moneris
+      required:
+        - idempotencyKey
+        - paymentMethod
+        - amount
   parameters:
     apiVersion:
       in: header
@@ -23745,6 +24185,13 @@ components:
         Note: This code is provided by Moneris and is required to identify the Merchant Accounts belonging to a Partner."
       schema:
         $ref: '#/components/schemas/accountId'
+    originalCreditTransactionId:
+      in: path
+      name: original-credit-transaction-id
+      description: The unique identifier of the original-credit-transaction
+      required: true
+      schema:
+        $ref: '#/components/schemas/resourceId'
   headers:
     apiVersion:
       description: The endpoint's API Version.
@@ -26557,6 +27004,247 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/partnerMerchantAccount'
+    listOriginalCreditTransactionsResponse:
+      description: List of all original-credit-transactions
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/originalCreditTransactionList'
+          example:
+            data:
+              - originalCreditTransactionId: oc0105ARZ3NDEKTSV4RRFFQ69G5FAX
+                merchantId: '0123456789101'
+                orderId: 1q2w3e4r5t6t78
+                transactionDateTime: '2019-07-30T06:43:40.252Z'
+                createdAt: '2019-07-30T06:43:40.252Z'
+                amount:
+                  amount: 16000
+                  currency: CAD
+                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                paymentMethod:
+                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                  merchantId: '0123456789101'
+                  cardholderInformation: null
+                  contactDetails: null
+                  billingAddress: null
+                  paymentMethodInformation:
+                    paymentMethodType: CARD
+                    paymentMethodSource: CARD
+                    cardInformation:
+                      bankIdentificationNumber: '123456'
+                      lastFour: '1234'
+                      expiryMonth: 1
+                      expiryYear: 2028
+                      cardBrand: MASTERCARD
+                      cardType: CREDIT
+                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                      issuer: RBC
+                    paymentAccountReference: '11112222333344445555666677778'
+                    storePaymentMethod: DO_NOT_STORE
+                  createdAt: '2019-07-30T06:43:40.252Z'
+                  modifiedAt: null
+                  customData:
+                    property1: string
+                    property2: string
+                originalCreditTransactionStatus: DECLINED
+                transactionDetails:
+                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+                  isoResponseCode: '43'
+                  responseCode: '421'
+                  message: Stolen card, pick up.
+                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                fastFundsIndicator: 'true'
+                customData:
+                  property1: string
+                  property2: string
+              - originalCreditTransactionId: oc0105ARZ3NDEKTSV4RRFFQ69G5FAX
+                merchantId: '0123456789101'
+                orderId: 1q2w3e4r5t6t78
+                transactionDateTime: '2019-07-30T06:43:40.252Z'
+                createdAt: '2019-07-30T06:43:40.252Z'
+                amount:
+                  amount: 16000
+                  currency: CAD
+                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                paymentMethod:
+                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                  merchantId: '0123456789101'
+                  cardholderInformation: null
+                  contactDetails: null
+                  billingAddress: null
+                  paymentMethodInformation:
+                    paymentMethodType: CARD
+                    paymentMethodSource: CARD
+                    cardInformation:
+                      bankIdentificationNumber: '123456'
+                      lastFour: '1234'
+                      expiryMonth: 1
+                      expiryYear: 2028
+                      cardBrand: MASTERCARD
+                      cardType: CREDIT
+                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                      issuer: RBC
+                    paymentAccountReference: '11112222333344445555666677778'
+                    storePaymentMethod: DO_NOT_STORE
+                  createdAt: '2019-07-30T06:43:40.252Z'
+                  modifiedAt: null
+                  customData:
+                    property1: string
+                    property2: string
+                originalCreditTransactionStatus: DECLINED
+                transactionDetails:
+                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+                  isoResponseCode: '43'
+                  responseCode: '421'
+                  message: Stolen card, pick up.
+                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                fastFundsIndicator: 'true'
+                customData:
+                  property1: string
+                  property2: string
+              - originalCreditTransactionId: oc0105ARZ3NDEKTSV4RRFFQ69G5FAX
+                merchantId: '0123456789101'
+                orderId: 1q2w3e4r5t6t78
+                transactionDateTime: '2019-07-30T06:43:40.252Z'
+                createdAt: '2019-07-30T06:43:40.252Z'
+                amount:
+                  amount: 16000
+                  currency: CAD
+                customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                paymentMethod:
+                  paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+                  merchantId: '0123456789101'
+                  cardholderInformation: null
+                  contactDetails: null
+                  billingAddress: null
+                  paymentMethodInformation:
+                    paymentMethodType: CARD
+                    paymentMethodSource: CARD
+                    cardInformation:
+                      bankIdentificationNumber: '123456'
+                      lastFour: '1234'
+                      expiryMonth: 1
+                      expiryYear: 2028
+                      cardBrand: MASTERCARD
+                      cardType: CREDIT
+                      cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+                      issuer: RBC
+                    paymentAccountReference: '11112222333344445555666677778'
+                    storePaymentMethod: DO_NOT_STORE
+                  createdAt: '2019-07-30T06:43:40.252Z'
+                  modifiedAt: null
+                  customData:
+                    property1: string
+                    property2: string
+                originalCreditTransactionStatus: DECLINED
+                transactionDetails:
+                  transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+                  isoResponseCode: '43'
+                  responseCode: '421'
+                  message: Stolen card, pick up.
+                  ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                fastFundsIndicator: 'true'
+                customData:
+                  property1: string
+                  property2: string
+            self: /payments?cursor=d41d8cd98f00b&limit=50
+            first: /payments?cursor=d41d8cd98f00b&limit=50
+            last: /payments?cursor=d41d8cd98f00b&limit=50
+            next: null
+            previous: null
+    createOriginalCreditTransactionSuccessResponse:
+      description: Original-Credit-Transaction operation created successfully.
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/originalCreditTransaction'
+          examples:
+            OriginalCreditTransactionSuccessfulResponse:
+              $ref: '#/components/examples/OriginalCreditTransactionSuccessfulResponse'
+    createOriginalCreditTransactionBadRequestResponse:
+      description: Failed Original-Credit-Transaction operation result response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          examples:
+            invalid_request:
+              $ref: '#/components/examples/InvalidRequestErrorResponse'
+    createOriginalCreditTransactionUnprocessableContentResponse:
+      description: Failed Original-Credit-Transaction operation result response
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/error'
+          examples:
+            declined:
+              $ref: '#/components/examples/DeclineErrorResponse'
+    retrieveOriginalCreditTransactionSuccessResponse:
+      description: The transaction corresponding to the provided `original-credit-transaction-id`
+      headers:
+        Api-Version:
+          $ref: '#/components/headers/apiVersion'
+        X-Correlation-Id:
+          $ref: '#/components/headers/correlationId'
+        Sunset:
+          $ref: '#/components/headers/sunset'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/rateLimitCount'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/rateLimitRemaining'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/originalCreditTransaction'
+          examples:
+            succeeded:
+              $ref: '#/components/examples/OriginalCreditTransactionSuccessfulResponse'
+            declined:
+              $ref: '#/components/examples/OriginalCreditTransactionDeclinedResponse'
   examples:
     InvalidListRequestErrorResponse:
       summary: Invalid query parameter
@@ -27376,6 +28064,36 @@ components:
         instance: null
         category: API_ERROR
         errors: []
+    updatePaymentMethodInformationRequest:
+      summary: Update Payment Method request
+      value:
+        cardholderInformation:
+          cardholderName: John Doe
+          cardholderNameDetails:
+            firstName: John
+            middleName: A
+            lastName: Doe
+          companyName: SP Ltd
+        contactDetails:
+          phoneNumber: '+18663197450'
+          email: moneris@moneris.com
+        billingAddress:
+          unitNumber: 123A
+          streetNumber: '3300'
+          streetName: Bloor Street West
+          city: Toronto
+          province: 'ON'
+          postalCode: M8X 2X2
+          country: CA
+        credentialOnFileInformation:
+          paymentIndicator: FIRST
+          paymentInformation: NOT_USED
+          issuerId: 12345678901
+        card:
+          cardNumber: '4444111122223333'
+          expiryMonth: 12
+          expiryYear: 2033
+          cardSecurityCode: 123
     matchingRefundRequest:
       summary: Matching Refund
       value:
@@ -28960,3 +29678,175 @@ components:
         merchantSupportedAccountTypes:
           - BANK_ACCOUNT_SAVINGS
           - VISA_CREDIT
+    originalCreditTransactionWithPaymentMethodId:
+      summary: Regular Purchase With Payment Method Id
+      value:
+        idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac1
+        orderId: 1q2w3e4r5t6t78
+        amount:
+          amount: 16000
+          currency: CAD
+        customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentMethod:
+          paymentMethodSource: PAYMENT_METHOD_ID
+          paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+        customData:
+          property1: string
+          property2: string
+        dynamicDescriptor: moneris
+    originalCreditTransactionWithCardPaymentMethod:
+      summary: Regular Purchase With Payment Method Details
+      value:
+        idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac1
+        orderId: 1q2w3e4r5t6t78
+        amount:
+          amount: 16000
+          currency: CAD
+        customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentMethod:
+          paymentMethodSource: CARD
+          card:
+            cardNumber: '4242424242424242'
+            expiryMonth: 1
+            expiryYear: 2028
+            cardSecurityCode: '123'
+        ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+        customData:
+          property1: string
+          property2: string
+        dynamicDescriptor: moneris
+    originalCreditTransactionWithTemporaryPaymentMethod:
+      summary: Original Credit Transaction With Temporary Payment Method
+      value:
+        idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac1
+        orderId: 1q2w3e4r5t6t78
+        amount:
+          amount: 16000
+          currency: CAD
+        customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentMethod:
+          paymentMethodSource: TEMPORARY_TOKEN
+          temporaryToken: ot-y2mxjFqmqDisQQGB6hQ8xwQ2
+        ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+        customData:
+          property1: string
+          property2: string
+        dynamicDescriptor: moneris
+    originalCreditTransactionWithPermanentPaymentMethod:
+      summary: Regular Purchase With Permanent Payment Method
+      value:
+        idempotencyKey: 5d8f812e-9969-4885-85bb-d03948eccac1
+        orderId: 1q2w3e4r5t6t78
+        amount:
+          amount: 16000
+          currency: CAD
+        customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentMethod:
+          paymentMethodSource: PERMANENT_TOKEN
+          permanentToken: ot-y2mxjFqmqDisQQGB6hQ8xwQ2
+          credentialOnFileInformation:
+            paymentIndicator: UNSCHEDULED_CREDENTIAL_ON_FILE
+            paymentInformation: FIRST
+        ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+        customData:
+          property1: string
+          property2: string
+        dynamicDescriptor: moneris
+    OriginalCreditTransactionSuccessfulResponse:
+      summary: Original-Credit-Transaction Successful Response
+      value:
+        originalCreditTransactionId: oc0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        merchantId: '0123456789101'
+        orderId: 1q2w3e4r5t6t78
+        transactionDateTime: '2019-07-30T06:43:40.252Z'
+        createdAt: '2019-07-30T06:43:40.252Z'
+        amount:
+          amount: 16000
+          currency: CAD
+        customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentMethod:
+          paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+          merchantId: '0123456789101'
+          cardholderInformation: null
+          contactDetails: null
+          billingAddress: null
+          paymentMethodInformation:
+            paymentMethodType: CARD
+            paymentMethodSource: CARD
+            cardInformation:
+              bankIdentificationNumber: '123456'
+              lastFour: '1234'
+              expiryMonth: 1
+              expiryYear: 2028
+              cardBrand: MASTERCARD
+              cardType: CREDIT
+              cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+              issuer: RBC
+            paymentAccountReference: '11112222333344445555666677778'
+            storePaymentMethod: DO_NOT_STORE
+          createdAt: '2019-07-30T06:43:40.252Z'
+          modifiedAt: null
+          customData:
+            property1: string
+            property2: string
+        originalCreditTransactionStatus: SUCCEEDED
+        transactionDetails:
+          transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+          isoResponseCode: '00'
+          responseCode: '000'
+          message: approved
+          ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+        fastFundsIndicator: 'true'
+        customData:
+          property1: string
+          property2: string
+    OriginalCreditTransactionDeclinedResponse:
+      summary: Purchase Declined
+      value:
+        originalCreditTransactionId: oc0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        merchantId: '0123456789101'
+        orderId: 1q2w3e4r5t6t78
+        transactionDateTime: '2019-07-30T06:43:40.252Z'
+        createdAt: '2019-07-30T06:43:40.252Z'
+        modifiedAt: '2019-07-30T06:43:40.252Z'
+        amount:
+          amount: 16000
+          currency: CAD
+        customerId: ci0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentMethod:
+          paymentMethodId: pm0105ARZ3NDEKTSV4RRFFQ69G5FAV
+          merchantId: '0123456789101'
+          cardholderInformation: null
+          contactDetails: null
+          billingAddress: null
+          paymentMethodInformation:
+            paymentMethodType: CARD
+            paymentMethodSource: CARD
+            cardInformation:
+              bankIdentificationNumber: '123456'
+              lastFour: '1234'
+              expiryMonth: 1
+              expiryYear: 2028
+              cardBrand: MASTERCARD
+              cardType: CREDIT
+              cardFingerprint: 1Q2W3E4r5t6rfwewerwewrrw
+              issuer: RBC
+            paymentAccountReference: '11112222333344445555666677778'
+            storePaymentMethod: DO_NOT_STORE
+          createdAt: '2019-07-30T06:43:40.252Z'
+          modifiedAt: null
+          customData:
+            property1: string
+            property2: string
+        originalCreditTransactionStatus: DECLINED
+        transactionDetails:
+          transactionUniqueId: 938c2cc0dcc05f2b68c4287040cfcf71
+          isoResponseCode: '43'
+          responseCode: '421'
+          message: Stolen card, pick up.
+          ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+        fastFundsIndicator: 'false'
+        customData:
+          property1: string
+          property2: string
