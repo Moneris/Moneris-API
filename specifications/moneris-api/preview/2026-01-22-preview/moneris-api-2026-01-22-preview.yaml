@@ -9339,6 +9339,12 @@ components:
         - NO_PREFERENCE
         - NO_CHALLENGE_REQUESTED
         - CHALLENGE_REQUESTED_MANDATE
+        - CHALLENGE_REQUESTED_PREFERENCE
+        - NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED
+        - NO_CHALLENGE_REQUESTED_DATA_ONLY
+        - NO_CHALLENGE_REQUESTED_AUTHENTICATION_PERFORMED
+        - NO_CHALLENGE_REQUESTED_WHITELIST_EXEMPTION
+        - CHALLENGE_REQUESTED_WHITELIST_PROMPT
       example: NO_PREFERENCE
       default: NO_PREFERENCE
     threeDSecureChallengeWindowSize:
@@ -11646,6 +11652,17 @@ components:
           $ref: '#/components/schemas/merchantType'
         storeNumber:
           $ref: '#/components/schemas/storeNumber'
+        transactionCurrency:
+          nullable: true
+          type: string
+          description: |
+            Provides the three letter currency code according the ISO 4217 standard. 
+
+            For a complete list of currency codes, visit: https://en.wikipedia.org/wiki/ISO_4217
+          minLength: 3
+          maxLength: 4
+          example: CAD
+          format: iso-4217
     deliveryAddressConfirmed:
       type: boolean
       default: false
@@ -11754,6 +11771,26 @@ components:
           $ref: '#/components/schemas/isSameAsBusinessAddress'
         hasOptedOutEmail:
           $ref: '#/components/schemas/hasOptedOutEmail'
+    taxInformation:
+      type: object
+      description: An object containing the merchant's tax registration numbers.
+      nullable: true
+      properties:
+        goodsServicesTaxNumber:
+          type: string
+          description: The merchant's Goods and Services Tax (GST) registration number.
+          nullable: true
+          maxLength: 30
+        provincialSalesTaxNumber:
+          type: string
+          description: The merchant's Provincial Sales Tax (PST) registration number.
+          nullable: true
+          maxLength: 30
+        harmonizedSalesTaxNumber:
+          type: string
+          description: The merchant's Harmonized Sales Tax (HST) registration number.
+          nullable: true
+          maxLength: 30
     merchantDetails:
       type: object
       description: An object that contains key information about the merchant associated.
@@ -11772,6 +11809,8 @@ components:
           $ref: '#/components/schemas/marketSegment'
         communicationDetails:
           $ref: '#/components/schemas/communicationDetails'
+        taxInformation:
+          $ref: '#/components/schemas/taxInformation'
     dropShipping:
       type: boolean
       description: A boolean value indicating whether the business engages in drop shipping as part of its operations.
@@ -12283,6 +12322,8 @@ components:
               $ref: '#/components/schemas/marketSegment'
             communicationDetails:
               $ref: '#/components/schemas/communicationDetails'
+            taxInformation:
+              $ref: '#/components/schemas/taxInformation'
         businessActivity:
           nullable: true
           type: object
@@ -13818,9 +13859,9 @@ components:
       description: It contains hardware bundle details.
       nullable: true
       properties:
-        paymentInstrument:
+        onboardingPaymentRequest:
           type: string
-          description: The payment method for the hardware bundle.
+          description: The payment request method for the hardware bundle.
           example: BANK_ACCOUNT_DIRECT_WITHDRAWAL
           enum:
             - BANK_ACCOUNT_DIRECT_WITHDRAWAL
@@ -15771,292 +15812,19 @@ components:
               required:
                 - unitPrice
             nonDomesticSettlementFee:
-              nullable: true
-              type: object
-              description: Represents a monetary charge applied to a transaction or service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
             visaBusinessToBusinessVirtualForeignFee:
-              nullable: true
-              type: object
-              description: Represents a monetary charge applied to a transaction or service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
             visaBusinessToBusinessVirtualForeignSingleCurrencyFee:
-              nullable: true
-              type: object
-              description: Represents a monetary charge applied to a transaction or service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
             visaBusinessToBusinessAssessmentForeignSingleCurrencyFee:
-              nullable: true
-              type: object
-              description: Represents a monetary charge applied to a transaction or service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
             visaBusinessToBusinessAssessmentForeignFee:
-              nullable: true
-              type: object
-              description: Represents a monetary charge applied to a transaction or service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
             visaAssessmentSingleCurrencyFee:
-              nullable: true
-              type: object
-              description: Represents a monetary charge applied to a transaction or service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
             visaAssessmentForeignFee:
-              nullable: true
-              type: object
-              description: Represents a monetary charge applied to a transaction or service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
         packageIdentifier:
           type: string
           description: A unique identifier for the multi-currency pricing package.
@@ -19587,127 +19355,25 @@ components:
               example: 90.5
             visa3dSecureAuthenticationMerchantDiscountRateFee:
               description: The Merchant Discount Rate applied to transactions processed through Visa's 3D secure authentication protocol.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              type: number
+              format: decimal
+              minimum: 0
+              maximum: 100
+              example: 90.5
             amex3dSecureAuthenticationMerchantDiscountRateFee:
               description: The Merchant Discount Rate applied to transactions processed through Amex's 3D secure authentication protocol.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              type: number
+              format: decimal
+              minimum: 0
+              maximum: 100
+              example: 90.5
             mastercard3dSecureAuthenticationMerchantDiscountRateFee:
               description: The Merchant Discount Rate applied to transactions processed through Mastercard's 3D secure authentication protocol.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: The frequency at which the fee is charged, such as monthly or annually.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Represent the number of times a fee is applied based on its frequency.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              type: number
+              format: decimal
+              minimum: 0
+              maximum: 100
+              example: 90.5
         terminals:
           type: array
           description: A list of payment terminals available for the integrated product.
@@ -20141,9 +19807,9 @@ components:
               type: object
               description: It contains hardware bundle details.
               properties:
-                paymentInstrument:
+                onboardingPaymentRequest:
                   type: string
-                  description: The payment method for the hardware bundle.
+                  description: The payment request method for the hardware bundle.
                   example: BANK_ACCOUNT_DIRECT_WITHDRAWAL
                   enum:
                     - BANK_ACCOUNT_DIRECT_WITHDRAWAL
@@ -22213,9 +21879,9 @@ components:
           type: object
           description: It contains hardware bundle details.
           properties:
-            paymentInstrument:
+            onboardingPaymentRequest:
               type: string
-              description: The payment method for the hardware bundle.
+              description: The payment request method for the hardware bundle.
               example: BANK_ACCOUNT_DIRECT_WITHDRAWAL
               enum:
                 - BANK_ACCOUNT_DIRECT_WITHDRAWAL
