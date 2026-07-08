@@ -9313,6 +9313,12 @@ components:
         - NO_PREFERENCE
         - NO_CHALLENGE_REQUESTED
         - CHALLENGE_REQUESTED_MANDATE
+        - CHALLENGE_REQUESTED_PREFERENCE
+        - NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED
+        - NO_CHALLENGE_REQUESTED_DATA_ONLY
+        - NO_CHALLENGE_REQUESTED_AUTHENTICATION_PERFORMED
+        - NO_CHALLENGE_REQUESTED_WHITELIST_EXEMPTION
+        - CHALLENGE_REQUESTED_WHITELIST_PROMPT
       example: NO_PREFERENCE
       default: NO_PREFERENCE
     threeDSecureChallengeWindowSize:
@@ -11615,6 +11621,17 @@ components:
           $ref: '#/components/schemas/merchantType'
         storeNumber:
           $ref: '#/components/schemas/storeNumber'
+        transactionCurrency:
+          nullable: true
+          type: string
+          description: |
+            Fournit le code monétaire à trois lettres selon la norme ISO 4217. 
+
+            Pour obtenir la liste complète des codes de devise, rendez-vous sur : https://en.wikipedia.org/wiki/ISO_4217
+          minLength: 3
+          maxLength: 4
+          example: CAD
+          format: iso-4217
     deliveryAddressConfirmed:
       type: boolean
       default: false
@@ -11723,6 +11740,26 @@ components:
           $ref: '#/components/schemas/isSameAsBusinessAddress'
         hasOptedOutEmail:
           $ref: '#/components/schemas/hasOptedOutEmail'
+    taxInformation:
+      type: object
+      description: Un objet contenant les numéros d'enregistrement fiscal du commerçant.
+      nullable: true
+      properties:
+        goodsServicesTaxNumber:
+          type: string
+          description: Le numéro d'enregistrement de la taxe sur les produits et services (TPS) du commerçant.
+          nullable: true
+          maxLength: 30
+        provincialSalesTaxNumber:
+          type: string
+          description: Le numéro d'enregistrement de la taxe de vente provinciale (TVP) du commerçant.
+          nullable: true
+          maxLength: 30
+        harmonizedSalesTaxNumber:
+          type: string
+          description: Le numéro d'enregistrement de la taxe de vente harmonisée (TVH) du commerçant.
+          nullable: true
+          maxLength: 30
     merchantDetails:
       type: object
       description: Un objet qui contient les informations clés sur le commerçant associé.
@@ -11741,6 +11778,8 @@ components:
           $ref: '#/components/schemas/marketSegment'
         communicationDetails:
           $ref: '#/components/schemas/communicationDetails'
+        taxInformation:
+          $ref: '#/components/schemas/taxInformation'
     dropShipping:
       type: boolean
       description: Une valeur booléenne indiquant si l'entreprise pratique la livraison directe dans le cadre de ses opérations.
@@ -12252,6 +12291,8 @@ components:
               $ref: '#/components/schemas/marketSegment'
             communicationDetails:
               $ref: '#/components/schemas/communicationDetails'
+            taxInformation:
+              $ref: '#/components/schemas/taxInformation'
         businessActivity:
           nullable: true
           type: object
@@ -13787,9 +13828,9 @@ components:
       description: Il contient les détails du bundle matériel.
       nullable: true
       properties:
-        paymentInstrument:
+        onboardingPaymentRequest:
           type: string
-          description: The payment method for the hardware bundle.
+          description: La méthode de demande de paiement pour le bundle matériel.
           example: BANK_ACCOUNT_DIRECT_WITHDRAWAL
           enum:
             - BANK_ACCOUNT_DIRECT_WITHDRAWAL
@@ -15746,292 +15787,19 @@ components:
               required:
                 - unitPrice
             nonDomesticSettlementFee:
-              nullable: true
-              type: object
-              description: Représente une charge monétaire appliquée à une transaction ou un service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: La fréquence à laquelle la taxe est appliquée, telle que mensuelle ou annuelle.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Représente le nombre de fois qu'une taxe est appliquée en fonction de sa fréquence.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
             visaBusinessToBusinessVirtualForeignFee:
-              nullable: true
-              type: object
-              description: Représente une charge monétaire appliquée à une transaction ou un service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: La fréquence à laquelle la taxe est appliquée, telle que mensuelle ou annuelle.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Représente le nombre de fois qu'une taxe est appliquée en fonction de sa fréquence.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
             visaBusinessToBusinessVirtualForeignSingleCurrencyFee:
-              nullable: true
-              type: object
-              description: Représente une charge monétaire appliquée à une transaction ou un service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: La fréquence à laquelle la taxe est appliquée, telle que mensuelle ou annuelle.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Représente le nombre de fois qu'une taxe est appliquée en fonction de sa fréquence.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
             visaBusinessToBusinessAssessmentForeignSingleCurrencyFee:
-              nullable: true
-              type: object
-              description: Représente une charge monétaire appliquée à une transaction ou un service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: La fréquence à laquelle la taxe est appliquée, telle que mensuelle ou annuelle.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Représente le nombre de fois qu'une taxe est appliquée en fonction de sa fréquence.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
             visaBusinessToBusinessAssessmentForeignFee:
-              nullable: true
-              type: object
-              description: Représente une charge monétaire appliquée à une transaction ou un service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: La fréquence à laquelle la taxe est appliquée, telle que mensuelle ou annuelle.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Représente le nombre de fois qu'une taxe est appliquée en fonction de sa fréquence.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
             visaAssessmentSingleCurrencyFee:
-              nullable: true
-              type: object
-              description: Représente une charge monétaire appliquée à une transaction ou un service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: La fréquence à laquelle la taxe est appliquée, telle que mensuelle ou annuelle.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Représente le nombre de fois qu'une taxe est appliquée en fonction de sa fréquence.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
             visaAssessmentForeignFee:
-              nullable: true
-              type: object
-              description: Représente une charge monétaire appliquée à une transaction ou un service.
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: La fréquence à laquelle la taxe est appliquée, telle que mensuelle ou annuelle.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Représente le nombre de fois qu'une taxe est appliquée en fonction de sa fréquence.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              $ref: '#/components/schemas/percentage'
         packageIdentifier:
           type: string
           description: Un identifiant unique pour le forfait de tarification multi-devises.
@@ -19562,127 +19330,25 @@ components:
               example: 90.5
             visa3dSecureAuthenticationMerchantDiscountRateFee:
               description: Le taux de remise marchand appliqué aux transactions traitées via le protocole d'authentification 3D Secure de Visa.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: La fréquence à laquelle la taxe est appliquée, telle que mensuelle ou annuelle.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Représente le nombre de fois qu'une taxe est appliquée en fonction de sa fréquence.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              type: number
+              format: decimal
+              minimum: 0
+              maximum: 100
+              example: 90.5
             amex3dSecureAuthenticationMerchantDiscountRateFee:
               description: Le taux de remise marchand appliqué aux transactions traitées via le protocole d'authentification 3D Secure d'Amex.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: La fréquence à laquelle la taxe est appliquée, telle que mensuelle ou annuelle.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Représente le nombre de fois qu'une taxe est appliquée en fonction de sa fréquence.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              type: number
+              format: decimal
+              minimum: 0
+              maximum: 100
+              example: 90.5
             mastercard3dSecureAuthenticationMerchantDiscountRateFee:
               description: Le taux de remise marchand appliqué aux transactions traitées via le protocole d'authentification 3D Secure de Mastercard.
-              nullable: true
-              type: object
-              properties:
-                feeType:
-                  $ref: '#/components/schemas/feeType'
-                unitPrice:
-                  $ref: '#/components/schemas/money'
-                taxes:
-                  type: array
-                  description: A list of tax items associated with the fee.
-                  items:
-                    $ref: '#/components/schemas/tax'
-                  maxItems: 10
-                frequency:
-                  description: La fréquence à laquelle la taxe est appliquée, telle que mensuelle ou annuelle.
-                  type: string
-                  nullable: true
-                  maxLength: 20
-                  enum:
-                    - DAILY
-                    - WEEKLY
-                    - MONTHLY
-                    - QUARTERLY
-                    - ONE_OFF
-                    - SEMIANNUALLY
-                    - ANNUALLY
-                quantity:
-                  type: integer
-                  description: Représente le nombre de fois qu'une taxe est appliquée en fonction de sa fréquence.
-                  format: int32
-                  minimum: 1
-                  maximum: 30
-                  example: 3
-                isApproved:
-                  $ref: '#/components/schemas/isApproved'
-                waivePeriod:
-                  $ref: '#/components/schemas/waivePeriod'
-              required:
-                - unitPrice
+              type: number
+              format: decimal
+              minimum: 0
+              maximum: 100
+              example: 90.5
         terminals:
           type: array
           description: Une liste de terminaux de paiement disponibles pour le produit intégré.
@@ -20116,9 +19782,9 @@ components:
               type: object
               description: Il contient les détails du bundle matériel.
               properties:
-                paymentInstrument:
+                onboardingPaymentRequest:
                   type: string
-                  description: The payment method for the hardware bundle.
+                  description: La méthode de demande de paiement pour le bundle matériel.
                   example: BANK_ACCOUNT_DIRECT_WITHDRAWAL
                   enum:
                     - BANK_ACCOUNT_DIRECT_WITHDRAWAL
@@ -22188,9 +21854,9 @@ components:
           type: object
           description: Il contient les détails du bundle matériel.
           properties:
-            paymentInstrument:
+            onboardingPaymentRequest:
               type: string
-              description: The payment method for the hardware bundle.
+              description: La méthode de demande de paiement pour le bundle matériel.
               example: BANK_ACCOUNT_DIRECT_WITHDRAWAL
               enum:
                 - BANK_ACCOUNT_DIRECT_WITHDRAWAL
