@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 2.15.0
+  version: 2.15.1
   title: Moneris API
   description: |-
     Moneris API Platform
@@ -5251,6 +5251,32 @@ components:
         - isoResponseCode
         - responseCode
         - ecommerceIndicator
+    mastercardMerchantAdviceCode:
+      title: Mastercard Merchant Advice Code
+      type: string
+      nullable: true
+      description: |
+        Indicate merchants the reason for declining transactions, and the course of action that merchants can take.  If present, this contains information about why the payment failed, whether it can be retried  and in some cases, the recommended duration after which it should be retried.
+      enum:
+        - NEW_ACCOUNT_INFORMATION
+        - TRY_AGAIN_LATER
+        - DO_NOT_RETRY
+        - TOKEN_REQUIREMENTS_NOT_FULFILLED
+        - NEGOTIATED_VALUES_NOT_APPROVED
+        - PAYMENT_CANCELLATION
+        - MERCHANT_NOT_QUALIFIED
+        - RETRY_AFTER_1_HOUR
+        - RETRY_AFTER_24_HOUR
+        - RETRY_AFTER_2_DAYS
+        - RETRY_AFTER_4_DAYS
+        - RETRY_AFTER_6_DAYS
+        - RETRY_AFTER_8_DAYS
+        - RETRY_AFTER_10_DAYS
+        - NON_RELOADABLE_PREPAID_CARD
+        - SINGLE_USE_VIRTUAL_CARD
+        - MULTI_USE_VIRTUAL_CARD
+        - null
+      example: NON_RELOADABLE_PREPAID_CARD
     addressVerificationServiceResultCode:
       title: AVS Result Description
       type: string
@@ -5666,7 +5692,13 @@ components:
         paymentStatus:
           $ref: '#/components/schemas/paymentStatus'
         transactionDetails:
-          $ref: '#/components/schemas/statusDetails'
+          description: Additional details about the transaction outcome.
+          allOf:
+            - $ref: '#/components/schemas/statusDetails'
+            - type: object
+              properties:
+                mastercardMerchantAdviceCode:
+                  $ref: '#/components/schemas/mastercardMerchantAdviceCode'
         verificationDetails:
           $ref: '#/components/schemas/verificationDetails'
         credentialOnFileResponse:
@@ -8019,8 +8051,13 @@ components:
       minLength: 1
       maxLength: 256
       nullable: true
-      description: URI on which to receive Subscription notification
-      example: https://myserver.com/send/callback/here
+      description: |
+        URL-encoded, fully qualified callback URL that receives subscription notification.
+
+        Note: Request with URL that is not URL-encoded will be rejected for security reasons.
+
+        Example (URL-encoded): https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
+      example: https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
     subscriptionStatus:
       type: string
       description: Subscription Status description.
@@ -9510,7 +9547,12 @@ components:
         threeDSecureNotificationUrl:
           nullable: true
           type: string
-          description: Fully qualified Encode URL of the system that receives the Response message or Error Message.
+          description: |
+            URL-encoded, fully qualified callback URL that receives the response or error message. 
+
+            Note: Request with URL that is not URL-encoded will be rejected for security reasons.
+
+            Example (URL-encoded): https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
           minLength: 1
           maxLength: 256
           example: https%3A%2F%2Fdeveloper.moneris.com%2F
@@ -9735,7 +9777,12 @@ components:
         - threeDSecureChallengeResponseData
     threeDSecureNotificationUrl:
       type: string
-      description: Fully qualified Encode URL of the system that receives the Response message or Error Message.
+      description: |
+        URL-encoded, fully qualified callback URL that receives the response or error message. 
+
+        Note: Request with URL that is not URL-encoded will be rejected for security reasons.
+
+        Example (URL-encoded): https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
       minLength: 1
       maxLength: 256
       example: https%3A%2F%2Fdeveloper.moneris.com%2F
@@ -20526,13 +20573,13 @@ components:
           type: integer
           description: The total number of accounts on file for Visa Account Updater.
           format: int32
-          minimum: 1
+          minimum: 0
           maximum: 1000000
         visaAccountsNumber:
           type: integer
           description: The estimated number of Visa accounts that will be updated through the Visa Account Updater service.
           format: int32
-          minimum: 1
+          minimum: 0
           maximum: 1000000
     processor:
       type: object
@@ -23985,6 +24032,7 @@ components:
                   responseCode: '000'
                   message: approved
                   ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                  mastercardMerchantAdviceCode: NON_RELOADABLE_PREPAID_CARD
                 verificationDetails:
                   addressVerificationServiceResultCode: FULL_MATCH
                   cardSecurityCodeResultCode: MATCH
@@ -24044,6 +24092,7 @@ components:
                   responseCode: '000'
                   message: approved
                   ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                  mastercardMerchantAdviceCode: NON_RELOADABLE_PREPAID_CARD
                 verificationDetails:
                   addressVerificationServiceResultCode: FULL_MATCH
                   cardSecurityCodeResultCode: MATCH
@@ -24103,6 +24152,7 @@ components:
                   responseCode: '421'
                   message: Stolen card, pick up.
                   ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+                  mastercardMerchantAdviceCode: NON_RELOADABLE_PREPAID_CARD
                 verificationDetails:
                   addressVerificationServiceResultCode: FULL_MATCH
                   cardSecurityCodeResultCode: MATCH
@@ -24463,6 +24513,7 @@ components:
               responseCode: '000'
               message: approved
               ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+              mastercardMerchantAdviceCode: NON_RELOADABLE_PREPAID_CARD
             verificationDetails:
               addressVerificationServiceResultCode: FULL_MATCH
               cardSecurityCodeResultCode: MATCH
@@ -24579,6 +24630,7 @@ components:
               responseCode: '000'
               message: approved
               ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+              mastercardMerchantAdviceCode: NON_RELOADABLE_PREPAID_CARD
             verificationDetails:
               addressVerificationServiceResultCode: FULL_MATCH
               cardSecurityCodeResultCode: MATCH
@@ -24696,6 +24748,7 @@ components:
               responseCode: '000'
               message: approved
               ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+              mastercardMerchantAdviceCode: NON_RELOADABLE_PREPAID_CARD
             verificationDetails:
               addressVerificationServiceResultCode: FULL_MATCH
               cardSecurityCodeResultCode: MATCH
@@ -27274,6 +27327,7 @@ components:
           responseCode: '000'
           message: approved
           ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+          mastercardMerchantAdviceCode: NON_RELOADABLE_PREPAID_CARD
         verificationDetails:
           addressVerificationServiceResultCode: FULL_MATCH
           cardSecurityCodeResultCode: MATCH
@@ -27334,6 +27388,7 @@ components:
           responseCode: '000'
           message: approved
           ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+          mastercardMerchantAdviceCode: NON_RELOADABLE_PREPAID_CARD
         verificationDetails:
           addressVerificationServiceResultCode: FULL_MATCH
           cardSecurityCodeResultCode: MATCH
@@ -27426,6 +27481,7 @@ components:
           responseCode: '421'
           message: Stolen card, pick up.
           ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+          mastercardMerchantAdviceCode: NON_RELOADABLE_PREPAID_CARD
         verificationDetails:
           addressVerificationServiceResultCode: FULL_MATCH
           cardSecurityCodeResultCode: MATCH
@@ -27488,6 +27544,7 @@ components:
           responseCode: '416'
           message: Life cycle declines.
           ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+          mastercardMerchantAdviceCode: NON_RELOADABLE_PREPAID_CARD
         verificationDetails:
           addressVerificationServiceResultCode: FULL_MATCH
           cardSecurityCodeResultCode: MATCH
@@ -27550,6 +27607,7 @@ components:
           responseCode: '000'
           message: approved
           ecommerceIndicator: AUTHENTICATED_ECOMMERCE
+          mastercardMerchantAdviceCode: NON_RELOADABLE_PREPAID_CARD
         verificationDetails:
           addressVerificationServiceResultCode: FULL_MATCH
           cardSecurityCodeResultCode: MATCH
