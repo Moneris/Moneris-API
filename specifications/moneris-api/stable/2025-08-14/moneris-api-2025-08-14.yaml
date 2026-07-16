@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 2.6.0
+  version: 2.6.1
   title: Moneris API
   description: |-
     Moneris API Platform
@@ -6576,8 +6576,13 @@ components:
       minLength: 1
       maxLength: 256
       nullable: true
-      description: URI on which to receive Subscription notification
-      example: https://myserver.com/send/callback/here
+      description: |
+        URL-encoded, fully qualified callback URL that receives subscription notification.
+
+        Note: Request with URL that is not URL-encoded will be rejected for security reasons.
+
+        Example (URL-encoded): https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
+      example: https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
     subscriptionStatus:
       type: string
       description: Subscription Status description.
@@ -8084,7 +8089,12 @@ components:
         threeDSecureNotificationUrl:
           nullable: true
           type: string
-          description: Fully qualified Encode URL of the system that receives the Response message or Error Message.
+          description: |
+            URL-encoded, fully qualified callback URL that receives the response or error message. 
+
+            Note: Request with URL that is not URL-encoded will be rejected for security reasons.
+
+            Example (URL-encoded): https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
           minLength: 1
           maxLength: 256
           example: https%3A%2F%2Fdeveloper.moneris.com%2F
@@ -8309,7 +8319,12 @@ components:
         - threeDSecureChallengeResponseData
     threeDSecureNotificationUrl:
       type: string
-      description: Fully qualified Encode URL of the system that receives the Response message or Error Message.
+      description: |
+        URL-encoded, fully qualified callback URL that receives the response or error message. 
+
+        Note: Request with URL that is not URL-encoded will be rejected for security reasons.
+
+        Example (URL-encoded): https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
       minLength: 1
       maxLength: 256
       example: https%3A%2F%2Fdeveloper.moneris.com%2F
