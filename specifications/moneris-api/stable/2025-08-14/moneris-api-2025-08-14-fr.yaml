@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 2.6.0
+  version: 2.6.1
   title: API de Moneris
   description: |-
     Plateforme des API de Moneris
@@ -6557,8 +6557,11 @@ components:
       minLength: 1
       maxLength: 256
       nullable: true
-      description: URI sur lequelle recevoir la notification de l'abonnement.
-      example: https://myserver.com/send/callback/here
+      description: |
+        URL-encodée, URL de rappel entièrement qualifiée qui reçoit la notification d'abonnement.
+        Remarque : La demande avec une URL qui n'est pas encodée en URL sera rejetée pour des raisons de sécurité.
+        Exemple (URL encodée) : https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
+      example: https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
     subscriptionStatus:
       type: string
       description: Description du statut de l'abonnement.
@@ -8065,7 +8068,12 @@ components:
         threeDSecureNotificationUrl:
           nullable: true
           type: string
-          description: URL d’encodage complète du système qui reçoit le message de réponse ou le message d’erreur.
+          description: |
+            URL de rappel entièrement qualifiée et encodée en URL qui reçoit la réponse ou le message d’erreur.
+
+            Remarque : les demandes avec une URL qui n’est pas encodée seront rejetées pour des raisons de sécurité.
+
+            Exemple (URL encodée) : https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
           minLength: 1
           maxLength: 256
           example: https%3A%2F%2Fdeveloper.moneris.com%2F
@@ -8284,7 +8292,12 @@ components:
         - threeDSecureChallengeResponseData
     threeDSecureNotificationUrl:
       type: string
-      description: URL d’encodage complète du système qui reçoit le message de réponse ou le message d’erreur.
+      description: |
+        URL de rappel entièrement qualifiée et encodée en URL qui reçoit la réponse ou le message d’erreur.
+
+        Remarque : les demandes avec une URL qui n’est pas encodée seront rejetées pour des raisons de sécurité.
+
+        Exemple (URL encodée) : https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
       minLength: 1
       maxLength: 256
       example: https%3A%2F%2Fdeveloper.moneris.com%2F
