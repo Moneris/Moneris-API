@@ -5627,11 +5627,13 @@ components:
       type: string
       description: Required when sending a 3-D Secure version 2.0+ transaction. If no value is provided, default to V1.
       maxLength: 10
+      nullable: true
       example: '2.2'
     threeDSecureServerTransactionId:
       type: string
       description: "Indicates information required when sending a version 3-D Secure 2.0+ transaction. \n\nThis data is obtained from a CAVV Lookup Request or MPI\_3DS\_Authentication Request transaction.\n"
       format: uuid
+      nullable: true
       example: ad9b0eda-bf9b-4288-b188-9467993603e1
     threeDSecureDirectoryServerTransactionId:
       type: string
@@ -8186,6 +8188,23 @@ components:
       description: |
         Provides information on why the Transaction Status field has the specified value.
       example: 01 - Card authentication failed
+    threeDSecureECommerceIndicator:
+      type: string
+      description: |
+        The ecommerce indicator (ECI) specifies the level of security that was used to obtain the cardholder's payment data.  It is sent by the merchant and returned by the issuer. When returned in the response, it can be different from the value sent in the request in case transaction was downgraded by the issuer.
+      enum:
+        - MAIL_TELEPHONE_ORDER_SINGLE
+        - MAIL_TELEPHONE_ORDER_RECURRING
+        - MAIL_TELEPHONE_ORDER_INSTALMENT
+        - MAIL_TELEPHONE_ORDER_UNKNOWN
+        - AUTHENTICATED_ECOMMERCE
+        - NON_AUTHENTICATED_ECOMMERCE
+        - SSL_MERCHANT
+        - NON_PAYMENT_AUTHENTICATED
+        - NON_PAYMENT_NON_AUTHENTICATED
+        - UNKNOWN
+      example: AUTHENTICATED_ECOMMERCE
+      default: SSL_MERCHANT
     threeDSecureChallengeUrl:
       type: string
       description: If the transStatus is “C” this field will be populated with the URL to POST the challengeData to create the cardholder challenge screen
@@ -8257,7 +8276,7 @@ components:
         threeDSecureTransactionStatusReason:
           $ref: '#/components/schemas/threeDSecureTransactionStatusReason'
         ecommerceIndicator:
-          $ref: '#/components/schemas/ecommerceIndicator'
+          $ref: '#/components/schemas/threeDSecureECommerceIndicator'
         threeDSecureChallengeUrl:
           $ref: '#/components/schemas/threeDSecureChallengeUrl'
         threeDSecureChallengeData:
@@ -8351,12 +8370,14 @@ components:
       description: Returns the URL for the Device Fingerprinting step.
       minLength: 1
       maxLength: 256
+      nullable: true
       example: https://developer.moneris.com/
     threeDSecureMethodData:
       type: string
       description: Data that must be posted to 3DS Method URL for the Device Fingerprinting step.
       minLength: 1
       maxLength: 254
+      nullable: true
     cardLookup:
       title: cardLookup
       type: object
@@ -8381,10 +8402,6 @@ components:
         - cardLookupId
         - merchantId
         - paymentMethod
-        - threeDSecureServerTransactionId
-        - threeDSecureVersion
-        - threeDSecureMethodUrl
-        - threeDSecureMethodData
     kountResult:
       description: Auto-decision response
       type: string
