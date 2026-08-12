@@ -6769,11 +6769,13 @@ components:
       type: string
       description: Required when sending a 3-D Secure version 2.0+ transaction. If no value is provided, default to V1.
       maxLength: 10
+      nullable: true
       example: '2.2'
     threeDSecureServerTransactionId:
       type: string
       description: "Indicates information required when sending a version 3-D Secure 2.0+ transaction. \n\nThis data is obtained from a CAVV Lookup Request or MPI\_3DS\_Authentication Request transaction.\n"
       format: uuid
+      nullable: true
       example: ad9b0eda-bf9b-4288-b188-9467993603e1
     threeDSecureDirectoryServerTransactionId:
       type: string
@@ -9644,6 +9646,23 @@ components:
       description: |
         Provides information on why the Transaction Status field has the specified value.
       example: 01 - Card authentication failed
+    threeDSecureECommerceIndicator:
+      type: string
+      description: |
+        The ecommerce indicator (ECI) specifies the level of security that was used to obtain the cardholder's payment data.  It is sent by the merchant and returned by the issuer. When returned in the response, it can be different from the value sent in the request in case transaction was downgraded by the issuer.
+      enum:
+        - MAIL_TELEPHONE_ORDER_SINGLE
+        - MAIL_TELEPHONE_ORDER_RECURRING
+        - MAIL_TELEPHONE_ORDER_INSTALMENT
+        - MAIL_TELEPHONE_ORDER_UNKNOWN
+        - AUTHENTICATED_ECOMMERCE
+        - NON_AUTHENTICATED_ECOMMERCE
+        - SSL_MERCHANT
+        - NON_PAYMENT_AUTHENTICATED
+        - NON_PAYMENT_NON_AUTHENTICATED
+        - UNKNOWN
+      example: AUTHENTICATED_ECOMMERCE
+      default: SSL_MERCHANT
     threeDSecureChallengeUrl:
       type: string
       description: If the transStatus is “C” this field will be populated with the URL to POST the challengeData to create the cardholder challenge screen
@@ -9715,7 +9734,7 @@ components:
         threeDSecureTransactionStatusReason:
           $ref: '#/components/schemas/threeDSecureTransactionStatusReason'
         ecommerceIndicator:
-          $ref: '#/components/schemas/ecommerceIndicator'
+          $ref: '#/components/schemas/threeDSecureECommerceIndicator'
         threeDSecureChallengeUrl:
           $ref: '#/components/schemas/threeDSecureChallengeUrl'
         threeDSecureChallengeData:
@@ -9809,12 +9828,14 @@ components:
       description: Returns the URL for the Device Fingerprinting step.
       minLength: 1
       maxLength: 256
+      nullable: true
       example: https://developer.moneris.com/
     threeDSecureMethodData:
       type: string
       description: Data that must be posted to 3DS Method URL for the Device Fingerprinting step.
       minLength: 1
       maxLength: 254
+      nullable: true
     cardLookup:
       title: cardLookup
       type: object
@@ -9839,10 +9860,6 @@ components:
         - cardLookupId
         - merchantId
         - paymentMethod
-        - threeDSecureServerTransactionId
-        - threeDSecureVersion
-        - threeDSecureMethodUrl
-        - threeDSecureMethodData
     kountResult:
       description: Auto-decision response
       type: string
@@ -11409,14 +11426,14 @@ components:
       example: '0742'
     averageTicketSize:
       type: integer
-      description: A numeric value representing the average transaction amount for the business.
+      description: A numeric value representing the average transaction amount for the business, expressed in dollars.
       format: int32
     isSeasonalMerchant:
       type: boolean
       description: A boolean value indicating whether the business operates seasonally.
     maximumTransactionVolume:
       type: integer
-      description: A numeric value that represents the highest expected transaction volume.
+      description: A numeric value that represents the highest expected transaction volume, expressed in dollars.
       format: int32
     directSellingPercentage:
       description: The percentage of transactions processed through direct selling.
@@ -11460,29 +11477,29 @@ components:
       description: A boolean value indicating whether the business is available for delivery to US.
     creditTransactionVolume:
       type: integer
-      description: A numeric value representing the total transaction volume generated through credit-based payments.
+      description: A numeric value representing the total transaction volume generated through credit-based payments, expressed in dollars.
       format: int32
     masterCardTransactionVolume:
       type: integer
-      description: A numeric value representing the total transaction volume generated through MasterCard payments.
+      description: A numeric value representing the total transaction volume generated through MasterCard payments, expressed in dollars.
       format: int32
     visaTransactionVolume:
       type: integer
-      description: A numeric value representing the total transaction volume generated through Visa payments.
+      description: A numeric value representing the total transaction volume generated through Visa payments, expressed in dollars.
       format: int32
     visaDebitTransactionVolume:
       type: integer
-      description: A numeric value representing the total transaction volume generated through Visa Debit payments.
+      description: A numeric value representing the total transaction volume generated through Visa Debit payments, expressed in dollars.
       format: int32
       example: 42
     amexTransactionVolume:
       type: integer
-      description: A numeric value representing the total transaction volume generated through American Express payments.
+      description: A numeric value representing the total transaction volume generated through American Express payments, expressed in dollars.
       format: int32
       example: 1000
     interacTransactionVolume:
       type: integer
-      description: A numeric value representing the total transaction volume generated through Interac payments.
+      description: A numeric value representing the total transaction volume generated through Interac payments, expressed in dollars.
       format: int32
       example: 1000
     interacDirectTransactionVolume:
@@ -11492,17 +11509,17 @@ components:
       example: 1000
     masterCardDebitTransactionVolume:
       type: integer
-      description: A numeric value representing the total transaction volume generated through MasterCard Debit payments.
+      description: A numeric value representing the total transaction volume generated through MasterCard Debit payments, expressed in dollars.
       format: int32
       example: 1000
     unionPayTransactionVolume:
       type: integer
-      description: A numeric value representing the total transaction volume generated through UnionPay payments.
+      description: A numeric value representing the total transaction volume generated through UnionPay payments, expressed in dollars.
       format: int32
       example: 1000
     discoverTransactionVolume:
       type: integer
-      description: A numeric value representing the total transaction volume generated through Discover payments.
+      description: A numeric value representing the total transaction volume generated through Discover payments, expressed in dollars.
       format: int32
       example: 1000
     offeredProductsAndServicesDescription:
@@ -12178,6 +12195,18 @@ components:
         - E
         - E_MINUS
         - F
+    hasMonerisGo:
+      type: boolean
+      description: A boolean flag indicating whether the merchant has the Moneris Go product.
+      nullable: true
+    hasSoftwarePointOfSale:
+      type: boolean
+      description: A boolean flag indicating whether the merchant has the Software Point of Sale (SoftPOS) product.
+      nullable: true
+    hasMonerisGateway:
+      type: boolean
+      description: A boolean flag indicating whether the merchant has the Moneris Gateway product.
+      nullable: true
     merchantPayload:
       type: object
       description: An object containing the merchant payload details.
@@ -12273,6 +12302,12 @@ components:
           properties:
             merchantRiskRate:
               $ref: '#/components/schemas/merchantRiskRate'
+        hasMonerisGo:
+          $ref: '#/components/schemas/hasMonerisGo'
+        hasSoftwarePointOfSale:
+          $ref: '#/components/schemas/hasSoftwarePointOfSale'
+        hasMonerisGateway:
+          $ref: '#/components/schemas/hasMonerisGateway'
     createMerchantRequest:
       description: Create a new merchant with the provided details.
       allOf:
@@ -13047,7 +13082,7 @@ components:
     selectedPlans:
       type: array
       description: A list of selected plans associated with the card plan.
-      maxItems: 8
+      maxItems: 9
       uniqueItems: true
       items:
         type: string
@@ -14965,6 +15000,112 @@ components:
           $ref: '#/components/schemas/percentage'
         feeDetails:
           $ref: '#/components/schemas/monerisAdvanceFeeDetails'
+    monerisInvoiceFeeDetails:
+      type: object
+      description: A list of fees associated with Moneris Invoice.
+      nullable: true
+      properties:
+        monthlyFee:
+          description: The monthly fee charged for the Moneris Invoice service.
+          nullable: true
+          type: object
+          properties:
+            feeType:
+              $ref: '#/components/schemas/feeType'
+            unitPrice:
+              $ref: '#/components/schemas/money'
+            taxes:
+              type: array
+              description: A list of tax items associated with the fee.
+              items:
+                $ref: '#/components/schemas/tax'
+              maxItems: 10
+            frequency:
+              description: The frequency at which the fee is charged, such as monthly or annually.
+              type: string
+              nullable: true
+              maxLength: 20
+              enum:
+                - DAILY
+                - WEEKLY
+                - MONTHLY
+                - QUARTERLY
+                - ONE_OFF
+                - SEMIANNUALLY
+                - ANNUALLY
+            quantity:
+              type: integer
+              description: Represent the number of times a fee is applied based on its frequency.
+              format: int32
+              minimum: 1
+              maximum: 30
+              example: 3
+            isApproved:
+              $ref: '#/components/schemas/isApproved'
+            waivePeriod:
+              $ref: '#/components/schemas/waivePeriod'
+          required:
+            - unitPrice
+    monerisInvoice:
+      type: object
+      description: An object containing details related to Moneris Invoice.
+      nullable: true
+      properties:
+        feeDetails:
+          $ref: '#/components/schemas/monerisInvoiceFeeDetails'
+    monerisInsightsFeeDetails:
+      type: object
+      description: A list of fees associated with Moneris Insights.
+      nullable: true
+      properties:
+        subscriptionFee:
+          description: The subscription fee charged for the Moneris Insights service.
+          nullable: true
+          type: object
+          properties:
+            feeType:
+              $ref: '#/components/schemas/feeType'
+            unitPrice:
+              $ref: '#/components/schemas/money'
+            taxes:
+              type: array
+              description: A list of tax items associated with the fee.
+              items:
+                $ref: '#/components/schemas/tax'
+              maxItems: 10
+            frequency:
+              description: The frequency at which the fee is charged, such as monthly or annually.
+              type: string
+              nullable: true
+              maxLength: 20
+              enum:
+                - DAILY
+                - WEEKLY
+                - MONTHLY
+                - QUARTERLY
+                - ONE_OFF
+                - SEMIANNUALLY
+                - ANNUALLY
+            quantity:
+              type: integer
+              description: Represent the number of times a fee is applied based on its frequency.
+              format: int32
+              minimum: 1
+              maximum: 30
+              example: 3
+            isApproved:
+              $ref: '#/components/schemas/isApproved'
+            waivePeriod:
+              $ref: '#/components/schemas/waivePeriod'
+          required:
+            - unitPrice
+    monerisInsights:
+      type: object
+      description: An object containing details related to Moneris Insights.
+      nullable: true
+      properties:
+        feeDetails:
+          $ref: '#/components/schemas/monerisInsightsFeeDetails'
     integratedProduct:
       type: object
       description: An object containing details about the integrated product.
@@ -20537,9 +20678,59 @@ components:
           description: The type of request for the loyalty program.
           maxLength: 100
           nullable: true
-    hasPaymentRequest:
-      type: boolean
-      description: A boolean flag indicating whether the payment request is included.
+    paymentRequest:
+      type: object
+      description: An object containing details about the payment request.
+      nullable: true
+      properties:
+        type:
+          type: string
+          description: The type of the payment request.
+          nullable: true
+          enum:
+            - CHAIN
+            - REGULAR
+        activationFee:
+          description: The fee charged for activating the payment request.
+          nullable: true
+          type: object
+          properties:
+            feeType:
+              $ref: '#/components/schemas/feeType'
+            unitPrice:
+              $ref: '#/components/schemas/money'
+            taxes:
+              type: array
+              description: A list of tax items associated with the fee.
+              items:
+                $ref: '#/components/schemas/tax'
+              maxItems: 10
+            frequency:
+              description: The frequency at which the fee is charged, such as monthly or annually.
+              type: string
+              nullable: true
+              maxLength: 20
+              enum:
+                - DAILY
+                - WEEKLY
+                - MONTHLY
+                - QUARTERLY
+                - ONE_OFF
+                - SEMIANNUALLY
+                - ANNUALLY
+            quantity:
+              type: integer
+              description: Represent the number of times a fee is applied based on its frequency.
+              format: int32
+              minimum: 1
+              maximum: 30
+              example: 3
+            isApproved:
+              $ref: '#/components/schemas/isApproved'
+            waivePeriod:
+              $ref: '#/components/schemas/waivePeriod'
+          required:
+            - unitPrice
     sch-orders_serviceFrequency:
       type: string
       nullable: true
@@ -20739,6 +20930,10 @@ components:
           description: A boolean flag indicating whether the transaction or device is using a Software Point of Sale solution.
         monerisAdvance:
           $ref: '#/components/schemas/monerisAdvance'
+        monerisInvoice:
+          $ref: '#/components/schemas/monerisInvoice'
+        monerisInsights:
+          $ref: '#/components/schemas/monerisInsights'
         counterTopTerminals:
           $ref: '#/components/schemas/counterTopTerminals'
         integratedProduct:
@@ -20791,8 +20986,8 @@ components:
           $ref: '#/components/schemas/interacSurchargeFeeDetails'
         loyalty:
           $ref: '#/components/schemas/loyalty'
-        hasPaymentRequest:
-          $ref: '#/components/schemas/hasPaymentRequest'
+        paymentRequest:
+          $ref: '#/components/schemas/paymentRequest'
         visaAccountUpdater:
           $ref: '#/components/schemas/visaAccountUpdater'
         processor:
@@ -21299,6 +21494,10 @@ components:
               description: A boolean flag indicating whether the transaction or device is using a Software Point of Sale solution.
             monerisAdvance:
               $ref: '#/components/schemas/monerisAdvance'
+            monerisInvoice:
+              $ref: '#/components/schemas/monerisInvoice'
+            monerisInsights:
+              $ref: '#/components/schemas/monerisInsights'
             counterTopTerminals:
               $ref: '#/components/schemas/counterTopTerminals'
             integratedProduct:
@@ -21351,8 +21550,8 @@ components:
               $ref: '#/components/schemas/interacSurchargeFeeDetails'
             loyalty:
               $ref: '#/components/schemas/loyalty'
-            hasPaymentRequest:
-              $ref: '#/components/schemas/hasPaymentRequest'
+            paymentRequest:
+              $ref: '#/components/schemas/paymentRequest'
             visaAccountUpdater:
               $ref: '#/components/schemas/visaAccountUpdater'
             processor:
