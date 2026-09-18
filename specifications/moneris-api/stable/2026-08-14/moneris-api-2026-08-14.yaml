@@ -14787,7 +14787,6 @@ components:
                 type: string
                 nullable: true
                 description: The type of the document status.
-                maxLength: 100
                 enum:
                   - ADVERTISING
                   - ALCOHOL_CARD_NOT_PRESENT_OFFICER_CERTIFICATE
@@ -14829,7 +14828,6 @@ components:
                 type: string
                 nullable: true
                 description: The type of the additional document status.
-                maxLength: 6
                 enum:
                   - AMEX_ELIGIBILITY_VERIFICATION
                   - CONTROL_VERIFICATION
