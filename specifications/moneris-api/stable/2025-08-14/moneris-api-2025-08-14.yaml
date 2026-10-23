@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 2.6.1
+  version: 2.6.0
   title: Moneris API
   description: |-
     Moneris API Platform
@@ -16,11 +16,11 @@ info:
     url: https://developer.moneris.com/Agreements/Terms%20of%20Use
   x-audience: external-public
 servers:
-  - url: https://api.sb.moneris.io
-    description: Sandbox server (uses test data)
-    x-internal: false
   - url: https://api.moneris.io
     description: Production server (uses live data)
+    x-internal: false
+  - url: https://api.sb.moneris.io
+    description: Sandbox server (uses test data)
     x-internal: false
 tags:
   - name: Payments
@@ -5627,13 +5627,11 @@ components:
       type: string
       description: Required when sending a 3-D Secure version 2.0+ transaction. If no value is provided, default to V1.
       maxLength: 10
-      nullable: true
       example: '2.2'
     threeDSecureServerTransactionId:
       type: string
       description: "Indicates information required when sending a version 3-D Secure 2.0+ transaction. \n\nThis data is obtained from a CAVV Lookup Request or MPI\_3DS\_Authentication Request transaction.\n"
       format: uuid
-      nullable: true
       example: ad9b0eda-bf9b-4288-b188-9467993603e1
     threeDSecureDirectoryServerTransactionId:
       type: string
@@ -6578,13 +6576,8 @@ components:
       minLength: 1
       maxLength: 256
       nullable: true
-      description: |
-        URL-encoded, fully qualified callback URL that receives subscription notification.
-
-        Note: Request with URL that is not URL-encoded will be rejected for security reasons.
-
-        Example (URL-encoded): https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
-      example: https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
+      description: URI on which to receive Subscription notification
+      example: https://myserver.com/send/callback/here
     subscriptionStatus:
       type: string
       description: Subscription Status description.
@@ -8091,12 +8084,7 @@ components:
         threeDSecureNotificationUrl:
           nullable: true
           type: string
-          description: |
-            URL-encoded, fully qualified callback URL that receives the response or error message. 
-
-            Note: Request with URL that is not URL-encoded will be rejected for security reasons.
-
-            Example (URL-encoded): https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
+          description: Fully qualified Encode URL of the system that receives the Response message or Error Message.
           minLength: 1
           maxLength: 256
           example: https%3A%2F%2Fdeveloper.moneris.com%2F
@@ -8188,23 +8176,6 @@ components:
       description: |
         Provides information on why the Transaction Status field has the specified value.
       example: 01 - Card authentication failed
-    threeDSecureECommerceIndicator:
-      type: string
-      description: |
-        The ecommerce indicator (ECI) specifies the level of security that was used to obtain the cardholder's payment data.  It is sent by the merchant and returned by the issuer. When returned in the response, it can be different from the value sent in the request in case transaction was downgraded by the issuer.
-      enum:
-        - MAIL_TELEPHONE_ORDER_SINGLE
-        - MAIL_TELEPHONE_ORDER_RECURRING
-        - MAIL_TELEPHONE_ORDER_INSTALMENT
-        - MAIL_TELEPHONE_ORDER_UNKNOWN
-        - AUTHENTICATED_ECOMMERCE
-        - NON_AUTHENTICATED_ECOMMERCE
-        - SSL_MERCHANT
-        - NON_PAYMENT_AUTHENTICATED
-        - NON_PAYMENT_NON_AUTHENTICATED
-        - UNKNOWN
-      example: AUTHENTICATED_ECOMMERCE
-      default: SSL_MERCHANT
     threeDSecureChallengeUrl:
       type: string
       description: If the transStatus is “C” this field will be populated with the URL to POST the challengeData to create the cardholder challenge screen
@@ -8276,7 +8247,7 @@ components:
         threeDSecureTransactionStatusReason:
           $ref: '#/components/schemas/threeDSecureTransactionStatusReason'
         ecommerceIndicator:
-          $ref: '#/components/schemas/threeDSecureECommerceIndicator'
+          $ref: '#/components/schemas/ecommerceIndicator'
         threeDSecureChallengeUrl:
           $ref: '#/components/schemas/threeDSecureChallengeUrl'
         threeDSecureChallengeData:
@@ -8338,12 +8309,7 @@ components:
         - threeDSecureChallengeResponseData
     threeDSecureNotificationUrl:
       type: string
-      description: |
-        URL-encoded, fully qualified callback URL that receives the response or error message. 
-
-        Note: Request with URL that is not URL-encoded will be rejected for security reasons.
-
-        Example (URL-encoded): https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
+      description: Fully qualified Encode URL of the system that receives the Response message or Error Message.
       minLength: 1
       maxLength: 256
       example: https%3A%2F%2Fdeveloper.moneris.com%2F
@@ -8370,14 +8336,12 @@ components:
       description: Returns the URL for the Device Fingerprinting step.
       minLength: 1
       maxLength: 256
-      nullable: true
       example: https://developer.moneris.com/
     threeDSecureMethodData:
       type: string
       description: Data that must be posted to 3DS Method URL for the Device Fingerprinting step.
       minLength: 1
       maxLength: 254
-      nullable: true
     cardLookup:
       title: cardLookup
       type: object
@@ -8402,6 +8366,10 @@ components:
         - cardLookupId
         - merchantId
         - paymentMethod
+        - threeDSecureServerTransactionId
+        - threeDSecureVersion
+        - threeDSecureMethodUrl
+        - threeDSecureMethodData
     kountResult:
       description: Auto-decision response
       type: string
