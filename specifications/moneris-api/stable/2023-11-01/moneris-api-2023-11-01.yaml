@@ -15,8 +15,8 @@ info:
   x-i18n-termsOfService-fr: https://www.moneris.com/fr-ca/juridiques/conditions-utilisation
   contact:
     x-i18n-name-fr: Support Developpeur Moneris (MonDev)
-    url: https://api-developer.moneris.com
-    email: UnifiedAPI@moneris.com
+    url: https://developer.moneris.com
+    email: api@moneris.com
   license:
     name: Moneris
     url: https://developer.moneris.com/Agreements/Terms%20of%20Use
@@ -4636,7 +4636,14 @@ components:
         cardholderName:
           $ref: '#/components/schemas/cardholderName'
         cardholderEmail:
-          $ref: '#/components/schemas/email'
+          nullable: true
+          type: string
+          format: iso-639
+          description: Customer's email address. See https://www.rfc-editor.org/rfc/rfc5322
+          minLength: 1
+          maxLength: 320
+          example: moneris@moneris.com
+          x-i18n-description-fr: Adresse e-mail du client. Voir https://www.rfc-editor.org/rfc/rfc5322
         cardholderPhoneNumber:
           $ref: '#/components/schemas/phoneNumber'
         shippingAddress:
@@ -4750,7 +4757,6 @@ components:
       required:
         - amount
         - billingAddress
-        - cardholderEmail
         - cardholderName
         - cardholderPhoneNumber
         - idempotencyKey

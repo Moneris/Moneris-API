@@ -10,8 +10,8 @@
     "x-i18n-termsOfService-fr": "https://www.moneris.com/fr-ca/juridiques/conditions-utilisation",
     "contact": {
       "x-i18n-name-fr": "Support Developpeur Moneris (MonDev)",
-      "url": "https://api-developer.moneris.com",
-      "email": "UnifiedAPI@moneris.com"
+      "url": "https://developer.moneris.com",
+      "email": "api@moneris.com"
     },
     "license": {
       "name": "Moneris",
@@ -21,12 +21,12 @@
   },
   "servers": [
     {
-      "url": "https://api.moneris.io",
-      "description": "Production server (uses live data)"
-    },
-    {
       "url": "https://api.sb.moneris.io",
       "description": "Sandbox server (uses test data)"
+    },
+    {
+      "url": "https://api.moneris.io",
+      "description": "Production server (uses live data)"
     }
   ],
   "paths": {
@@ -6227,7 +6227,14 @@
             "$ref": "#/components/schemas/cardholderName"
           },
           "cardholderEmail": {
-            "$ref": "#/components/schemas/email"
+            "nullable": true,
+            "type": "string",
+            "format": "iso-639",
+            "description": "Customer's email address. See https://www.rfc-editor.org/rfc/rfc5322",
+            "minLength": 1,
+            "maxLength": 320,
+            "example": "moneris@moneris.com",
+            "x-i18n-description-fr": "Adresse e-mail du client. Voir https://www.rfc-editor.org/rfc/rfc5322"
           },
           "cardholderPhoneNumber": {
             "$ref": "#/components/schemas/phoneNumber"
@@ -6385,7 +6392,6 @@
         "required": [
           "amount",
           "billingAddress",
-          "cardholderEmail",
           "cardholderName",
           "cardholderPhoneNumber",
           "idempotencyKey",
