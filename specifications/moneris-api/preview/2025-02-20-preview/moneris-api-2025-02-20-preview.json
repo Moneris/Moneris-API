@@ -17,13 +17,13 @@
   },
   "servers": [
     {
-      "url": "https://api.sb.moneris.io",
-      "description": "Sandbox server (uses test data)",
+      "url": "https://api.moneris.io",
+      "description": "Production server (uses live data)",
       "x-internal": false
     },
     {
-      "url": "https://api.moneris.io",
-      "description": "Production server (uses live data)",
+      "url": "https://api.sb.moneris.io",
+      "description": "Sandbox server (uses test data)",
       "x-internal": false
     }
   ],
