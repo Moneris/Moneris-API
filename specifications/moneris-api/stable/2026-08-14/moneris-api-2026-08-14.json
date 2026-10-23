@@ -7,7 +7,7 @@
     "termsOfService": "https://www.moneris.com/en/legal/terms-of-use",
     "contact": {
       "url": "https://api-developer.moneris.com",
-      "email": "UnifiedAPI@moneris.com"
+      "email": "api@moneris.com"
     },
     "license": {
       "name": "Moneris",
@@ -17970,6 +17970,22 @@
         "maximum": 100,
         "example": 90.5
       },
+      "highPrecisionPercentage": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/percentage"
+          }
+        ],
+        "description": "A percentage value that supports up to 5 decimal places, providing greater precision than the standard percentage for rate-based fee calculations."
+      },
+      "highPrecisionAmount": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/percentage"
+          }
+        ],
+        "description": "A monetary amount that supports up to 6 decimal places, providing greater precision than the standard percentage for fee amount calculations."
+      },
       "transactionPlanTier": {
         "type": "string",
         "description": "The level or band within the transaction plan.",
@@ -18065,16 +18081,16 @@
         "description": "An object containing the transaction plan details.",
         "properties": {
           "merchantDiscountRate": {
-            "$ref": "#/components/schemas/percentage"
+            "$ref": "#/components/schemas/highPrecisionPercentage"
           },
           "minimumMerchantDiscountRate": {
-            "$ref": "#/components/schemas/percentage"
+            "$ref": "#/components/schemas/highPrecisionPercentage"
           },
           "maximumMerchantDiscountRate": {
-            "$ref": "#/components/schemas/percentage"
+            "$ref": "#/components/schemas/highPrecisionPercentage"
           },
           "transactionRate": {
-            "$ref": "#/components/schemas/percentage"
+            "$ref": "#/components/schemas/highPrecisionAmount"
           },
           "minimumTransactionValue": {
             "description": "The minimum transaction value that applies under the transaction plan.",
@@ -18119,7 +18135,7 @@
             }
           },
           "disqualifiedTransactionMerchantDiscountRate": {
-            "$ref": "#/components/schemas/percentage"
+            "$ref": "#/components/schemas/highPrecisionPercentage"
           },
           "transactionPlanTier": {
             "$ref": "#/components/schemas/transactionPlanTier"
@@ -18131,10 +18147,10 @@
             "$ref": "#/components/schemas/paymentModeCode"
           },
           "minimumDisqualifiedTransactionMerchantDiscountRate": {
-            "$ref": "#/components/schemas/percentage"
+            "$ref": "#/components/schemas/highPrecisionPercentage"
           },
           "maximumDisqualifiedTransactionMerchantDiscountRate": {
-            "$ref": "#/components/schemas/percentage"
+            "$ref": "#/components/schemas/highPrecisionPercentage"
           }
         }
       },
@@ -18273,10 +18289,10 @@
         "description": "An object containing all details related to assessment plan.",
         "properties": {
           "merchantDiscountRate": {
-            "$ref": "#/components/schemas/percentage"
+            "$ref": "#/components/schemas/highPrecisionPercentage"
           },
           "transactionRate": {
-            "$ref": "#/components/schemas/percentage"
+            "$ref": "#/components/schemas/highPrecisionAmount"
           },
           "feeTypeCode": {
             "$ref": "#/components/schemas/feeTypeCode"
@@ -20026,7 +20042,6 @@
                   "type": "string",
                   "nullable": true,
                   "description": "The type of the document status.",
-                  "maxLength": 100,
                   "enum": [
                     "ADVERTISING",
                     "ALCOHOL_CARD_NOT_PRESENT_OFFICER_CERTIFICATE",
@@ -20074,7 +20089,6 @@
                   "type": "string",
                   "nullable": true,
                   "description": "The type of the additional document status.",
-                  "maxLength": 6,
                   "enum": [
                     "AMEX_ELIGIBILITY_VERIFICATION",
                     "CONTROL_VERIFICATION",
@@ -21501,7 +21515,7 @@
                   "maxLength": 50
                 },
                 "discountRate": {
-                  "$ref": "#/components/schemas/percentage"
+                  "$ref": "#/components/schemas/highPrecisionPercentage"
                 },
                 "discountRateValue": {
                   "nullable": true,
@@ -21601,25 +21615,25 @@
                 ]
               },
               "nonDomesticSettlementFee": {
-                "$ref": "#/components/schemas/percentage"
+                "$ref": "#/components/schemas/highPrecisionPercentage"
               },
               "visaBusinessToBusinessVirtualForeignFee": {
-                "$ref": "#/components/schemas/percentage"
+                "$ref": "#/components/schemas/highPrecisionPercentage"
               },
               "visaBusinessToBusinessVirtualForeignSingleCurrencyFee": {
-                "$ref": "#/components/schemas/percentage"
+                "$ref": "#/components/schemas/highPrecisionPercentage"
               },
               "visaBusinessToBusinessAssessmentForeignSingleCurrencyFee": {
-                "$ref": "#/components/schemas/percentage"
+                "$ref": "#/components/schemas/highPrecisionPercentage"
               },
               "visaBusinessToBusinessAssessmentForeignFee": {
-                "$ref": "#/components/schemas/percentage"
+                "$ref": "#/components/schemas/highPrecisionPercentage"
               },
               "visaAssessmentSingleCurrencyFee": {
-                "$ref": "#/components/schemas/percentage"
+                "$ref": "#/components/schemas/highPrecisionPercentage"
               },
               "visaAssessmentForeignFee": {
-                "$ref": "#/components/schemas/percentage"
+                "$ref": "#/components/schemas/highPrecisionPercentage"
               }
             }
           },
@@ -24313,10 +24327,10 @@
         "nullable": true,
         "properties": {
           "monerisVisaInstallmentsFee": {
-            "$ref": "#/components/schemas/percentage"
+            "$ref": "#/components/schemas/highPrecisionPercentage"
           },
           "visaInstallmentsAccessFee": {
-            "$ref": "#/components/schemas/percentage"
+            "$ref": "#/components/schemas/highPrecisionPercentage"
           }
         }
       },
@@ -24906,7 +24920,7 @@
                 ]
               },
               "batchProcessingFee": {
-                "description": "Indicates whether fees apply to batch processing services.",
+                "description": "Indicates whether fees apply to batch processing services. When ordering Batch Processing, this field should be sent as 1000 cents ($10).",
                 "nullable": true,
                 "type": "object",
                 "properties": {
@@ -25542,64 +25556,11 @@
                 ]
               },
               "transactionFee": {
-                "description": "A fee applied per individual transaction processed.",
-                "type": "number",
-                "format": "decimal",
-                "minimum": 0,
-                "maximum": 100,
-                "example": 90.5
-              },
-              "monthlyFee": {
-                "description": "A recurring fee charged on a monthly basis for continued access.",
-                "nullable": true,
-                "type": "object",
-                "properties": {
-                  "feeType": {
-                    "$ref": "#/components/schemas/feeType"
-                  },
-                  "unitPrice": {
-                    "$ref": "#/components/schemas/money"
-                  },
-                  "taxes": {
-                    "type": "array",
-                    "description": "A list of tax items associated with the fee.",
-                    "items": {
-                      "$ref": "#/components/schemas/tax"
-                    },
-                    "maxItems": 10
-                  },
-                  "frequency": {
-                    "description": "The frequency at which the fee is charged, such as monthly or annually.",
-                    "type": "string",
-                    "nullable": true,
-                    "maxLength": 20,
-                    "enum": [
-                      "DAILY",
-                      "WEEKLY",
-                      "MONTHLY",
-                      "QUARTERLY",
-                      "ONE_OFF",
-                      "SEMIANNUALLY",
-                      "ANNUALLY"
-                    ]
-                  },
-                  "quantity": {
-                    "type": "integer",
-                    "description": "Represent the number of times a fee is applied based on its frequency.",
-                    "format": "int32",
-                    "minimum": 1,
-                    "maximum": 30,
-                    "example": 3
-                  },
-                  "isApproved": {
-                    "$ref": "#/components/schemas/isApproved"
-                  },
-                  "waivePeriod": {
-                    "$ref": "#/components/schemas/waivePeriod"
+                "description": "A fee applied per individual transaction processed. Supports up to 6 decimal places.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/percentage"
                   }
-                },
-                "required": [
-                  "unitPrice"
                 ]
               },
               "boostMonthlyFee": {
@@ -25762,12 +25723,12 @@
                 ]
               },
               "eCommerceAssessmentTransactionFee": {
-                "description": "A fee applied to transaction assessed for e-commerce risk.",
-                "type": "number",
-                "format": "decimal",
-                "minimum": 0,
-                "maximum": 100,
-                "example": 90.5
+                "description": "The Interac eCommerce Assessment Fee applied to e-commerce transactions. Supports up to 6 decimal places.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/percentage"
+                  }
+                ]
               },
               "eCommerceCardBrandTransactionFee": {
                 "description": "A fee applied to e-commerce transactions based on the card brand.",
@@ -25982,7 +25943,7 @@
                 ]
               },
               "kountOneTimeFee": {
-                "description": "A one-time fee charged for the initial setup or activation of Kount.",
+                "description": "A one-time fee charged for the initial setup or activation of Kount. When kountPackage is \"Kount - 200 Risk Inquiries\" or \"Kount - 500 Risk Inquiries\", this value should be 0.",
                 "nullable": true,
                 "type": "object",
                 "properties": {
@@ -26088,52 +26049,36 @@
                 ]
               },
               "visa3dSecureAuthenticationTransactionFee": {
-                "description": "A fee applied to transaction processed using Visa's 3D secure authentication protocol.",
-                "type": "number",
-                "format": "decimal",
-                "minimum": 0,
-                "maximum": 100,
-                "example": 90.5
-              },
-              "amex3dSecureAuthenticationTransactionFee": {
-                "description": "A fee applied to transaction processed using Amex's 3D secure authentication protocol.",
-                "type": "number",
-                "format": "decimal",
-                "minimum": 0,
-                "maximum": 100,
-                "example": 90.5
+                "description": "A fee applied to transaction processed using Visa's 3D secure authentication protocol. Supports up to 6 decimal places.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/percentage"
+                  }
+                ]
               },
               "mastercard3dSecureAuthenticationTransactionFee": {
-                "description": "A fee applied to transaction processed using Mastercard's 3D secure authentication protocol.",
-                "type": "number",
-                "format": "decimal",
-                "minimum": 0,
-                "maximum": 100,
-                "example": 90.5
+                "description": "A fee applied to transaction processed using Mastercard's 3D secure authentication protocol. Supports up to 6 decimal places.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/percentage"
+                  }
+                ]
               },
               "visa3dSecureAuthenticationMerchantDiscountRateFee": {
-                "description": "The Merchant Discount Rate applied to transactions processed through Visa's 3D secure authentication protocol.",
-                "type": "number",
-                "format": "decimal",
-                "minimum": 0,
-                "maximum": 100,
-                "example": 90.5
-              },
-              "amex3dSecureAuthenticationMerchantDiscountRateFee": {
-                "description": "The Merchant Discount Rate applied to transactions processed through Amex's 3D secure authentication protocol.",
-                "type": "number",
-                "format": "decimal",
-                "minimum": 0,
-                "maximum": 100,
-                "example": 90.5
+                "description": "The Merchant Discount Rate applied to transactions processed through Visa's 3D secure authentication protocol. Supports up to 5 decimal places.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/percentage"
+                  }
+                ]
               },
               "mastercard3dSecureAuthenticationMerchantDiscountRateFee": {
-                "description": "The Merchant Discount Rate applied to transactions processed through Mastercard's 3D secure authentication protocol.",
-                "type": "number",
-                "format": "decimal",
-                "minimum": 0,
-                "maximum": 100,
-                "example": 90.5
+                "description": "The Merchant Discount Rate applied to transactions processed through Mastercard's 3D secure authentication protocol. Supports up to 5 decimal places.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/percentage"
+                  }
+                ]
               }
             }
           },
