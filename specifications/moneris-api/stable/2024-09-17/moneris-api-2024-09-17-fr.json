@@ -3336,8 +3336,7 @@
       "cardNumber": {
         "type": "string",
         "description": "Identifie le numéro de carte de crédit ou de débit du client (numéro de compte principal).",
-        "minLength": 13,
-        "maxLength": 19,
+        "pattern": "^[0-9]{13,19}$",
         "example": "4242424242424242"
       },
       "cardSecurityCode": {
@@ -3862,8 +3861,7 @@
               "applicationPrimaryAccountNumber": {
                 "description": "Identifie le numéro de carte de crédit ou de débit du client (numéro de compte principal).",
                 "type": "string",
-                "minLength": 13,
-                "maxLength": 19,
+                "pattern": "^[0-9]{13,19}$",
                 "example": "4242424242424242"
               },
               "expiryMonth": {
@@ -4060,8 +4058,7 @@
           "personalAccountNumber": {
             "description": "Identifie le numéro de carte de crédit ou de débit du client (numéro de compte principal).",
             "type": "string",
-            "minLength": 13,
-            "maxLength": 19,
+            "pattern": "^[0-9]{13,19}$",
             "example": "4242424242424242"
           },
           "expiryMonth": {
