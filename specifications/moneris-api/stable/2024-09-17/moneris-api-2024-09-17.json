@@ -3338,8 +3338,7 @@
       "cardNumber": {
         "type": "string",
         "description": "Identifies the customer's credit or debit card number (Primary Account Number).",
-        "minLength": 13,
-        "maxLength": 19,
+        "pattern": "^[0-9]{13,19}$",
         "example": "4242424242424242"
       },
       "cardSecurityCode": {
@@ -3864,8 +3863,7 @@
               "applicationPrimaryAccountNumber": {
                 "description": "The unique identifier for the primary account number for the payment card.",
                 "type": "string",
-                "minLength": 13,
-                "maxLength": 19,
+                "pattern": "^[0-9]{13,19}$",
                 "example": "4242424242424242"
               },
               "expiryMonth": {
@@ -4062,8 +4060,7 @@
           "personalAccountNumber": {
             "description": "The personal account number charged. This string contains only digits.",
             "type": "string",
-            "minLength": 13,
-            "maxLength": 19,
+            "pattern": "^[0-9]{13,19}$",
             "example": "4242424242424242"
           },
           "expiryMonth": {
