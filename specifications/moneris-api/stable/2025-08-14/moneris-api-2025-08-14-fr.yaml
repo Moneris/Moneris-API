@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 2.6.1
+  version: 2.6.0
   title: API de Moneris
   description: |-
     Plateforme des API de Moneris
@@ -17,10 +17,10 @@ info:
     url: https://developer.moneris.com/Agreements/Terms%20of%20Use
   x-audience: external-public
 servers:
-  - url: https://api.sb.moneris.io
-    description: Serveur de test (utilise des données de test)
   - url: https://api.moneris.io
     description: Serveur de production (utilise des données réelles)
+  - url: https://api.sb.moneris.io
+    description: Serveur de test (utilise des données de test)
 tags:
   - name: Paiements
     description: Effectuer et gérer les paiements
@@ -5603,7 +5603,6 @@ components:
       type: string
       description: Obligatoire lors de l’envoi d’une transaction en version 3-D Secure 2.0+. Si aucune valeur n’est fournie, la valeur par défaut est V1.
       maxLength: 10
-      nullable: true
       example: '2.2'
     threeDSecureServerTransactionId:
       type: string
@@ -5612,7 +5611,6 @@ components:
 
         Ces données sont obtenues à partir d’une transaction de demande de recherche CAVV ou de demande d’authentification MPI 3DS.
       format: uuid
-      nullable: true
       example: ad9b0eda-bf9b-4288-b188-9467993603e1
     threeDSecureDirectoryServerTransactionId:
       type: string
@@ -6559,11 +6557,8 @@ components:
       minLength: 1
       maxLength: 256
       nullable: true
-      description: |
-        URL-encodée, URL de rappel entièrement qualifiée qui reçoit la notification d'abonnement.
-        Remarque : La demande avec une URL qui n'est pas encodée en URL sera rejetée pour des raisons de sécurité.
-        Exemple (URL encodée) : https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
-      example: https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
+      description: URI sur lequelle recevoir la notification de l'abonnement.
+      example: https://myserver.com/send/callback/here
     subscriptionStatus:
       type: string
       description: Description du statut de l'abonnement.
@@ -8070,12 +8065,7 @@ components:
         threeDSecureNotificationUrl:
           nullable: true
           type: string
-          description: |
-            URL de rappel entièrement qualifiée et encodée en URL qui reçoit la réponse ou le message d’erreur.
-
-            Remarque : les demandes avec une URL qui n’est pas encodée seront rejetées pour des raisons de sécurité.
-
-            Exemple (URL encodée) : https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
+          description: URL d’encodage complète du système qui reçoit le message de réponse ou le message d’erreur.
           minLength: 1
           maxLength: 256
           example: https%3A%2F%2Fdeveloper.moneris.com%2F
@@ -8158,23 +8148,6 @@ components:
       description: |
         Fournit des informations sur la raison pour laquelle le champ Statut de la transaction a la valeur spécifiée.
       example: 01 - Card authentication failed
-    threeDSecureECommerceIndicator:
-      type: string
-      description: |
-        Catégorie de transaction e-commerce renvoyée par l’émetteur. Lorsqu’elle est renvoyée dans le responese, elle peut être différente de la valeur envoyée dans la demande au cas où la transaction aurait été déclassée par l’émetteur.
-      enum:
-        - MAIL_TELEPHONE_ORDER_SINGLE
-        - MAIL_TELEPHONE_ORDER_RECURRING
-        - MAIL_TELEPHONE_ORDER_INSTALMENT
-        - MAIL_TELEPHONE_ORDER_UNKNOWN
-        - AUTHENTICATED_ECOMMERCE
-        - NON_AUTHENTICATED_ECOMMERCE
-        - SSL_MERCHANT
-        - NON_PAYMENT_AUTHENTICATED
-        - NON_PAYMENT_NON_AUTHENTICATED
-        - UNKNOWN
-      example: AUTHENTICATED_ECOMMERCE
-      default: SSL_MERCHANT
     threeDSecureChallengeUrl:
       type: string
       description: Si le transStatus est « C », ce champ sera rempli avec l’URL pour POST le challengeData afin de créer l’écran de défi du titulaire de carte
@@ -8246,7 +8219,7 @@ components:
         threeDSecureTransactionStatusReason:
           $ref: '#/components/schemas/threeDSecureTransactionStatusReason'
         ecommerceIndicator:
-          $ref: '#/components/schemas/threeDSecureECommerceIndicator'
+          $ref: '#/components/schemas/ecommerceIndicator'
         threeDSecureChallengeUrl:
           $ref: '#/components/schemas/threeDSecureChallengeUrl'
         threeDSecureChallengeData:
@@ -8311,12 +8284,7 @@ components:
         - threeDSecureChallengeResponseData
     threeDSecureNotificationUrl:
       type: string
-      description: |
-        URL de rappel entièrement qualifiée et encodée en URL qui reçoit la réponse ou le message d’erreur.
-
-        Remarque : les demandes avec une URL qui n’est pas encodée seront rejetées pour des raisons de sécurité.
-
-        Exemple (URL encodée) : https%3A%2F%2Fmerchant.example.com%2Fcallback%3ForderId%3D123
+      description: URL d’encodage complète du système qui reçoit le message de réponse ou le message d’erreur.
       minLength: 1
       maxLength: 256
       example: https%3A%2F%2Fdeveloper.moneris.com%2F
@@ -8343,14 +8311,12 @@ components:
       description: Renvoie l’URL de l’étape de prise d’empreinte de l’appareil.
       minLength: 1
       maxLength: 256
-      nullable: true
       example: https://developer.moneris.com/
     threeDSecureMethodData:
       type: string
       description: Données qui doivent être publiées sur l’URL de la méthode 3DS pour l’étape de prise d’empreinte de l’appareil.
       minLength: 1
       maxLength: 254
-      nullable: true
     cardLookup:
       title: cardLookup
       type: object
@@ -8375,6 +8341,10 @@ components:
         - cardLookupId
         - merchantId
         - paymentMethod
+        - threeDSecureServerTransactionId
+        - threeDSecureVersion
+        - threeDSecureMethodUrl
+        - threeDSecureMethodData
     kountResult:
       description: Réponse de décision automatique
       type: string
