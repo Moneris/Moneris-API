@@ -17,10 +17,10 @@ info:
     url: https://developer.moneris.com/Agreements/Terms%20of%20Use
   x-audience: external-public
 servers:
-  - url: https://api.sb.moneris.io
-    description: Serveur de test (utilise des données de test)
   - url: https://api.moneris.io
     description: Serveur de production (utilise des données réelles)
+  - url: https://api.sb.moneris.io
+    description: Serveur de test (utilise des données de test)
 tags:
   - name: Paiements
     description: Effectuer et gérer les paiements

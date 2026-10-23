@@ -17,12 +17,12 @@
   },
   "servers": [
     {
-      "url": "https://api.sb.moneris.io",
-      "description": "Serveur de test (utilise des données de test)"
-    },
-    {
       "url": "https://api.moneris.io",
       "description": "Serveur de production (utilise des données réelles)"
+    },
+    {
+      "url": "https://api.sb.moneris.io",
+      "description": "Serveur de test (utilise des données de test)"
     }
   ],
   "tags": [
