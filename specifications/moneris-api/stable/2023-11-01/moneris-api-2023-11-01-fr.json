@@ -6,8 +6,8 @@
     "description": "Plateforme des API de Moneris\n\n[<img src=\"https://run.pstmn.io/button.svg\" alt=\"Run In Postman\" style=\"width: 128px; height:32px;\">](https://god.gw.postman.com/run-collection/25575461-ab82f3e6-bc3e-471e-bbf5-3875f1616ef9?action=collection%2Ffork&collection-url=entityId%3D25575461-ab82f3e6-bc3e-471e-bbf5-3875f1616ef9%26entityType%3Dcollection%26workspaceId%3D5d2a9a0f-57a7-441c-b2af-fe6315e80a08)\n",
     "termsOfService": "https://www.moneris.com/fr-ca/juridiques/conditions-utilisation",
     "contact": {
-      "url": "https://api-developer.moneris.com",
-      "email": "UnifiedAPI@moneris.com"
+      "url": "https://developer.moneris.com",
+      "email": "api@moneris.com"
     },
     "license": {
       "name": "Moneris",
@@ -17,12 +17,12 @@
   },
   "servers": [
     {
-      "url": "https://api.moneris.io",
-      "description": "Production server (uses live data)"
-    },
-    {
       "url": "https://api.sb.moneris.io",
       "description": "Sandbox server (uses test data)"
+    },
+    {
+      "url": "https://api.moneris.io",
+      "description": "Production server (uses live data)"
     }
   ],
   "paths": {
@@ -5899,7 +5899,13 @@
             "$ref": "#/components/schemas/cardholderName"
           },
           "cardholderEmail": {
-            "$ref": "#/components/schemas/email"
+            "nullable": true,
+            "type": "string",
+            "format": "iso-639",
+            "description": "Adresse e-mail du client. Voir https://www.rfc-editor.org/rfc/rfc5322",
+            "minLength": 1,
+            "maxLength": 320,
+            "example": "moneris@moneris.com"
           },
           "cardholderPhoneNumber": {
             "$ref": "#/components/schemas/phoneNumber"
@@ -6054,7 +6060,6 @@
         "required": [
           "amount",
           "billingAddress",
-          "cardholderEmail",
           "cardholderName",
           "cardholderPhoneNumber",
           "idempotencyKey",
