@@ -100,6 +100,68 @@
     }
   ],
   "paths": {
+    "/buy-now-pay-later/merchant-status": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/apiVersion"
+        },
+        {
+          "$ref": "#/components/parameters/correlationId"
+        },
+        {
+          "$ref": "#/components/parameters/merchantId"
+        }
+      ],
+      "get": {
+        "summary": "Récupérer le statut de paiement différé du commerçant",
+        "description": "Indique si le commerçant identifié par l’en-tête X-Merchant-Id peut accepter des paiements différés, globalement et pour chaque fournisseur. Un commerçant inconnu, jamais intégré ou inactif retourne merchantStatus avec la valeur INACTIVE. Un commerçant ayant plus d’une configuration de paiement différé active retourne 409 Conflit.",
+        "operationId": "getBnplMerchantStatus",
+        "security": [
+          {
+            "OAuth2": [
+              "bnpl.payment.read"
+            ]
+          },
+          {
+            "OAuth2": [
+              "bnpl.payment.write"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": [
+          "Achetez maintenant, payez plus tard"
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/retrieveBuyNowPayLaterMerchantStatusSuccessResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/tooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internalServer"
+          },
+          "503": {
+            "$ref": "#/components/responses/serviceUnavailable"
+          }
+        }
+      }
+    },
     "/buy-now-pay-later/payment-presentation": {
       "parameters": [
         {
@@ -7693,103 +7755,46 @@
         "maxLength": 13,
         "example": "0123456789101"
       },
-      "buyNowPayLaterProvider": {
-        "type": "string",
-        "description": "Le fournisseur de paiement différé.",
-        "enum": [
-          "KLARNA"
-        ]
-      },
-      "amount": {
-        "type": "integer",
-        "format": "int32",
-        "minimum": 0,
-        "maximum": 999999999,
-        "example": 10000,
-        "description": "Montant"
-      },
-      "currency": {
-        "type": "string",
-        "description": "Fournit le code monétaire à trois lettres selon la norme ISO 4217. \n\nPour obtenir la liste complète des codes de devise, rendez-vous sur : https://en.wikipedia.org/wiki/ISO_4217\n",
-        "minLength": 3,
-        "maxLength": 4,
-        "example": "CAD",
-        "format": "iso-4217"
-      },
-      "buyNowPayLaterPaymentMethodSource": {
-        "type": "string",
-        "description": "La catégorie source du mode de paiement.",
-        "enum": [
-          "BUY_NOW_PAY_LATER"
-        ]
-      },
-      "buyNowPayLaterPaymentPresentationMethod": {
-        "title": "Buy Now Pay Later Payment Presentation Method",
+      "buyNowPayLaterMerchantStatusResult": {
+        "title": "Buy Now Pay Later Merchant Status",
         "type": "object",
-        "nullable": true,
-        "description": "Instructions et contenu fournis par le fournisseur pour présenter l’option de paiement différé.",
+        "description": "Indique si le commerçant peut accepter des paiements différés, globalement et par fournisseur. Le statut est lu uniquement à partir des enregistrements de paiement différé; aucun fournisseur n’est appelé.",
         "properties": {
-          "paymentMethodSource": {
-            "$ref": "#/components/schemas/buyNowPayLaterPaymentMethodSource"
+          "merchantId": {
+            "$ref": "#/components/schemas/merchantId"
           },
-          "provider": {
-            "$ref": "#/components/schemas/buyNowPayLaterProvider"
-          },
-          "instruction": {
+          "merchantStatus": {
+            "description": "ACTIVE lorsque le commerçant peut accepter des paiements différés avec au moins un fournisseur; sinon INACTIVE.",
             "type": "string",
-            "description": "L’instruction du fournisseur pour afficher ou présélectionner l’option de paiement différé.",
             "enum": [
-              "SHOW_KLARNA",
-              "SHOW_ONLY_KLARNA",
-              "PRESELECT_KLARNA"
+              "ACTIVE",
+              "INACTIVE"
             ],
-            "example": "SHOW_KLARNA"
+            "example": "ACTIVE"
           },
-          "header": {
-            "type": "string",
-            "description": "Le titre de présentation fourni par le fournisseur.",
-            "example": "Pay with Klarna"
-          },
-          "subheader": {
-            "type": "string",
-            "description": "Le sous-titre de présentation fourni par le fournisseur.",
-            "example": "Flexible payment options are available"
-          },
-          "iconUrl": {
-            "description": "L’URL absolue de l’icône fournie par le fournisseur.",
-            "type": "string",
-            "format": "uri",
-            "minLength": 1,
-            "maxLength": 2048,
-            "example": "https://developer.moneris.com/"
-          },
-          "iconAlt": {
-            "type": "string",
-            "description": "Texte de remplacement de l’icône fournie par le fournisseur.",
-            "example": "Klarna"
+          "providers": {
+            "type": "object",
+            "description": "Le statut de paiement différé du commerçant pour chaque fournisseur.",
+            "properties": {
+              "KLARNA": {
+                "description": "ACTIVE lorsque le commerçant peut accepter des paiements Klarna; sinon INACTIVE.",
+                "type": "string",
+                "enum": [
+                  "ACTIVE",
+                  "INACTIVE"
+                ],
+                "example": "ACTIVE"
+              }
+            },
+            "required": [
+              "KLARNA"
+            ]
           }
         },
         "required": [
-          "paymentMethodSource",
-          "provider",
-          "instruction",
-          "header",
-          "subheader",
-          "iconUrl",
-          "iconAlt"
-        ]
-      },
-      "buyNowPayLaterPaymentPresentation": {
-        "title": "Buy Now Pay Later Payment Presentation",
-        "type": "object",
-        "description": "Le résultat de présentation du fournisseur. paymentMethod est nul lorsque l’option de paiement différé ne doit pas être affichée.",
-        "properties": {
-          "paymentMethod": {
-            "$ref": "#/components/schemas/buyNowPayLaterPaymentPresentationMethod"
-          }
-        },
-        "required": [
-          "paymentMethod"
+          "merchantId",
+          "merchantStatus",
+          "providers"
         ]
       },
       "parameterError": {
@@ -7902,6 +7907,105 @@
         "type": "object",
         "required": [
           "type"
+        ]
+      },
+      "buyNowPayLaterProvider": {
+        "type": "string",
+        "description": "Le fournisseur de paiement différé.",
+        "enum": [
+          "KLARNA"
+        ]
+      },
+      "amount": {
+        "type": "integer",
+        "format": "int32",
+        "minimum": 0,
+        "maximum": 999999999,
+        "example": 10000,
+        "description": "Montant"
+      },
+      "currency": {
+        "type": "string",
+        "description": "Fournit le code monétaire à trois lettres selon la norme ISO 4217. \n\nPour obtenir la liste complète des codes de devise, rendez-vous sur : https://en.wikipedia.org/wiki/ISO_4217\n",
+        "minLength": 3,
+        "maxLength": 4,
+        "example": "CAD",
+        "format": "iso-4217"
+      },
+      "buyNowPayLaterPaymentMethodSource": {
+        "type": "string",
+        "description": "La catégorie source du mode de paiement.",
+        "enum": [
+          "BUY_NOW_PAY_LATER"
+        ]
+      },
+      "buyNowPayLaterPaymentPresentationMethod": {
+        "title": "Buy Now Pay Later Payment Presentation Method",
+        "type": "object",
+        "nullable": true,
+        "description": "Instructions et contenu fournis par le fournisseur pour présenter l’option de paiement différé.",
+        "properties": {
+          "paymentMethodSource": {
+            "$ref": "#/components/schemas/buyNowPayLaterPaymentMethodSource"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/buyNowPayLaterProvider"
+          },
+          "instruction": {
+            "type": "string",
+            "description": "L’instruction du fournisseur pour afficher ou présélectionner l’option de paiement différé.",
+            "enum": [
+              "SHOW_KLARNA",
+              "SHOW_ONLY_KLARNA",
+              "PRESELECT_KLARNA"
+            ],
+            "example": "SHOW_KLARNA"
+          },
+          "header": {
+            "type": "string",
+            "description": "Le titre de présentation fourni par le fournisseur.",
+            "example": "Pay with Klarna"
+          },
+          "subheader": {
+            "type": "string",
+            "description": "Le sous-titre de présentation fourni par le fournisseur.",
+            "example": "Flexible payment options are available"
+          },
+          "iconUrl": {
+            "description": "L’URL absolue de l’icône fournie par le fournisseur.",
+            "type": "string",
+            "format": "uri",
+            "minLength": 1,
+            "maxLength": 2048,
+            "example": "https://developer.moneris.com/"
+          },
+          "iconAlt": {
+            "type": "string",
+            "description": "Texte de remplacement de l’icône fournie par le fournisseur.",
+            "example": "Klarna"
+          }
+        },
+        "required": [
+          "paymentMethodSource",
+          "provider",
+          "instruction",
+          "header",
+          "subheader",
+          "iconUrl",
+          "iconAlt"
+        ]
+      },
+      "buyNowPayLaterPaymentPresentation": {
+        "title": "Buy Now Pay Later Payment Presentation",
+        "type": "object",
+        "description": "Le résultat de présentation du fournisseur. paymentMethod est nul lorsque l’option de paiement différé ne doit pas être affichée.",
+        "properties": {
+          "paymentMethod": {
+            "$ref": "#/components/schemas/buyNowPayLaterPaymentPresentationMethod"
+          }
+        },
+        "required": [
+          "paymentMethod"
         ]
       },
       "dateTime": {
@@ -34442,6 +34546,37 @@
       }
     },
     "examples": {
+      "merchantStatusActive": {
+        "summary": "The merchant can take Buy Now Pay Later payments",
+        "value": {
+          "merchantId": "0123456789101",
+          "merchantStatus": "ACTIVE",
+          "providers": {
+            "KLARNA": "ACTIVE"
+          }
+        }
+      },
+      "merchantStatusInactive": {
+        "summary": "The merchant cannot take Buy Now Pay Later payments",
+        "value": {
+          "merchantId": "0123456789101",
+          "merchantStatus": "INACTIVE",
+          "providers": {
+            "KLARNA": "INACTIVE"
+          }
+        }
+      },
+      "IdempotencyRequestErrorResponse": {
+        "value": {
+          "type": "https://developer.moneris.com/en/More/Testing/Response%20Codes",
+          "title": "IDEMPOTENCY_KEY_ALREADY_EXISTS",
+          "status": 409,
+          "detail": null,
+          "instance": null,
+          "category": "IDEMPOTENCY_ERROR",
+          "errors": []
+        }
+      },
       "paymentPresentationVisible": {
         "summary": "The payment option should be displayed",
         "value": {
@@ -34687,17 +34822,6 @@
           "customData": {
             "salesChannel": "web"
           }
-        }
-      },
-      "IdempotencyRequestErrorResponse": {
-        "value": {
-          "type": "https://developer.moneris.com/en/More/Testing/Response%20Codes",
-          "title": "IDEMPOTENCY_KEY_ALREADY_EXISTS",
-          "status": 409,
-          "detail": null,
-          "instance": null,
-          "category": "IDEMPOTENCY_ERROR",
-          "errors": []
         }
       },
       "paymentPartiallyCompletedKeep": {
@@ -38487,8 +38611,8 @@
       }
     },
     "responses": {
-      "retrieveBuyNowPayLaterPaymentPresentationSuccessResponse": {
-        "description": "Contenu de présentation récupéré avec succès.",
+      "retrieveBuyNowPayLaterMerchantStatusSuccessResponse": {
+        "description": "Statut de paiement différé du commerçant récupéré avec succès.",
         "headers": {
           "Api-Version": {
             "$ref": "#/components/headers/apiVersion"
@@ -38509,14 +38633,14 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/buyNowPayLaterPaymentPresentation"
+              "$ref": "#/components/schemas/buyNowPayLaterMerchantStatusResult"
             },
             "examples": {
-              "visible": {
-                "$ref": "#/components/examples/paymentPresentationVisible"
+              "active": {
+                "$ref": "#/components/examples/merchantStatusActive"
               },
-              "hidden": {
-                "$ref": "#/components/examples/paymentPresentationHidden"
+              "inactive": {
+                "$ref": "#/components/examples/merchantStatusInactive"
               }
             }
           }
@@ -38633,8 +38757,8 @@
           }
         }
       },
-      "unprocessableContent": {
-        "description": "L’API ne peut pas effectuer l’action demandée en raison d’erreurs sémantiques ou de validation métier. \n",
+      "conflict": {
+        "description": "La demande n’a pas pu être terminée en raison d’un conflit avec l’état de la ressource ou la clé d’idempotence existante.",
         "headers": {
           "Api-Version": {
             "$ref": "#/components/headers/apiVersion"
@@ -38656,6 +38780,11 @@
           "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "idempotency_error": {
+                "$ref": "#/components/examples/IdempotencyRequestErrorResponse"
+              }
             }
           }
         }
@@ -38751,6 +38880,68 @@
               "instance": null,
               "category": "INTERNAL_SERVER_ERROR",
               "errors": []
+            }
+          }
+        }
+      },
+      "retrieveBuyNowPayLaterPaymentPresentationSuccessResponse": {
+        "description": "Contenu de présentation récupéré avec succès.",
+        "headers": {
+          "Api-Version": {
+            "$ref": "#/components/headers/apiVersion"
+          },
+          "X-Correlation-Id": {
+            "$ref": "#/components/headers/correlationId"
+          },
+          "Sunset": {
+            "$ref": "#/components/headers/sunset"
+          },
+          "X-RateLimit-Limit": {
+            "$ref": "#/components/headers/rateLimitCount"
+          },
+          "X-RateLimit-Remaining": {
+            "$ref": "#/components/headers/rateLimitRemaining"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/buyNowPayLaterPaymentPresentation"
+            },
+            "examples": {
+              "visible": {
+                "$ref": "#/components/examples/paymentPresentationVisible"
+              },
+              "hidden": {
+                "$ref": "#/components/examples/paymentPresentationHidden"
+              }
+            }
+          }
+        }
+      },
+      "unprocessableContent": {
+        "description": "L’API ne peut pas effectuer l’action demandée en raison d’erreurs sémantiques ou de validation métier. \n",
+        "headers": {
+          "Api-Version": {
+            "$ref": "#/components/headers/apiVersion"
+          },
+          "X-Correlation-Id": {
+            "$ref": "#/components/headers/correlationId"
+          },
+          "Sunset": {
+            "$ref": "#/components/headers/sunset"
+          },
+          "X-RateLimit-Limit": {
+            "$ref": "#/components/headers/rateLimitCount"
+          },
+          "X-RateLimit-Remaining": {
+            "$ref": "#/components/headers/rateLimitRemaining"
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
             }
           }
         }
@@ -38852,38 +39043,6 @@
               },
               "succeeded": {
                 "$ref": "#/components/examples/paymentSucceededAutomaticCapture"
-              }
-            }
-          }
-        }
-      },
-      "conflict": {
-        "description": "La demande n’a pas pu être terminée en raison d’un conflit avec l’état de la ressource ou la clé d’idempotence existante.",
-        "headers": {
-          "Api-Version": {
-            "$ref": "#/components/headers/apiVersion"
-          },
-          "X-Correlation-Id": {
-            "$ref": "#/components/headers/correlationId"
-          },
-          "Sunset": {
-            "$ref": "#/components/headers/sunset"
-          },
-          "X-RateLimit-Limit": {
-            "$ref": "#/components/headers/rateLimitCount"
-          },
-          "X-RateLimit-Remaining": {
-            "$ref": "#/components/headers/rateLimitRemaining"
-          }
-        },
-        "content": {
-          "application/problem+json": {
-            "schema": {
-              "$ref": "#/components/schemas/error"
-            },
-            "examples": {
-              "idempotency_error": {
-                "$ref": "#/components/examples/IdempotencyRequestErrorResponse"
               }
             }
           }
