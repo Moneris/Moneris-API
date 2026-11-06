@@ -8027,7 +8027,7 @@
       },
       "buyNowPayLaterPaymentId": {
         "title": "Buy Now Pay Later Payment ID",
-        "description": "The shared Moneris payment resource identifier constrained to the required pi01 prefix.",
+        "description": "The shared Moneris payment resource identifier constrained to the pi01 or pi04 prefix.",
         "allOf": [
           {
             "$ref": "#/components/schemas/paymentId"
@@ -8036,7 +8036,8 @@
             "type": "string",
             "minLength": 30,
             "maxLength": 30,
-            "pattern": "^pi01[A-Za-z0-9]{26}$"
+            "pattern": "^pi0[14][A-Za-z0-9]{26}$",
+            "example": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV"
           }
         ]
       },
@@ -8177,7 +8178,7 @@
       },
       "buyNowPayLaterRefundId": {
         "title": "Buy Now Pay Later Refund ID",
-        "description": "The shared Moneris refund resource identifier constrained to the required ri01 prefix.",
+        "description": "The shared Moneris refund resource identifier constrained to the ri01 or ri04 prefix.",
         "allOf": [
           {
             "$ref": "#/components/schemas/refundId"
@@ -8186,7 +8187,8 @@
             "type": "string",
             "minLength": 30,
             "maxLength": 30,
-            "pattern": "^ri01[A-Z0-9]{26}$"
+            "pattern": "^ri0[14][A-Z0-9]{26}$",
+            "example": "ri04ABCDEFGHJKLMNPQRSTUVWXYZ23"
           }
         ]
       },
@@ -8200,9 +8202,9 @@
           },
           "href": {
             "nullable": false,
-            "pattern": "^/buy-now-pay-later/refunds/ri01[A-Z0-9]{26}$",
+            "pattern": "^/buy-now-pay-later/refunds/ri0[14][A-Z0-9]{26}$",
             "description": "The relative URL of the refund resource.",
-            "example": "/buy-now-pay-later/refunds/ri01ABCDEFGHJKLMNPQRSTUVWXYZ23",
+            "example": "/buy-now-pay-later/refunds/ri04ABCDEFGHJKLMNPQRSTUVWXYZ23",
             "type": "string",
             "format": "uri-reference"
           }
@@ -8816,9 +8818,9 @@
           },
           "href": {
             "nullable": false,
-            "pattern": "^/buy-now-pay-later/payments/pi01[A-Za-z0-9]{26}$",
+            "pattern": "^/buy-now-pay-later/payments/pi0[14][A-Za-z0-9]{26}$",
             "description": "The relative URL of the payment resource.",
-            "example": "/buy-now-pay-later/payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+            "example": "/buy-now-pay-later/payments/pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
             "type": "string",
             "format": "uri-reference"
           }
@@ -34263,7 +34265,7 @@
         "in": "path",
         "name": "payment-id",
         "required": true,
-        "description": "The unique 30-character pi01-prefixed public identifier of the Buy Now Pay Later payment.",
+        "description": "The unique 30-character pi01- or pi04-prefixed public identifier of the Buy Now Pay Later payment.",
         "schema": {
           "$ref": "#/components/schemas/buyNowPayLaterPaymentId"
         }
@@ -34598,7 +34600,7 @@
         "value": {
           "data": [
             {
-              "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
               "merchantId": "0123456789101",
               "transactionDateTime": "2026-08-07T16:30:00Z",
               "createdAt": "2026-08-07T16:30:00Z",
@@ -34713,7 +34715,7 @@
       "paymentProcessing": {
         "summary": "Shopper action is required",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "merchantId": "0123456789101",
           "transactionDateTime": "2026-08-07T16:30:00Z",
           "createdAt": "2026-08-07T16:30:00Z",
@@ -34751,7 +34753,7 @@
       "paymentAuthorized": {
         "summary": "Payment is authorized for later completion",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "merchantId": "0123456789101",
           "transactionDateTime": "2026-08-07T16:30:00Z",
           "createdAt": "2026-08-07T16:30:00Z",
@@ -34787,7 +34789,7 @@
       "paymentSucceededAutomaticCapture": {
         "summary": "Payment succeeded through automatic capture during creation",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "merchantId": "0123456789101",
           "transactionDateTime": "2026-08-07T16:30:00Z",
           "createdAt": "2026-08-07T16:30:00Z",
@@ -34823,7 +34825,7 @@
       "paymentPartiallyCompletedKeep": {
         "summary": "Payment is partially completed with authorization retained",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "merchantId": "0123456789101",
           "transactionDateTime": "2026-08-07T16:30:00Z",
           "createdAt": "2026-08-07T16:30:00Z",
@@ -34869,7 +34871,7 @@
       "paymentSucceeded": {
         "summary": "Payment is fully captured and partially refunded",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "merchantId": "0123456789101",
           "transactionDateTime": "2026-08-07T16:30:00Z",
           "createdAt": "2026-08-07T16:30:00Z",
@@ -34913,8 +34915,8 @@
           "refundDetails": {
             "refunds": [
               {
-                "refundId": "ri01ABCDEFGHJKLMNPQRSTUVWXYZ23",
-                "href": "/buy-now-pay-later/refunds/ri01ABCDEFGHJKLMNPQRSTUVWXYZ23"
+                "refundId": "ri04ABCDEFGHJKLMNPQRSTUVWXYZ23",
+                "href": "/buy-now-pay-later/refunds/ri04ABCDEFGHJKLMNPQRSTUVWXYZ23"
               }
             ],
             "refundedAmount": {
@@ -34927,7 +34929,7 @@
       "paymentCanceled": {
         "summary": "Authorized payment is canceled",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "merchantId": "0123456789101",
           "transactionDateTime": "2026-08-07T16:30:00Z",
           "createdAt": "2026-08-07T16:30:00Z",
@@ -34963,7 +34965,7 @@
       "paymentDeclined": {
         "summary": "Payment is declined",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "merchantId": "0123456789101",
           "transactionDateTime": "2026-08-07T16:30:00Z",
           "createdAt": "2026-08-07T16:30:00Z",
@@ -34994,7 +34996,7 @@
       "paymentExpired": {
         "summary": "Shopper handoff expired",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "merchantId": "0123456789101",
           "transactionDateTime": "2026-08-07T16:30:00Z",
           "createdAt": "2026-08-07T16:30:00Z",
@@ -35047,7 +35049,7 @@
       "paymentPartiallyCompletedReleased": {
         "summary": "Payment is partially completed with remaining authorization released",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "merchantId": "0123456789101",
           "transactionDateTime": "2026-08-07T16:30:00Z",
           "createdAt": "2026-08-07T16:30:00Z",
@@ -35093,7 +35095,7 @@
       "paymentFullyCompleted": {
         "summary": "Payment is fully captured through a merchant-requested completion",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "merchantId": "0123456789101",
           "transactionDateTime": "2026-08-07T16:30:00Z",
           "createdAt": "2026-08-07T16:30:00Z",
@@ -35149,7 +35151,7 @@
       "paymentCanceledFromProcessing": {
         "summary": "Processing payment is canceled before authorization",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "merchantId": "0123456789101",
           "transactionDateTime": "2026-08-07T16:30:00Z",
           "createdAt": "2026-08-07T16:30:00Z",
@@ -35185,7 +35187,7 @@
       "paymentPartiallyCompletedCanceledRemainder": {
         "summary": "Payment is partially completed and its remaining authorization is canceled",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "merchantId": "0123456789101",
           "transactionDateTime": "2026-08-07T16:30:00Z",
           "createdAt": "2026-08-07T16:30:00Z",
@@ -35233,10 +35235,10 @@
         "value": {
           "data": [
             {
-              "refundId": "ri01ABCDEFGHJKLMNPQRSTUVWXYZ23",
+              "refundId": "ri04ABCDEFGHJKLMNPQRSTUVWXYZ23",
               "payment": {
-                "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "href": "/buy-now-pay-later/payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV"
+                "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "href": "/buy-now-pay-later/payments/pi0405ARZ3NDEKTSV4RRFFQ69G5FAV"
               },
               "merchantId": "0123456789101",
               "createdAt": "2026-08-08T14:20:00Z",
@@ -35267,7 +35269,7 @@
       "createRefund": {
         "summary": "Refund part of a completed Buy Now Pay Later payment",
         "value": {
-          "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
           "idempotencyKey": "b88c4641-688b-4f18-9960-bbdfa2256c22",
           "refundAmount": {
             "amount": 2500,
@@ -35283,10 +35285,10 @@
       "refundSucceeded": {
         "summary": "Successful Buy Now Pay Later refund",
         "value": {
-          "refundId": "ri01ABCDEFGHJKLMNPQRSTUVWXYZ23",
+          "refundId": "ri04ABCDEFGHJKLMNPQRSTUVWXYZ23",
           "payment": {
-            "paymentId": "pi0105ARZ3NDEKTSV4RRFFQ69G5FAV",
-            "href": "/buy-now-pay-later/payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV"
+            "paymentId": "pi0405ARZ3NDEKTSV4RRFFQ69G5FAV",
+            "href": "/buy-now-pay-later/payments/pi0405ARZ3NDEKTSV4RRFFQ69G5FAV"
           },
           "merchantId": "0123456789101",
           "createdAt": "2026-08-08T14:20:00Z",
