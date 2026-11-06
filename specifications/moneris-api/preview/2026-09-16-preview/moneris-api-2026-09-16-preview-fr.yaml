@@ -5165,13 +5165,14 @@ components:
       example: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
     buyNowPayLaterPaymentId:
       title: Buy Now Pay Later Payment ID
-      description: L’identifiant partagé de ressource de paiement Moneris limité au préfixe pi01 requis.
+      description: L’identifiant partagé de ressource de paiement Moneris limité au préfixe pi01 ou pi04.
       allOf:
         - $ref: '#/components/schemas/paymentId'
         - type: string
           minLength: 30
           maxLength: 30
-          pattern: ^pi01[A-Za-z0-9]{26}$
+          pattern: ^pi0[14][A-Za-z0-9]{26}$
+          example: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
     transactionDateTime:
       description: Indique la date et l’heure de la transaction.
       type: string
@@ -5287,13 +5288,14 @@ components:
       example: ri0105ARZ3NDEKTSV4RRFFQ69G5FAV
     buyNowPayLaterRefundId:
       title: Buy Now Pay Later Refund ID
-      description: L’identifiant partagé de ressource de remboursement Moneris limité au préfixe ri01 requis.
+      description: L’identifiant partagé de ressource de remboursement Moneris limité au préfixe ri01 ou ri04.
       allOf:
         - $ref: '#/components/schemas/refundId'
         - type: string
           minLength: 30
           maxLength: 30
-          pattern: ^ri01[A-Z0-9]{26}$
+          pattern: ^ri0[14][A-Z0-9]{26}$
+          example: ri04ABCDEFGHJKLMNPQRSTUVWXYZ23
     buyNowPayLaterRefundLink:
       title: Buy Now Pay Later Refund Link
       type: object
@@ -5303,9 +5305,9 @@ components:
           $ref: '#/components/schemas/buyNowPayLaterRefundId'
         href:
           nullable: false
-          pattern: ^/buy-now-pay-later/refunds/ri01[A-Z0-9]{26}$
+          pattern: ^/buy-now-pay-later/refunds/ri0[14][A-Z0-9]{26}$
           description: L’URL relative de la ressource de remboursement.
-          example: /buy-now-pay-later/refunds/ri01ABCDEFGHJKLMNPQRSTUVWXYZ23
+          example: /buy-now-pay-later/refunds/ri04ABCDEFGHJKLMNPQRSTUVWXYZ23
           type: string
           format: uri-reference
       required:
@@ -5792,9 +5794,9 @@ components:
           $ref: '#/components/schemas/buyNowPayLaterPaymentId'
         href:
           nullable: false
-          pattern: ^/buy-now-pay-later/payments/pi01[A-Za-z0-9]{26}$
+          pattern: ^/buy-now-pay-later/payments/pi0[14][A-Za-z0-9]{26}$
           description: L’URL relative de la ressource de paiement.
-          example: /buy-now-pay-later/payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+          example: /buy-now-pay-later/payments/pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
           type: string
           format: uri-reference
       required:
@@ -25431,7 +25433,7 @@ components:
       in: path
       name: payment-id
       required: true
-      description: L’identifiant public unique de 30 caractères du paiement différé avec le préfixe pi01.
+      description: L’identifiant public unique de 30 caractères du paiement différé avec le préfixe pi01 ou pi04.
       schema:
         $ref: '#/components/schemas/buyNowPayLaterPaymentId'
     refundId:
@@ -25701,7 +25703,7 @@ components:
       summary: Cursor-paginated Buy Now Pay Later payments
       value:
         data:
-          - paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+          - paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
             merchantId: '0123456789101'
             transactionDateTime: '2026-08-07T16:30:00Z'
             createdAt: '2026-08-07T16:30:00Z'
@@ -25791,7 +25793,7 @@ components:
     paymentProcessing:
       summary: Shopper action is required
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         transactionDateTime: '2026-08-07T16:30:00Z'
         createdAt: '2026-08-07T16:30:00Z'
@@ -25821,7 +25823,7 @@ components:
     paymentAuthorized:
       summary: Payment is authorized for later completion
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         transactionDateTime: '2026-08-07T16:30:00Z'
         createdAt: '2026-08-07T16:30:00Z'
@@ -25849,7 +25851,7 @@ components:
     paymentSucceededAutomaticCapture:
       summary: Payment succeeded through automatic capture during creation
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         transactionDateTime: '2026-08-07T16:30:00Z'
         createdAt: '2026-08-07T16:30:00Z'
@@ -25877,7 +25879,7 @@ components:
     paymentPartiallyCompletedKeep:
       summary: Payment is partially completed with authorization retained
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         transactionDateTime: '2026-08-07T16:30:00Z'
         createdAt: '2026-08-07T16:30:00Z'
@@ -25911,7 +25913,7 @@ components:
     paymentSucceeded:
       summary: Payment is fully captured and partially refunded
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         transactionDateTime: '2026-08-07T16:30:00Z'
         createdAt: '2026-08-07T16:30:00Z'
@@ -25944,15 +25946,15 @@ components:
             finalCompletion: true
         refundDetails:
           refunds:
-            - refundId: ri01ABCDEFGHJKLMNPQRSTUVWXYZ23
-              href: /buy-now-pay-later/refunds/ri01ABCDEFGHJKLMNPQRSTUVWXYZ23
+            - refundId: ri04ABCDEFGHJKLMNPQRSTUVWXYZ23
+              href: /buy-now-pay-later/refunds/ri04ABCDEFGHJKLMNPQRSTUVWXYZ23
           refundedAmount:
             amount: 2500
             currency: CAD
     paymentCanceled:
       summary: Authorized payment is canceled
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         transactionDateTime: '2026-08-07T16:30:00Z'
         createdAt: '2026-08-07T16:30:00Z'
@@ -25980,7 +25982,7 @@ components:
     paymentDeclined:
       summary: Payment is declined
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         transactionDateTime: '2026-08-07T16:30:00Z'
         createdAt: '2026-08-07T16:30:00Z'
@@ -26004,7 +26006,7 @@ components:
     paymentExpired:
       summary: Shopper handoff expired
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         transactionDateTime: '2026-08-07T16:30:00Z'
         createdAt: '2026-08-07T16:30:00Z'
@@ -26044,7 +26046,7 @@ components:
     paymentPartiallyCompletedReleased:
       summary: Payment is partially completed with remaining authorization released
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         transactionDateTime: '2026-08-07T16:30:00Z'
         createdAt: '2026-08-07T16:30:00Z'
@@ -26078,7 +26080,7 @@ components:
     paymentFullyCompleted:
       summary: Payment is fully captured through a merchant-requested completion
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         transactionDateTime: '2026-08-07T16:30:00Z'
         createdAt: '2026-08-07T16:30:00Z'
@@ -26119,7 +26121,7 @@ components:
     paymentCanceledFromProcessing:
       summary: Processing payment is canceled before authorization
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         transactionDateTime: '2026-08-07T16:30:00Z'
         createdAt: '2026-08-07T16:30:00Z'
@@ -26147,7 +26149,7 @@ components:
     paymentPartiallyCompletedCanceledRemainder:
       summary: Payment is partially completed and its remaining authorization is canceled
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         transactionDateTime: '2026-08-07T16:30:00Z'
         createdAt: '2026-08-07T16:30:00Z'
@@ -26182,10 +26184,10 @@ components:
       summary: Cursor-paginated successful Buy Now Pay Later refunds
       value:
         data:
-          - refundId: ri01ABCDEFGHJKLMNPQRSTUVWXYZ23
+          - refundId: ri04ABCDEFGHJKLMNPQRSTUVWXYZ23
             payment:
-              paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-              href: /buy-now-pay-later/payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+              paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
+              href: /buy-now-pay-later/payments/pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
             merchantId: '0123456789101'
             createdAt: '2026-08-08T14:20:00Z'
             modifiedAt: null
@@ -26208,7 +26210,7 @@ components:
     createRefund:
       summary: Refund part of a completed Buy Now Pay Later payment
       value:
-        paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+        paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         idempotencyKey: b88c4641-688b-4f18-9960-bbdfa2256c22
         refundAmount:
           amount: 2500
@@ -26220,10 +26222,10 @@ components:
     refundSucceeded:
       summary: Successful Buy Now Pay Later refund
       value:
-        refundId: ri01ABCDEFGHJKLMNPQRSTUVWXYZ23
+        refundId: ri04ABCDEFGHJKLMNPQRSTUVWXYZ23
         payment:
-          paymentId: pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
-          href: /buy-now-pay-later/payments/pi0105ARZ3NDEKTSV4RRFFQ69G5FAV
+          paymentId: pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
+          href: /buy-now-pay-later/payments/pi0405ARZ3NDEKTSV4RRFFQ69G5FAV
         merchantId: '0123456789101'
         createdAt: '2026-08-08T14:20:00Z'
         modifiedAt: null
