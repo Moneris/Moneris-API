@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 2.18.0
+  version: 2.19.0
   title: Moneris API
   description: |-
     Moneris API Platform
@@ -5542,11 +5542,11 @@ components:
       description: A purchased item. The total tax amount cannot exceed the total amount.
       properties:
         name:
-          description: The item name.
           type: string
+          description: The item name.
           minLength: 1
-          maxLength: 50
-          example: Canned Food
+          maxLength: 255
+          example: Sony WH-1000XM5 Wireless Noise Cancelling Headphones - Black
         quantity:
           type: integer
           format: int32
@@ -5600,88 +5600,6 @@ components:
         - unitPrice
         - totalAmount
         - totalTaxAmount
-    firstName:
-      type: string
-      description: First name.
-      minLength: 1
-      maxLength: 30
-      example: John
-      nullable: true
-    lastName:
-      type: string
-      description: Last name.
-      minLength: 1
-      maxLength: 30
-      example: Doe
-      nullable: true
-    address:
-      type: object
-      description: |
-        The postal address including street, town/city, province, and postal code.
-        Optionally an unit number can be provided.
-      properties:
-        unitNumber:
-          nullable: true
-          type: string
-          description: Unit number
-          minLength: 1
-          maxLength: 19
-          example: 123A
-        streetNumber:
-          nullable: true
-          type: string
-          description: Street number
-          minLength: 1
-          maxLength: 19
-          example: '3300'
-        streetName:
-          nullable: true
-          type: string
-          description: Street name
-          minLength: 1
-          maxLength: 100
-          example: Bloor
-        city:
-          nullable: true
-          type: string
-          description: |
-            Identifies the city.
-          minLength: 1
-          maxLength: 50
-          example: Toronto
-        province:
-          nullable: true
-          type: string
-          description: 'Province or state ISO 3166-2 code '
-          minLength: 1
-          maxLength: 3
-          format: iso-3166-2
-          example: 'ON'
-        postalCode:
-          nullable: true
-          type: string
-          description: Postal or zip code
-          minLength: 1
-          maxLength: 30
-          example: M8X 2X2
-        country:
-          nullable: true
-          type: string
-          description: |
-            Provides the two letter country code according the ISO 3166-1 alpha-2 standard. 
-            For a complete list of country codes, visit: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
-          minLength: 2
-          maxLength: 2
-          example: CA
-          format: iso-3166
-      example:
-        unitNumber: 123A
-        streetNumber: '3300'
-        streetName: Bloor Street West
-        city: Toronto
-        province: 'ON'
-        postalCode: M8X 2X2
-        country: CA
     createBuyNowPayLaterPaymentRequest:
       title: Create Buy Now Pay Later Payment Request
       type: object
@@ -5722,9 +5640,19 @@ components:
           description: Shopper details used for payment authorization. This object does not create or reference a Moneris Customer resource.
           properties:
             firstName:
-              $ref: '#/components/schemas/firstName'
+              type: string
+              description: First name.
+              minLength: 1
+              maxLength: 100
+              example: John
+              nullable: true
             lastName:
-              $ref: '#/components/schemas/lastName'
+              type: string
+              description: Last name.
+              minLength: 1
+              maxLength: 100
+              example: Doe
+              nullable: true
             email:
               nullable: true
               type: string
@@ -5737,31 +5665,148 @@ components:
               maxLength: 320
               example: moneris@moneris.com
             phoneNumber:
-              nullable: true
               type: string
               description: Phone number.
-              pattern: ^\+[1-9]\d{1,14}$
-              minLength: 3
-              maxLength: 16
+              minLength: 1
+              maxLength: 30
               example: '+18663197450'
+              nullable: true
             address:
               nullable: true
               title: Buy Now Pay Later Address
               type: object
               description: A postal address. When supplied, at least one field must be present.
-              allOf:
-                - $ref: '#/components/schemas/address'
-                - type: object
-                  minProperties: 1
+              minProperties: 1
+              properties:
+                unitNumber:
+                  type: string
+                  description: Unit number
+                  minLength: 1
+                  maxLength: 50
+                  example: 123A
+                  nullable: true
+                streetNumber:
+                  type: string
+                  description: Street number
+                  minLength: 1
+                  maxLength: 50
+                  example: '3300'
+                  nullable: true
+                streetName:
+                  nullable: true
+                  type: string
+                  description: Street name
+                  minLength: 1
+                  maxLength: 100
+                  example: Bloor
+                city:
+                  type: string
+                  description: Identifies the city.
+                  minLength: 1
+                  maxLength: 100
+                  example: Toronto
+                  nullable: true
+                province:
+                  nullable: true
+                  type: string
+                  description: 'Province or state ISO 3166-2 code '
+                  minLength: 1
+                  maxLength: 3
+                  format: iso-3166-2
+                  example: 'ON'
+                postalCode:
+                  nullable: true
+                  type: string
+                  description: Postal or zip code
+                  minLength: 1
+                  maxLength: 30
+                  example: M8X 2X2
+                country:
+                  nullable: true
+                  type: string
+                  description: |
+                    Provides the two letter country code according the ISO 3166-1 alpha-2 standard. 
+                    For a complete list of country codes, visit: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
+                  minLength: 2
+                  maxLength: 2
+                  example: CA
+                  format: iso-3166
+              example:
+                unitNumber: 123A
+                streetNumber: '3300'
+                streetName: Bloor Street West
+                city: Toronto
+                province: 'ON'
+                postalCode: M8X 2X2
+                country: CA
         shippingAddress:
           nullable: true
           title: Buy Now Pay Later Address
           type: object
           description: A postal address. When supplied, at least one field must be present.
-          allOf:
-            - $ref: '#/components/schemas/address'
-            - type: object
-              minProperties: 1
+          minProperties: 1
+          properties:
+            unitNumber:
+              type: string
+              description: Unit number
+              minLength: 1
+              maxLength: 50
+              example: 123A
+              nullable: true
+            streetNumber:
+              type: string
+              description: Street number
+              minLength: 1
+              maxLength: 50
+              example: '3300'
+              nullable: true
+            streetName:
+              nullable: true
+              type: string
+              description: Street name
+              minLength: 1
+              maxLength: 100
+              example: Bloor
+            city:
+              type: string
+              description: Identifies the city.
+              minLength: 1
+              maxLength: 100
+              example: Toronto
+              nullable: true
+            province:
+              nullable: true
+              type: string
+              description: 'Province or state ISO 3166-2 code '
+              minLength: 1
+              maxLength: 3
+              format: iso-3166-2
+              example: 'ON'
+            postalCode:
+              nullable: true
+              type: string
+              description: Postal or zip code
+              minLength: 1
+              maxLength: 30
+              example: M8X 2X2
+            country:
+              nullable: true
+              type: string
+              description: |
+                Provides the two letter country code according the ISO 3166-1 alpha-2 standard. 
+                For a complete list of country codes, visit: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
+              minLength: 2
+              maxLength: 2
+              example: CA
+              format: iso-3166
+          example:
+            unitNumber: 123A
+            streetNumber: '3300'
+            streetName: Bloor Street West
+            city: Toronto
+            province: 'ON'
+            postalCode: M8X 2X2
+            country: CA
       required:
         - idempotencyKey
         - amount
@@ -5987,7 +6032,7 @@ components:
           type: string
           minLength: 1
           description: The provider-issued identifier of the deep link.
-          example: dl_01J4Z6N8Y7T6R5Q4P3M2K1H0GF
+          example: krn:network:us1:test:portal:deep-link:cb643e4a-b224-4cdc-847f-6939484e533f
         url:
           description: The one-use bearer URL. It must not be persisted, logged, cached, traced, or included in telemetry or errors.
           type: string
@@ -6124,12 +6169,26 @@ components:
       minLength: 1
       maxLength: 60
       example: John Doe
+    firstName:
+      type: string
+      description: First name.
+      minLength: 1
+      maxLength: 30
+      example: John
+      nullable: true
     middleName:
       type: string
       description: Customer's middle name.
       minLength: 1
       maxLength: 30
       example: J.
+      nullable: true
+    lastName:
+      type: string
+      description: Last name.
+      minLength: 1
+      maxLength: 30
+      example: Doe
       nullable: true
     cardholderNameDetails:
       type: object
@@ -7036,6 +7095,10 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/multipleCompletion'
+    level23Purchase:
+      type: boolean
+      default: false
+      description: This field indicates if this purchase is a level 2 or level 3 purchase. Default is false.
     payment:
       title: payment
       type: object
@@ -7151,6 +7214,8 @@ components:
           $ref: '#/components/schemas/incrementalAuthorizations'
         multipleCompletions:
           $ref: '#/components/schemas/multipleCompletions'
+        level23Purchase:
+          $ref: '#/components/schemas/level23Purchase'
       required:
         - paymentId
         - merchantId
@@ -8151,6 +8216,678 @@ components:
       description: Internet Protocol version 6 (IPv6).
       example: 2600:1401:2::8a
       nullable: true
+    orderDetailsType:
+      type: string
+      description: Indicates which type of order details is provided.
+      enum:
+        - GENERIC
+      example: GENERIC
+    orderDetailsBase:
+      title: orderDetailsBase
+      type: object
+      description: Order information common to every type of order details.
+      properties:
+        orderDetailsType:
+          $ref: '#/components/schemas/orderDetailsType'
+      required:
+        - orderDetailsType
+    commodityCode:
+      type: string
+      maxLength: 15
+      nullable: true
+      description: Code assigned to the merchant that best categorizes the item(s) being purchased.
+    typeOfSupply:
+      type: string
+      nullable: true
+      description: the indicator noting whether the purchase is categorized as goods or services.
+      enum:
+        - GOODS
+        - SERVICES
+      example: GOODS
+    rate:
+      type: number
+      format: decimal
+      multipleOf: 0.01
+      description: Percentage up to 2 decimal points.
+      minimum: 0
+      maximum: 100
+      example: 90.5
+    productServiceIdentifier:
+      title: productServiceIdentifier
+      type: object
+      description: Contains codes that identify the type or source of the descriptive numbers used in the Product/Service IDs (234) that follow.
+      properties:
+        qualifierCode:
+          type: string
+          description: Qualifier code
+          enum:
+            - MANUFACTURER_PART_NUMBER
+            - SUPPLIER_CATALOG_NUMBER
+            - SUPPLIER_STOCK_KEEPING_UNIT_NUMBER
+            - UNIVERSAL_PRODUCT_CODE
+            - VENDOR_PART_NUMBER
+            - PURCHASE_ORDER_NUMBER
+            - CLIENT_DEFINED_ASSET_CODE
+          example: MANUFACTURER_PART_NUMBER
+        identifier:
+          description: Identifier value corresponding to the qualifier code.
+          type: string
+          minLength: 8
+          maxLength: 8
+      required:
+        - qualifierCode
+        - identifier
+    orderDetailsTaxType:
+      type: string
+      description: Tax type
+      enum:
+        - GST
+        - HST
+        - PST
+        - QST
+        - VAT
+      example: GST
+    taxRate:
+      type: number
+      format: decimal
+      multipleOf: 0.001
+      description: Percentage up to 3 decimal points.
+      minimum: 0
+      maximum: 100
+      example: 90.999
+    taxNumber:
+      type: string
+      nullable: true
+      maxLength: 20
+      description: Tax number/ID
+    orderItemDetailsTax:
+      title: orderItemDetailsTax
+      type: object
+      description: Includes information of taxes applying to the item.
+      properties:
+        type:
+          $ref: '#/components/schemas/orderDetailsTaxType'
+        amount:
+          description: Tax amount.
+          nullable: true
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+        rate:
+          $ref: '#/components/schemas/taxRate'
+        taxExemptCode:
+          nullable: true
+          type: string
+          description: This element may contain the Tax Exempt Code that identifies the exemption status from sales and tax that corresponds to the Tax Type Code in txi01.
+          enum:
+            - TAX_EXEMPT
+            - NOT_TAX_EXEMPT
+            - NOT_EXEMPT_FOR_RESALE
+            - NOT_EXEMPT_NOT_FOR_RESALE
+            - LABOR_TAXABLE_MATERIAL_EXEMPT
+            - MATERIAL_TAXABLE_LABOR_EXEMPT
+            - NOT_TAXABLE
+            - EXEMPT_FOR_GST
+            - EXEMPT_PST
+            - EXEMPT_LOCAL_SERVICE
+            - RECURRING_EXEMPT
+            - USAGE_EXEMPT
+          example: TAX_EXEMPT
+        taxNumber:
+          $ref: '#/components/schemas/taxNumber'
+      required:
+        - type
+    orderDetailsLineItem:
+      title: orderDetailsLineItem
+      type: object
+      description: Goods or services included in this order.
+      properties:
+        productCode:
+          type: string
+          nullable: true
+          maxLength: 12
+          description: Product code for this line item. Merchant's product code, manufacturer's product code or buyer's product code.
+        commodityCode:
+          $ref: '#/components/schemas/commodityCode'
+        typeOfSupply:
+          $ref: '#/components/schemas/typeOfSupply'
+        itemDescription:
+          type: string
+          nullable: true
+          maxLength: 35
+          description: Line Item description.
+        customerCode:
+          type: string
+          nullable: true
+          maxLength: 25
+          description: Customer code for this line item.
+        purchaseDate:
+          description: The purchase date of the line item referenced in the associated Corporate Card Line Item
+          nullable: true
+          type: string
+          format: date
+          example: '2019-07-30'
+        shippingDate:
+          description: Date when the order was shipped.
+          nullable: true
+          type: string
+          format: date
+          example: '2019-07-30'
+        orderDate:
+          description: Date when the order of the line item was placed.
+          nullable: true
+          type: string
+          format: date
+          example: '2019-07-30'
+        medical:
+          nullable: true
+          title: medical
+          type: object
+          description: Includes information of medical service applying to each item.
+          properties:
+            medicalServicesShipToHealthIndustryNumber:
+              type: string
+              nullable: true
+              maxLength: 40
+              description: Contains the health industry number to which the medical services are being shipped.
+            medicalServicesAdjustment:
+              type: string
+              nullable: true
+              enum:
+                - PRICE_ADJUSTMENT
+                - ORIGINAL
+                - CREDIT
+                - REBILL_PRODUCT_CODE
+              example: PRICE_ADJUSTMENT
+              description: Contains a code that identifies the type of price adjustment related to the medical services provided.
+            medicalServicesProductNumberQualifier:
+              type: string
+              nullable: true
+              enum:
+                - HEALTH_INDUSTRY_BUSINESS_COMMUNICATION_COUNCIL
+                - UNIFORM_CODE_COUNCIL
+                - OTHER
+              example: OTHER
+              description: Contains a code that identifies the product number qualifier of the medical services.
+        contractNumber:
+          type: string
+          nullable: true
+          maxLength: 40
+          description: Contract number associated with the line item.
+        quantity:
+          type: number
+          format: double
+          minimum: 0
+          multipleOf: 0.01
+          description: Quantity invoiced for this line item.
+        unitOfMeasure:
+          type: string
+          nullable: true
+          maxLength: 2
+          description: Identifies the standard unit used to measure the purchased item (for example, each, kg, lb, litre, metre, or hour). This value provides additional context for the item quantity and supports enhanced transaction data requirements..
+        unitPrice:
+          description: Line item cost per unit.
+          nullable: true
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+        productServiceIdentifiers:
+          description: contain codes that identify the type or source of the descriptive numbers used in the Product/Service IDs (234) that follow.
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/productServiceIdentifier'
+          maxItems: 10
+        totalAmount:
+          description: Line item amount.
+          nullable: true
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+        discount:
+          description: Discount amount in the line item.
+          nullable: true
+          title: discount
+          type: object
+          properties:
+            discountTreatment:
+              type: string
+              description: discount treatment type
+              enum:
+                - NOT_APPLICABLE
+                - POST_DISCOUNT_CALCULATED
+                - PRE_DISCOUNT_CALCULATED
+              example: NOT_APPLICABLE
+            discountAmount:
+              description: discount on the total purchase amount.
+              nullable: true
+              type: object
+              properties:
+                amount:
+                  $ref: '#/components/schemas/amount'
+                currency:
+                  $ref: '#/components/schemas/currency'
+              required:
+                - amount
+                - currency
+              example:
+                amount: 16000
+                currency: CAD
+          required:
+            - discountTreatment
+        lineItemTaxes:
+          description: Includes information of taxes applying to each item.
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/orderItemDetailsTax'
+          maxItems: 6
+    orderDetailsTax:
+      title: orderDetailsTax
+      type: object
+      description: Includes information of taxes applying to the order.
+      properties:
+        type:
+          description: 'Tax type as a Moneris enum/code. Common values: GST, HST, PST, QST, VAT.'
+          type: string
+          enum:
+            - GST
+            - HST
+            - PST
+            - QST
+            - VAT
+          example: GST
+        amount:
+          description: Tax amount. if type is HST/GST and visa, it will be mapped to NationalTax. otherwise, to localTax
+          nullable: true
+          type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/amount'
+            currency:
+              $ref: '#/components/schemas/currency'
+          required:
+            - amount
+            - currency
+          example:
+            amount: 16000
+            currency: CAD
+        rate:
+          $ref: '#/components/schemas/taxRate'
+        includedInSales:
+          type: boolean
+          description: This is the indicator used to reflect additional tax capture and reporting.
+          default: false
+        taxExemptCode:
+          nullable: true
+          type: string
+          description: This element may contain the Tax Exempt Code that identifies the exemption status from sales and tax that corresponds to the Tax Type Code in txi01.
+          enum:
+            - TAX_EXEMPT
+            - NOT_TAX_EXEMPT
+            - NOT_EXEMPT_FOR_RESALE
+            - NOT_EXEMPT_NOT_FOR_RESALE
+            - LABOR_TAXABLE_MATERIAL_EXEMPT
+            - MATERIAL_TAXABLE_LABOR_EXEMPT
+            - NOT_TAXABLE
+            - EXEMPT_FOR_GST
+            - EXEMPT_PST
+            - EXEMPT_LOCAL_SERVICE
+            - RECURRING_EXEMPT
+            - USAGE_EXEMPT
+          example: TAX_EXEMPT
+        taxNumber:
+          $ref: '#/components/schemas/taxNumber'
+        exempt:
+          type: boolean
+          default: false
+          description: Indicates if the specific tax is exempt in this order.
+      required:
+        - type
+    genericOrderDetailsInformation:
+      title: genericOrderDetailsInformation
+      description: Order details for a generic purchase.
+      type: object
+      properties:
+        orderDate:
+          description: Date when the order was placed.
+          nullable: true
+          type: string
+          format: date
+          example: '2019-07-30'
+        purchaseOrderNumber:
+          type: string
+          nullable: true
+          maxLength: 22
+          description: Purchase order number supplied by the buyer.
+        merchantReferenceNumber:
+          type: string
+          nullable: true
+          maxLength: 19
+          description: Merchant reference number used for completion-level reconciliation.
+        commodityCode:
+          $ref: '#/components/schemas/commodityCode'
+        typeOfSupply:
+          $ref: '#/components/schemas/typeOfSupply'
+        discount:
+          description: Includes information of discount applying to the order.
+          nullable: true
+          title: discount
+          type: object
+          properties:
+            discountTreatment:
+              type: string
+              description: discount treatment type
+              enum:
+                - NOT_APPLICABLE
+                - POST_DISCOUNT_CALCULATED
+                - PRE_DISCOUNT_CALCULATED
+              example: NOT_APPLICABLE
+            discountAmount:
+              description: discount on the total purchase amount.
+              nullable: true
+              type: object
+              properties:
+                amount:
+                  $ref: '#/components/schemas/amount'
+                currency:
+                  $ref: '#/components/schemas/currency'
+              required:
+                - amount
+                - currency
+              example:
+                amount: 16000
+                currency: CAD
+          required:
+            - discountTreatment
+        merchant:
+          description: Merchant specific information.
+          nullable: true
+          title: merchant
+          type: object
+          properties:
+            cardAcceptorAdditionalData:
+              type: string
+              nullable: true
+              maxLength: 40
+              description: Identify the specific merchant, website, or physical service location.
+            cardAcceptorType:
+              type: string
+              nullable: true
+              minLength: 8
+              maxLength: 8
+              description: A card acceptor type typically refers to the classification code or identifier used in payment processing networks (like ISO 8583 financial messaging) to identify the specific category, environment, or identification code (such as a CAID) of the merchant or device accepting a payment card
+            cardAcceptorReferenceNumber:
+              type: string
+              nullable: true
+              minLength: 1
+              maxLength: 25
+              description: A card acceptor reference number typically refers to a Card Acceptor ID (CAID) or a transaction-tracking Acquirer Reference Number (ARN). A CAID is a 1-to-15 character code that identifies the specific store, terminal, or online checkout where a payment originated, while an ARN is a unique number used to track a settled card transaction through the banking network.
+            cardAcceptorTaxId:
+              type: string
+              nullable: true
+              maxLength: 20
+              description: The card acceptor tax ID is a unique identifier assigned to businesses and entities for tax purposes. It is used to report and track tax obligations related to card acceptance and payment processing activities.
+            naicsCode:
+              type: string
+              nullable: true
+              maxLength: 15
+              description: a standard six-digit numeric system used by government agencies in Canada, the United States, and Mexico to classify businesses by their primary economic activity. You need your local NAICS code when filing corporate or sole proprietorship tax returns and registering your business
+            austinTetraNumber:
+              type: string
+              nullable: true
+              maxLength: 15
+              description: The Austin-Tetra "A-T Number" is a unique nine-digit business identification code used to link corporate family structures, and the company's main phone contact number is used to verify the business.
+            corporationValueAddedTaxNumber:
+              type: string
+              nullable: true
+              maxLength: 20
+              description: The corporation's Value Added Tax (VAT) number.
+            merchantValueAddedTaxNumber:
+              type: string
+              nullable: true
+              maxLength: 20
+              description: The merchant's Value Added Tax (VAT) number.
+        shipping:
+          description: Includes shipping related information.
+          nullable: true
+          title: orderDetailsShipping
+          type: object
+          properties:
+            freightAmount:
+              nullable: true
+              description: Total charged for shipping fees or freight amount.
+              type: object
+              properties:
+                amount:
+                  $ref: '#/components/schemas/amount'
+                currency:
+                  $ref: '#/components/schemas/currency'
+              required:
+                - amount
+                - currency
+              example:
+                amount: 16000
+                currency: CAD
+            freightTaxAmount:
+              nullable: true
+              description: Tax on the total tax of shipping or freight.
+              type: object
+              properties:
+                amount:
+                  $ref: '#/components/schemas/amount'
+                currency:
+                  $ref: '#/components/schemas/currency'
+              required:
+                - amount
+                - currency
+              example:
+                amount: 16000
+                currency: CAD
+            freightTaxRate:
+              $ref: '#/components/schemas/rate'
+            dutyAmount:
+              nullable: true
+              description: Duty on the total purchase amount.
+              type: object
+              properties:
+                amount:
+                  $ref: '#/components/schemas/amount'
+                currency:
+                  $ref: '#/components/schemas/currency'
+              required:
+                - amount
+                - currency
+              example:
+                amount: 16000
+                currency: CAD
+            shipFrom:
+              description: Shipping origin details.
+              nullable: true
+              type: object
+              properties:
+                unitNumber:
+                  nullable: true
+                  type: string
+                  description: Unit number
+                  minLength: 1
+                  maxLength: 19
+                  example: 123A
+                streetNumber:
+                  nullable: true
+                  type: string
+                  description: Street number
+                  minLength: 1
+                  maxLength: 19
+                  example: '3300'
+                streetName:
+                  nullable: true
+                  type: string
+                  description: Street name
+                  minLength: 1
+                  maxLength: 100
+                  example: Bloor
+                city:
+                  nullable: true
+                  type: string
+                  description: |
+                    Identifies the city.
+                  minLength: 1
+                  maxLength: 50
+                  example: Toronto
+                province:
+                  nullable: true
+                  type: string
+                  description: 'Province or state ISO 3166-2 code '
+                  minLength: 1
+                  maxLength: 3
+                  format: iso-3166-2
+                  example: 'ON'
+                postalCode:
+                  nullable: true
+                  type: string
+                  description: Postal or zip code
+                  minLength: 1
+                  maxLength: 30
+                  example: M8X 2X2
+                country:
+                  nullable: true
+                  type: string
+                  description: |
+                    Provides the two letter country code according the ISO 3166-1 alpha-2 standard. 
+                    For a complete list of country codes, visit: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
+                  minLength: 2
+                  maxLength: 2
+                  example: CA
+                  format: iso-3166
+              example:
+                unitNumber: 123A
+                streetNumber: '3300'
+                streetName: Bloor Street West
+                city: Toronto
+                province: 'ON'
+                postalCode: M8X 2X2
+                country: CA
+            shipTo:
+              description: Shipping destination details.
+              nullable: true
+              type: object
+              properties:
+                unitNumber:
+                  nullable: true
+                  type: string
+                  description: Unit number
+                  minLength: 1
+                  maxLength: 19
+                  example: 123A
+                streetNumber:
+                  nullable: true
+                  type: string
+                  description: Street number
+                  minLength: 1
+                  maxLength: 19
+                  example: '3300'
+                streetName:
+                  nullable: true
+                  type: string
+                  description: Street name
+                  minLength: 1
+                  maxLength: 100
+                  example: Bloor
+                city:
+                  nullable: true
+                  type: string
+                  description: |
+                    Identifies the city.
+                  minLength: 1
+                  maxLength: 50
+                  example: Toronto
+                province:
+                  nullable: true
+                  type: string
+                  description: 'Province or state ISO 3166-2 code '
+                  minLength: 1
+                  maxLength: 3
+                  format: iso-3166-2
+                  example: 'ON'
+                postalCode:
+                  nullable: true
+                  type: string
+                  description: Postal or zip code
+                  minLength: 1
+                  maxLength: 30
+                  example: M8X 2X2
+                country:
+                  nullable: true
+                  type: string
+                  description: |
+                    Provides the two letter country code according the ISO 3166-1 alpha-2 standard. 
+                    For a complete list of country codes, visit: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
+                  minLength: 2
+                  maxLength: 2
+                  example: CA
+                  format: iso-3166
+              example:
+                unitNumber: 123A
+                streetNumber: '3300'
+                streetName: Bloor Street West
+                city: Toronto
+                province: 'ON'
+                postalCode: M8X 2X2
+                country: CA
+            shippingDate:
+              description: Date when the order was shipped.
+              nullable: true
+              type: string
+              format: date
+              example: '2019-07-30'
+        lineItems:
+          description: Goods or services included in this order.
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/orderDetailsLineItem'
+          maxItems: 999
+        taxSummaries:
+          description: Includes information of taxes applying to the order.
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/orderDetailsTax'
+          maxItems: 6
+    genericOrderDetails:
+      title: genericOrderDetails
+      description: Order details for a generic purchase.
+      allOf:
+        - $ref: '#/components/schemas/orderDetailsBase'
+        - $ref: '#/components/schemas/genericOrderDetailsInformation'
     createPaymentRequest:
       title: paymentRequest
       type: object
@@ -8245,6 +8982,20 @@ components:
           $ref: '#/components/schemas/ipv4'
         ipv6:
           $ref: '#/components/schemas/ipv6'
+        level23Purchase:
+          $ref: '#/components/schemas/level23Purchase'
+        orderDetails:
+          description: Includes additional order information.
+          title: orderDetails
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/genericOrderDetails'
+          discriminator:
+            propertyName: orderDetailsType
+            mapping:
+              GENERIC: '#/components/schemas/genericOrderDetails'
+          required:
+            - orderDetailsType
       required:
         - idempotencyKey
         - paymentMethod
@@ -8375,6 +9126,18 @@ components:
             - SSL_MERCHANT
           example: AUTHENTICATED_ECOMMERCE
           default: SSL_MERCHANT
+        completionOrderDetails:
+          description: Includes additional order information.
+          title: orderDetails
+          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/genericOrderDetails'
+          discriminator:
+            propertyName: orderDetailsType
+            mapping:
+              GENERIC: '#/components/schemas/genericOrderDetails'
+          required:
+            - orderDetailsType
       required:
         - idempotencyKey
     incrementalAuthorizationRequest:
@@ -8554,6 +9317,74 @@ components:
           GOOGLE_PAY_DECRYPTED: '#/components/schemas/googlePayDecryptedWallet'
       required:
         - paymentMethodSource
+    address:
+      type: object
+      description: |
+        The postal address including street, town/city, province, and postal code.
+        Optionally an unit number can be provided.
+      properties:
+        unitNumber:
+          nullable: true
+          type: string
+          description: Unit number
+          minLength: 1
+          maxLength: 19
+          example: 123A
+        streetNumber:
+          nullable: true
+          type: string
+          description: Street number
+          minLength: 1
+          maxLength: 19
+          example: '3300'
+        streetName:
+          nullable: true
+          type: string
+          description: Street name
+          minLength: 1
+          maxLength: 100
+          example: Bloor
+        city:
+          nullable: true
+          type: string
+          description: |
+            Identifies the city.
+          minLength: 1
+          maxLength: 50
+          example: Toronto
+        province:
+          nullable: true
+          type: string
+          description: 'Province or state ISO 3166-2 code '
+          minLength: 1
+          maxLength: 3
+          format: iso-3166-2
+          example: 'ON'
+        postalCode:
+          nullable: true
+          type: string
+          description: Postal or zip code
+          minLength: 1
+          maxLength: 30
+          example: M8X 2X2
+        country:
+          nullable: true
+          type: string
+          description: |
+            Provides the two letter country code according the ISO 3166-1 alpha-2 standard. 
+            For a complete list of country codes, visit: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
+          minLength: 2
+          maxLength: 2
+          example: CA
+          format: iso-3166
+      example:
+        unitNumber: 123A
+        streetNumber: '3300'
+        streetName: Bloor Street West
+        city: Toronto
+        province: 'ON'
+        postalCode: M8X 2X2
+        country: CA
     updatePaymentMethodInformationRequest:
       title: updatePaymentMethodInformationRequest
       description: |
@@ -8870,6 +9701,18 @@ components:
                 - amount
                 - processedAt
                 - finalCompletion
+            refundOrderDetails:
+              description: Includes additional order information.
+              title: orderDetails
+              nullable: true
+              oneOf:
+                - $ref: '#/components/schemas/genericOrderDetails'
+              discriminator:
+                propertyName: orderDetailsType
+                mapping:
+                  GENERIC: '#/components/schemas/genericOrderDetails'
+              required:
+                - orderDetailsType
           required:
             - paymentId
         - $ref: '#/components/schemas/createRefundRequestBase'
@@ -10299,6 +11142,11 @@ components:
           minLength: 1
           maxLength: 320
           example: moneris@moneris.com
+        customerValueAddedTaxNumber:
+          nullable: true
+          type: string
+          maxLength: 20
+          description: Customer Value Added Tax (VAT) number referenced by the Visa completion addendum, Mastercard customer VAT number
         customData:
           $ref: '#/components/schemas/customData'
       required:
@@ -10498,6 +11346,11 @@ components:
           minLength: 1
           maxLength: 320
           example: moneris@moneris.com
+        customerValueAddedTaxNumber:
+          nullable: true
+          type: string
+          maxLength: 20
+          description: Customer Value Added Tax (VAT) number referenced by the Visa completion addendum, Mastercard customer VAT number
         customData:
           $ref: '#/components/schemas/customData'
       required:
@@ -10672,6 +11525,11 @@ components:
           minLength: 1
           maxLength: 320
           example: moneris@moneris.com
+        customerValueAddedTaxNumber:
+          nullable: true
+          type: string
+          maxLength: 20
+          description: Customer Value Added Tax (VAT) number referenced by the Visa completion addendum, Mastercard customer VAT number
         customData:
           $ref: '#/components/schemas/customData'
     phoneNumber:
@@ -25496,7 +26354,7 @@ components:
       name: deep-link-id
       required: true
       description: The provider-issued identifier of the portal deep link or session to revoke.
-      example: dl_01J4Z6N8Y7T6R5Q4P3M2K1H0GF
+      example: krn:network:us1:test:portal:deep-link:cb643e4a-b224-4cdc-847f-6939484e533f
       schema:
         type: string
         minLength: 1
@@ -26298,7 +27156,7 @@ components:
       summary: One-use provider partner portal deep link
       value:
         provider: KLARNA
-        deepLinkId: dl_01J4Z6N8Y7T6R5Q4P3M2K1H0GF
+        deepLinkId: krn:network:us1:test:portal:deep-link:cb643e4a-b224-4cdc-847f-6939484e533f
         url: https://portal.klarna.com/deep-link/example
         linkExpiresAt: '2026-08-07T16:31:00Z'
     regularPurchaseWithPaymentMethodId:
