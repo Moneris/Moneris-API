@@ -9,7 +9,7 @@ info:
     [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height:32px;">](https://god.gw.postman.com/run-collection/25575461-f04750a0-88e9-4c83-8b58-a3aff15eeea8?action=collection%2Ffork&collection-url=entityId%3D25575461-f04750a0-88e9-4c83-8b58-a3aff15eeea8%26entityType%3Dcollection%26workspaceId%3D5d2a9a0f-57a7-441c-b2af-fe6315e80a08)
   termsOfService: https://www.moneris.com/en/legal/terms-of-use
   contact:
-    url: https://api-developer.moneris.com
+    url: https://developer.moneris.com
     email: api@moneris.com
   license:
     name: Moneris
@@ -9135,16 +9135,6 @@ components:
           example: moneris@moneris.com
         customData:
           $ref: '#/components/schemas/customData'
-    email:
-      type: string
-      format: email
-      description: |
-        Contains the customer's email address.
-
-        For standard email protocols, visit: https://www.rfc-editor.org/rfc/rfc5322
-      minLength: 1
-      maxLength: 320
-      example: moneris@moneris.com
     phoneNumber:
       type: string
       description: Phone number.
@@ -9456,7 +9446,16 @@ components:
         cardholderName:
           $ref: '#/components/schemas/cardholderName'
         cardholderEmail:
-          $ref: '#/components/schemas/email'
+          nullable: true
+          type: string
+          format: email
+          description: |
+            Contains the customer's email address.
+
+            For standard email protocols, visit: https://www.rfc-editor.org/rfc/rfc5322
+          minLength: 1
+          maxLength: 320
+          example: moneris@moneris.com
         cardholderPhoneNumber:
           $ref: '#/components/schemas/phoneNumber'
         shippingAddress:
@@ -9597,7 +9596,6 @@ components:
         - browserIpAddress
         - browserScreenHeight
         - browserScreenWidth
-        - cardholderEmail
         - cardholderName
         - cardholderPhoneNumber
         - idempotencyKey
@@ -10451,6 +10449,16 @@ components:
         - $ref: '#/components/schemas/kountPaymentId'
         - $ref: '#/components/schemas/kountValidationId'
         - $ref: '#/components/schemas/kountPaymentData'
+    email:
+      type: string
+      format: email
+      description: |
+        Contains the customer's email address.
+
+        For standard email protocols, visit: https://www.rfc-editor.org/rfc/rfc5322
+      minLength: 1
+      maxLength: 320
+      example: moneris@moneris.com
     itemId:
       type: string
       maxLength: 255
